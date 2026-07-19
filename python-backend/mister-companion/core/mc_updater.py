@@ -1,0 +1,556 @@
+import html
+import os
+import platform
+import re
+import shutil
+import subprocess
+import tarfile
+import tempfile
+import zipfile
+from dataclasses import dataclass
+from pathlib import Path
+from urllib.parse import urljoin
+
+import requests
+
+from core.config import CONFIG_PATH, save_config
+
+MC_UPDATER_RELEASES_URL = "https://github.com/Anime0t4ku/MC-Updater/releases"
+MC_UPDATER_LATEST_URL = "https://github.com/Anime0t4ku/MC-Updater/releases/latest"
+MC_UPDATER_EXPANDED_ASSETS_URL = "https://github.com/Anime0t4ku/MC-Updater/releases/expanded_assets"
+
+
+@dataclass
+class MCUpdaterLocalStatus:
+    supported: bool
+    installed: bool
+    installed_version: str
+    executable_path: Path
+
+
+@dataclass
+class MCUpdaterReleaseInfo:
+    version: str
+    download_url: str
+    filename: str
+
+
+@dataclass
+class MCUpdaterUpdateStatus:
+    supported: bool
+    installed: bool
+    installed_version: str
+    latest_version: str
+    update_available: bool
+    executable_path: Path
+
+
+def current_platform_name() -> str:
+    return platform.system().lower()
+
+
+def is_windows() -> bool:
+    return current_platform_name() == "windows"
+
+
+def is_linux() -> bool:
+    return current_platform_name() == "linux"
+
+
+def is_macos() -> bool:
+    return current_platform_name() == "darwin"
+
+
+def current_architecture() -> str:
+    machine = platform.machine().strip().lower()
+
+    if machine in {"arm64", "aarch64"}:
+        return "arm64"
+
+    if machine in {"x86_64", "amd64", "x64"}:
+        return "x86_64"
+
+    return machine
+
+
+def updater_supported() -> bool:
+    return (is_windows() or is_linux() or is_macos()) and current_architecture() in {
+        "x86_64",
+        "arm64",
+    }
+
+
+def get_config_folder() -> Path:
+    return CONFIG_PATH.resolve().parent
+
+
+def get_executable_filename() -> str:
+    if is_windows():
+        return "MC-Updater.exe"
+    if is_macos():
+        return "MC-Updater.app"
+    return "MC-Updater"
+
+
+def get_executable_path() -> Path:
+    if is_macos():
+        return Path("/Applications") / get_executable_filename()
+    return get_config_folder() / get_executable_filename()
+
+
+def get_expected_asset_filename() -> str:
+    architecture = current_architecture()
+
+    if is_windows():
+        if architecture == "arm64":
+            return "MC-Updater-Windows-ARM64.zip"
+        return "MC-Updater-Windows-x86_64.zip"
+
+    if is_macos():
+        if architecture == "arm64":
+            return "MC-Updater-macOS-Apple-Silicon.dmg"
+        return "MC-Updater-macOS-Intel.dmg"
+
+    if architecture == "arm64":
+        return "MC-Updater-Linux-ARM64.tar.gz"
+    return "MC-Updater-Linux-x86_64.tar.gz"
+
+
+def _build_release_download_url(version: str, filename: str) -> str:
+    return f"https://github.com/Anime0t4ku/MC-Updater/releases/download/{version}/{filename}"
+
+
+def normalize_version_tuple(version: str) -> tuple[int, int, int]:
+    match = re.search(r"(\d+)\.(\d+)\.(\d+)", str(version or ""))
+    if not match:
+        return (0, 0, 0)
+    return tuple(int(part) for part in match.groups())
+
+
+def make_executable(path: Path):
+    if not path.exists() or not is_linux():
+        return
+    current_mode = os.stat(path).st_mode
+    os.chmod(path, current_mode | 0o100 | 0o010 | 0o001)
+
+
+def get_local_status(config_data: dict) -> MCUpdaterLocalStatus:
+    path = get_executable_path()
+    installed = updater_supported() and path.exists()
+    version = ""
+
+    if installed:
+        version = str(config_data.get("mc_updater_version", "") or "").strip()
+        if is_linux():
+            make_executable(path)
+
+    return MCUpdaterLocalStatus(
+        supported=updater_supported(),
+        installed=installed,
+        installed_version=version,
+        executable_path=path,
+    )
+
+
+def format_local_status_text(config_data: dict) -> str:
+    status = get_local_status(config_data)
+
+    if not status.supported:
+        return "Status: Unsupported platform"
+
+    if not status.installed:
+        return "Status: Not installed"
+
+    if not status.installed_version:
+        return "Status: Installed, unknown version"
+
+    return f"Status: Installed, {status.installed_version}"
+
+
+def _extract_latest_version_from_url(url: str) -> str:
+    match = re.search(r"/releases/tag/([^/?#]+)", url)
+    if match:
+        return html.unescape(match.group(1))
+    return ""
+
+
+def _extract_latest_version_from_html(page: str) -> str:
+    patterns = [
+        r"/Anime0t4ku/MC-Updater/releases/tag/([^\"'<>]+)",
+        r"/releases/tag/([^\"'<>]+)",
+    ]
+    for pattern in patterns:
+        match = re.search(pattern, page)
+        if match:
+            return html.unescape(match.group(1))
+    return ""
+
+
+def _extract_download_links(page: str, version: str) -> list[str]:
+    links = []
+    pattern = r'href=["\']([^"\']*/Anime0t4ku/MC-Updater/releases/download/[^"\']+)["\']'
+
+    for match in re.finditer(pattern, page):
+        link = html.unescape(match.group(1))
+        if version and f"/download/{version}/" not in link:
+            continue
+        full_link = urljoin("https://github.com", link)
+        if full_link not in links:
+            links.append(full_link)
+
+    pattern = r'(https://github\.com/Anime0t4ku/MC-Updater/releases/download/[^"\'<>\s]+)'
+    for match in re.finditer(pattern, page):
+        link = html.unescape(match.group(1))
+        if version and f"/download/{version}/" not in link:
+            continue
+        if link not in links:
+            links.append(link)
+
+    return links
+
+
+def _fetch_release_asset_links(version: str, timeout: int) -> list[str]:
+    asset_url = f"{MC_UPDATER_EXPANDED_ASSETS_URL}/{version}"
+    response = requests.get(
+        asset_url,
+        timeout=timeout,
+        headers={"User-Agent": "MiSTer-Companion-MC-Updater"},
+    )
+    response.raise_for_status()
+    return _extract_download_links(response.text, version)
+
+def _select_asset(download_links: list[str]) -> str:
+    expected = get_expected_asset_filename().lower()
+
+    for link in download_links:
+        if link.rstrip("/").split("/")[-1].lower() == expected:
+            return link
+
+    architecture = current_architecture()
+    candidates = []
+
+    for link in download_links:
+        lower = link.lower()
+        filename = lower.rstrip("/").split("/")[-1]
+        score = 0
+
+        if is_windows() and filename.endswith(".zip"):
+            score = 1
+            if "windows" in filename or "win" in filename:
+                score += 10
+        elif is_linux() and filename.endswith(".tar.gz"):
+            score = 1
+            if "linux" in filename:
+                score += 10
+        elif is_macos() and filename.endswith(".dmg"):
+            score = 1
+            if "macos" in filename or "mac" in filename:
+                score += 10
+        else:
+            continue
+
+        is_arm_asset = any(token in filename for token in ("arm64", "aarch64", "apple-silicon"))
+        is_x64_asset = any(token in filename for token in ("x86_64", "amd64", "x64", "intel"))
+
+        if architecture == "arm64":
+            if is_arm_asset:
+                score += 8
+            if is_x64_asset:
+                score -= 20
+        elif architecture == "x86_64":
+            if is_x64_asset:
+                score += 8
+            if is_arm_asset:
+                score -= 20
+
+        candidates.append((score, link))
+
+    if not candidates:
+        return ""
+
+    candidates.sort(key=lambda item: item[0], reverse=True)
+    best_score, best_link = candidates[0]
+    return best_link if best_score > 0 else ""
+
+
+def check_latest_release(timeout: int = 15) -> MCUpdaterReleaseInfo:
+    if not updater_supported():
+        raise RuntimeError("MC-Updater is only supported on x86_64 and ARM64 versions of Windows, Linux, and macOS.")
+
+    latest_response = requests.get(
+        MC_UPDATER_LATEST_URL,
+        timeout=timeout,
+        allow_redirects=True,
+        headers={"User-Agent": "MiSTer-Companion-MC-Updater"},
+    )
+    latest_response.raise_for_status()
+
+    latest_url = latest_response.url
+    latest_page = latest_response.text
+    version = _extract_latest_version_from_url(latest_url)
+
+    if not version:
+        version = _extract_latest_version_from_html(latest_page)
+
+    if not version:
+        releases_response = requests.get(
+            MC_UPDATER_RELEASES_URL,
+            timeout=timeout,
+            headers={"User-Agent": "MiSTer-Companion-MC-Updater"},
+        )
+        releases_response.raise_for_status()
+        latest_page = releases_response.text
+        version = _extract_latest_version_from_html(latest_page)
+
+    if not version:
+        raise RuntimeError("Could not determine the latest MC-Updater version.")
+
+    tag_url = f"https://github.com/Anime0t4ku/MC-Updater/releases/tag/{version}"
+    tag_response = requests.get(
+        tag_url,
+        timeout=timeout,
+        headers={"User-Agent": "MiSTer-Companion-MC-Updater"},
+    )
+    tag_response.raise_for_status()
+
+    page = tag_response.text
+    links = _extract_download_links(page, version)
+
+    if not links:
+        links = _extract_download_links(latest_page, version)
+
+    try:
+        expanded_links = _fetch_release_asset_links(version, timeout)
+        for link in expanded_links:
+            if link not in links:
+                links.append(link)
+    except Exception:
+        pass
+
+    download_url = _select_asset(links)
+    if not download_url:
+        expected_filename = get_expected_asset_filename()
+        download_url = _build_release_download_url(version, expected_filename)
+
+    filename = download_url.rstrip("/").split("/")[-1]
+    return MCUpdaterReleaseInfo(version=version, download_url=download_url, filename=filename)
+
+
+def check_update_status(config_data: dict, timeout: int = 15) -> MCUpdaterUpdateStatus:
+    local = get_local_status(config_data)
+    release = check_latest_release(timeout=timeout)
+
+    update_available = False
+    if local.installed:
+        if not local.installed_version:
+            update_available = True
+        else:
+            update_available = normalize_version_tuple(release.version) > normalize_version_tuple(local.installed_version)
+
+    return MCUpdaterUpdateStatus(
+        supported=local.supported,
+        installed=local.installed,
+        installed_version=local.installed_version,
+        latest_version=release.version,
+        update_available=update_available,
+        executable_path=local.executable_path,
+    )
+
+
+def _download_file(url: str, target: Path, progress=None, timeout: int = 30):
+    with requests.get(
+        url,
+        stream=True,
+        timeout=timeout,
+        headers={"User-Agent": "MiSTer-Companion-MC-Updater"},
+    ) as response:
+        response.raise_for_status()
+        total = int(response.headers.get("content-length", "0") or "0")
+        downloaded = 0
+        last_percent = -1
+
+        with open(target, "wb") as f:
+            for chunk in response.iter_content(chunk_size=1024 * 256):
+                if not chunk:
+                    continue
+                f.write(chunk)
+                downloaded += len(chunk)
+
+                if progress and total:
+                    percent = int(downloaded * 100 / total)
+                    if percent != last_percent and percent % 10 == 0:
+                        last_percent = percent
+                        progress(f"Downloading package... {percent}%")
+
+
+def _extract_package(package_path: Path, extract_dir: Path):
+    lower = package_path.name.lower()
+
+    if lower.endswith(".zip"):
+        with zipfile.ZipFile(package_path, "r") as zip_file:
+            zip_file.extractall(extract_dir)
+        return
+
+    if lower.endswith(".tar.gz") or lower.endswith(".tgz"):
+        with tarfile.open(package_path, "r:gz") as tar_file:
+            tar_file.extractall(extract_dir)
+        return
+
+    raise RuntimeError("Unsupported MC-Updater package format.")
+
+
+def _find_extracted_executable(extract_dir: Path) -> Path:
+    filename = get_executable_filename()
+    for path in extract_dir.rglob(filename):
+        if path.is_file():
+            return path
+    raise RuntimeError(f"Could not find {filename} in the downloaded package.")
+
+
+def _run_macos_command(command: list[str]) -> subprocess.CompletedProcess:
+    return subprocess.run(
+        command,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+
+def _parse_attached_volume(output: str) -> Path:
+    for line in output.splitlines():
+        parts = line.split("	")
+        for part in parts:
+            value = part.strip()
+            if value.startswith("/Volumes/"):
+                return Path(value)
+
+    raise RuntimeError("Could not determine the mounted DMG volume.")
+
+
+def _mount_dmg(dmg_path: Path) -> Path:
+    result = _run_macos_command([
+        "hdiutil",
+        "attach",
+        str(dmg_path),
+        "-nobrowse",
+        "-readonly",
+    ])
+    return _parse_attached_volume(result.stdout)
+
+
+def _unmount_dmg(volume_path: Path):
+    try:
+        _run_macos_command(["hdiutil", "detach", str(volume_path), "-quiet"])
+    except Exception:
+        try:
+            _run_macos_command(["hdiutil", "detach", str(volume_path), "-force", "-quiet"])
+        except Exception:
+            pass
+
+
+def _find_app_bundle(root: Path, bundle_name: str) -> Path:
+    direct_path = root / bundle_name
+    if direct_path.exists() and direct_path.is_dir():
+        return direct_path
+
+    for path in root.rglob(bundle_name):
+        if path.exists() and path.is_dir():
+            return path
+
+    raise RuntimeError(f"Could not find {bundle_name} in the mounted DMG.")
+
+
+def _install_macos_dmg(package_path: Path, progress=None):
+    mounted_volume = None
+    try:
+        if progress:
+            progress("Mounting DMG...")
+        mounted_volume = _mount_dmg(package_path)
+
+        source_app = _find_app_bundle(mounted_volume, get_executable_filename())
+        target_app = get_executable_path()
+
+        if progress:
+            progress(f"Installing {target_app.name}...")
+
+        if target_app.exists():
+            shutil.rmtree(target_app)
+
+        target_app.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copytree(source_app, target_app, symlinks=True)
+    finally:
+        if mounted_volume is not None:
+            if progress:
+                progress("Unmounting DMG...")
+            _unmount_dmg(mounted_volume)
+
+
+def install_or_update(config_data: dict, progress=None) -> str:
+    if not updater_supported():
+        raise RuntimeError("MC-Updater is only supported on x86_64 and ARM64 versions of Windows, Linux, and macOS.")
+
+    if progress:
+        progress("Checking latest release...")
+    release = check_latest_release()
+
+    with tempfile.TemporaryDirectory() as temp_root:
+        temp_root_path = Path(temp_root)
+        package_path = temp_root_path / release.filename
+        extract_dir = temp_root_path / "extract"
+        extract_dir.mkdir(parents=True, exist_ok=True)
+
+        if progress:
+            progress("Downloading package...")
+        _download_file(release.download_url, package_path, progress=progress)
+
+        if is_macos():
+            _install_macos_dmg(package_path, progress=progress)
+        else:
+            if progress:
+                progress("Extracting package...")
+            _extract_package(package_path, extract_dir)
+
+            extracted_executable = _find_extracted_executable(extract_dir)
+            target_path = get_executable_path()
+            target_path.parent.mkdir(parents=True, exist_ok=True)
+
+            if progress:
+                progress(f"Installing {target_path.name}...")
+            shutil.copy2(extracted_executable, target_path)
+
+            if is_linux():
+                if progress:
+                    progress("Applying executable permissions...")
+                make_executable(target_path)
+
+    if progress:
+        progress("Saving installed version...")
+    config_data["mc_updater_version"] = release.version
+    save_config(config_data)
+
+    if progress:
+        progress("Done.")
+
+    return release.version
+
+
+def remove(config_data: dict, progress=None):
+    target_path = get_executable_path()
+
+    if progress:
+        progress("Removing executable...")
+
+    if target_path.exists():
+        if target_path.is_dir():
+            shutil.rmtree(target_path)
+        else:
+            target_path.unlink()
+
+    if progress:
+        progress("Clearing saved version...")
+
+    config_data.pop("mc_updater_version", None)
+    save_config(config_data)
+
+    if progress:
+        progress("Done.")

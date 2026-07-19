@@ -1,0 +1,1748 @@
+/* ==========================================================================
+   CSS DEVELOPER MAP
+   --------------------------------------------------------------------------
+   1. Theme tokens and hard reset establish the classic Windows surface model.
+   2. Controls and title chrome reproduce raised, sunken, pressed, and selected states.
+   3. Panels, lists, settings, and page layouts apply the same square bevel language.
+   4. Final frame/sidebar locks preserve full-width chrome and dense legacy spacing.
+
+   Source order is intentionally preserved. Later rules are often deliberate
+   cascade refinements rather than duplicates that can be freely moved.
+   ========================================================================== */
+
+/* Win9X special theme. Loaded after the shared VaultKit stylesheet. */
+
+/* ==========================================================================
+   01. WINDOWS 9X TOKENS & GLOBAL RESET
+   Theme-scoped tokens prevent classic face, highlight, shadow, and title colors from leaking
+   into other themes.
+   ========================================================================== */
+
+.app-shell.app-style-windows9x {
+  --win9x-face: var(--panel-background, #c0c0c0);
+  --win9x-light: #ffffff;
+  --win9x-highlight: #dfdfdf;
+  --win9x-shadow: #808080;
+  --win9x-dark: #404040;
+  --win9x-title-start: var(--header-gradient-start-color, #000080);
+  --win9x-title-end: var(--header-gradient-end-color, #1084d0);
+  --win9x-title-text: #ffffff;
+  text-shadow: none !important;
+  background: var(--app-background, #c0c0c0) !important;
+  color: var(--text-color, #000000) !important;
+}
+
+.app-shell.app-style-windows9x,
+.app-shell.app-style-windows9x *,
+.app-shell.app-style-windows9x *::before,
+.app-shell.app-style-windows9x *::after {
+  border-radius: 0 !important;
+}
+
+.app-shell.app-style-windows9x * {
+  transition-duration: 0ms !important;
+  animation-duration: 0ms !important;
+}
+
+.app-shell.app-style-windows9x .mister-electron-main,
+.app-shell.app-style-windows9x .mister-electron-content,
+.app-shell.app-style-windows9x .mister-page {
+  background: var(--app-background, #c0c0c0) !important;
+}
+
+.app-shell.app-style-windows9x .mister-electron-header.topbar {
+  height: var(--header-height, 32px) !important;
+  min-height: var(--header-height, 32px) !important;
+  padding: var(--header-padding-y, 4px) var(--header-padding-x, 6px) !important;
+  border: 0 !important;
+  border-bottom: 2px solid var(--win9x-dark) !important;
+  background: linear-gradient(var(--header-gradient-angle, 90deg), var(--win9x-title-start) var(--header-gradient-start-stop, 0%), var(--win9x-title-end) var(--header-gradient-end-stop, 100%)) !important;
+  color: var(--win9x-title-text) !important;
+  box-shadow: none !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+.app-shell.app-style-windows9x .mister-header-wordmark {
+  height: min(24px, calc(var(--header-height, 32px) - 6px)) !important;
+  max-width: 260px !important;
+  filter: none !important;
+}
+
+.app-shell.app-style-windows9x :where(.mister-page-header,
+  .mister-card,
+  .mister-install-item-card,
+  .mister-install-toolbar,
+  .mister-install-summary-row,
+  .mister-flash-progress,
+  .mister-ra-toolbar,
+  .mister-settings-mode-row,
+  .mister-zap-library-footer,
+  .mister-zap-search-row,
+  .mister-zap-systems,
+  .mister-file-location-card,
+  .mister-file-list-card,
+  .mister-card-body,
+  .settings-panel,
+  .settings-section,
+  .settings-accordion-shell,
+  .color-section-toggle,
+  .custom-select-menu,
+  .modal,
+  .details-window,
+  .manual-pdf-toolbar,
+  .manual-pdf-viewer-shell) {
+  border: 2px solid !important;
+  border-color: var(--win9x-light) var(--win9x-dark) var(--win9x-dark) var(--win9x-light) !important;
+  background: var(--win9x-face) !important;
+  box-shadow: inset 1px 1px 0 var(--win9x-highlight), inset -1px -1px 0 var(--win9x-shadow) !important;
+  color: var(--text-color, #000000) !important;
+}
+
+/* ==========================================================================
+   02. CLASSIC INPUTS, BUTTONS & CONTROL STATES
+   Raised and sunken bevels are defined as a coordinated system so interaction states never
+   shift layout.
+   ========================================================================== */
+
+.app-shell.app-style-windows9x :where(input:not([type="range"]):not([type="checkbox"]):not([type="color"]),
+  textarea,
+  .search-input,
+  .key-input,
+  .mister-input,
+  .manual-pdf-page-field input) {
+  min-height: 21px !important;
+  padding: 2px 4px !important;
+  border: 2px solid !important;
+  border-color: var(--win9x-dark) var(--win9x-light) var(--win9x-light) var(--win9x-dark) !important;
+  background: var(--text-box-background-color, #ffffff) !important;
+  color: var(--text-box-text-color, #000000) !important;
+  box-shadow: inset 1px 1px 0 var(--win9x-shadow), inset -1px -1px 0 var(--win9x-highlight) !important;
+}
+
+.app-shell.app-style-windows9x :where(button:not(.window-control),
+  .secondary-button,
+  .primary-button,
+  .primary-small,
+  .quiet-button,
+  .key-button,
+  .mister-header-menu-button,
+  .custom-select-trigger,
+  .settings-toggle-track,
+  .sidebar-glyph-file-button) {
+  min-height: 23px !important;
+  padding: 2px 8px !important;
+  border: 2px solid !important;
+  border-color: var(--win9x-light) var(--win9x-dark) var(--win9x-dark) var(--win9x-light) !important;
+  font-weight: 400 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+  background: var(--button-background-color, #c0c0c0) !important;
+  color: var(--button-text-color, #000000) !important;
+  box-shadow: inset 1px 1px 0 var(--win9x-highlight), inset -1px -1px 0 var(--win9x-shadow) !important;
+}
+
+.app-shell.app-style-windows9x :where(button:not(.window-control):hover,
+  .secondary-button:hover,
+  .primary-button:hover,
+  .primary-small:hover,
+  .quiet-button:hover,
+  .key-button:hover,
+  .mister-header-menu-button:hover,
+  .custom-select-trigger:hover,
+  .sidebar-glyph-file-button:hover) {
+  background: var(--button-hover-background-color, #d4d0c8) !important;
+  color: var(--button-hover-text-color, #000000) !important;
+}
+
+.app-shell.app-style-windows9x :where(button:not(.window-control):active,
+  .secondary-button:active,
+  .primary-button:active,
+  .primary-small:active,
+  .quiet-button:active,
+  .key-button:active,
+  .mister-header-menu-button:active,
+  .custom-select-trigger:active,
+  .sidebar-glyph-file-button:active) {
+  border-color: var(--win9x-dark) var(--win9x-light) var(--win9x-light) var(--win9x-dark) !important;
+  background: var(--button-pressed-color, #a0a0a0) !important;
+  color: var(--button-pressed-text-color, #000000) !important;
+  box-shadow: inset 1px 1px 0 var(--win9x-shadow), inset -1px -1px 0 var(--win9x-highlight) !important;
+  transform: none !important;
+}
+
+.app-shell.app-style-windows9x :where(.primary-button,
+  .primary-small,
+  button.active,
+  .media-sidebar-section button.active) {
+  background: var(--button-selected-background-color, #000080) !important;
+  color: var(--button-selected-text-color, #ffffff) !important;
+}
+
+.app-shell.app-style-windows9x .media-sidebar-section button.active :where(.media-sidebar-label,
+  .media-sidebar-glyph) {
+  color: var(--button-selected-text-color, #ffffff) !important;
+}
+
+.app-shell.app-style-windows9x :where(.mister-card-header,
+  .settings-section h3,
+  .settings-page-header,
+  .manual-pdf-title-block) {
+  min-height: 22px !important;
+  padding: 3px 6px !important;
+  border: 0 !important;
+  background: linear-gradient(90deg, var(--win9x-title-start), var(--win9x-title-end)) !important;
+  color: var(--win9x-title-text) !important;
+  box-shadow: none !important;
+}
+
+.app-shell.app-style-windows9x :where(.mister-card-header *,
+  .settings-section h3 *,
+  .settings-page-header *,
+  .manual-pdf-title-block *) {
+  color: var(--win9x-title-text) !important;
+}
+
+.app-shell.app-style-windows9x :where(.settings-toggle-thumb,
+  input[type="checkbox"]) {
+  border-radius: 0 !important;
+}
+
+.app-shell.app-style-windows9x input[type="range"] {
+  height: 4px !important;
+  border: 2px solid !important;
+  border-color: var(--win9x-dark) var(--win9x-light) var(--win9x-light) var(--win9x-dark) !important;
+  background: var(--slider-track-color, #808080) !important;
+  box-shadow: none !important;
+}
+
+.app-shell.app-style-windows9x input[type="range"]::-webkit-slider-thumb {
+  width: 11px !important;
+  height: 21px !important;
+  border: 2px solid !important;
+  border-color: var(--win9x-light) var(--win9x-dark) var(--win9x-dark) var(--win9x-light) !important;
+  background: var(--slider-thumb-color, #c0c0c0) !important;
+  box-shadow: inset 1px 1px 0 var(--win9x-highlight), inset -1px -1px 0 var(--win9x-shadow) !important;
+}
+
+.app-shell.app-style-windows9x .main-content-themed-scrollbar :where(.themed-scrollbar-track,
+  .themed-scrollbar-thumb),
+.app-shell.app-style-windows9x ::-webkit-scrollbar-track,
+.app-shell.app-style-windows9x ::-webkit-scrollbar-thumb {
+  border-radius: 0 !important;
+}
+
+/* ==========================================================================
+   03. TITLE BAR & WINDOW CONTROLS
+   Caption buttons use dedicated geometry and glyph construction to match the compact Windows
+   9x title bar.
+   ========================================================================== */
+
+.app-shell.window-controls-windows9x .topbar .window-controls,
+.app-shell.window-controls-windows9x .mister-electron-header.topbar .window-controls {
+  height: 20px !important;
+  margin-left: 4px !important;
+  align-items: center !important;
+  gap: 2px !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+
+.app-shell.window-controls-windows9x .topbar .window-control,
+.app-shell.window-controls-windows9x .mister-electron-header.topbar .window-control {
+  width: 18px !important;
+  height: 18px !important;
+  min-height: 18px !important;
+  padding: 0 !important;
+  border: 2px solid !important;
+  border-color: #ffffff #404040 #404040 #ffffff !important;
+  background: #c0c0c0 !important;
+  color: #000000 !important;
+  box-shadow: inset 1px 1px 0 #dfdfdf, inset -1px -1px 0 #808080 !important;
+  transform: none !important;
+}
+
+.app-shell.window-controls-windows9x .topbar .window-control:hover,
+.app-shell.window-controls-windows9x .mister-electron-header.topbar .window-control:hover {
+  background: #d4d0c8 !important;
+  color: #000000 !important;
+}
+
+.app-shell.window-controls-windows9x .topbar .window-control:active,
+.app-shell.window-controls-windows9x .mister-electron-header.topbar .window-control:active {
+  border-color: #404040 #ffffff #ffffff #404040 !important;
+  box-shadow: inset 1px 1px 0 #808080, inset -1px -1px 0 #dfdfdf !important;
+  transform: none !important;
+}
+
+.app-shell.window-controls-windows9x .topbar .window-control-glyph,
+.app-shell.window-controls-windows9x .mister-electron-header.topbar .window-control-glyph {
+  width: 12px !important;
+  height: 12px !important;
+  opacity: 1 !important;
+  background: currentColor !important;
+  transform: scale(.62) !important;
+}
+
+.app-shell.window-controls-windows9x .topbar .window-close:hover,
+.app-shell.window-controls-windows9x .mister-electron-header.topbar .window-close:hover {
+  background: #c0c0c0 !important;
+  color: #000000 !important;
+}
+
+.app-shell.app-style-windows9x {
+  --win9x-header-height-effective: clamp(24px, var(--header-height, 28px), 32px);
+  --mister-shell-header-height: var(--win9x-header-height-effective) !important;
+}
+
+.app-shell.app-style-windows9x .mister-electron-header.topbar,
+.app-shell.app-style-windows9x > .mister-electron-main > .mister-electron-header.topbar {
+  height: var(--win9x-header-height-effective) !important;
+  min-height: var(--win9x-header-height-effective) !important;
+  max-height: var(--win9x-header-height-effective) !important;
+  flex: 0 0 var(--win9x-header-height-effective) !important;
+  padding-block: min(var(--header-padding-y, 2px), 3px) !important;
+  padding-inline: max(5px, min(var(--header-padding-x, 6px), 10px)) !important;
+  gap: 4px !important;
+  align-items: center !important;
+  border-top: 1px solid var(--win9x-light) !important;
+  border-left: 1px solid var(--win9x-light) !important;
+  border-right: 1px solid var(--win9x-dark) !important;
+  border-bottom: 1px solid var(--win9x-dark) !important;
+  background: linear-gradient(var(--header-gradient-angle, 90deg), var(--win9x-title-start) var(--header-gradient-start-stop, 0%), var(--win9x-title-end) var(--header-gradient-end-stop, 100%)) !important;
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--win9x-light) 58%, transparent) !important;
+  overflow: hidden !important;
+}
+
+.app-shell.app-style-windows9x .mister-header-left {
+  height: 100% !important;
+  min-width: 0 !important;
+  flex: 1 1 auto !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  overflow: hidden !important;
+}
+
+.app-shell.app-style-windows9x .mister-header-wordmark {
+  display: none !important;
+}
+
+.app-shell.app-style-windows9x .mister-header-left::before {
+  display: block !important;
+  min-width: 0 !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  font-family: "MS Sans Serif", "Microsoft Sans Serif", Tahoma, "Segoe UI", system-ui, sans-serif !important;
+  font-size: 13px !important;
+  line-height: 1 !important;
+  font-weight: 700 !important;
+  letter-spacing: 0 !important;
+  text-shadow: none !important;
+  color: var(--win9x-title-text, #ffffff) !important;
+  content: "MiSTer Companion EX" !important;
+  overflow: hidden !important;
+}
+
+.app-shell.app-style-windows9x .mister-header-actions.topbar-actions,
+.app-shell.app-style-windows9x .topbar-actions {
+  height: 100% !important;
+  flex: 0 0 auto !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  -webkit-app-region: no-drag !important;
+}
+
+.app-shell.app-style-windows9x .mister-header-menu-button {
+  width: 22px !important;
+  height: 22px !important;
+  min-width: 22px !important;
+  min-height: 22px !important;
+  max-width: 22px !important;
+  max-height: 22px !important;
+  padding: 0 !important;
+  margin: 0 3px 0 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-width: 2px !important;
+  border-style: solid !important;
+  border-color: var(--win9x-light) var(--win9x-dark) var(--win9x-dark) var(--win9x-light) !important;
+  background: var(--win9x-face, #c0c0c0) !important;
+  box-shadow: inset 1px 1px 0 var(--win9x-highlight), inset -1px -1px 0 var(--win9x-shadow) !important;
+  color: #000000 !important;
+  transform: none !important;
+}
+
+.app-shell.app-style-windows9x .mister-header-menu-button:active {
+  border-color: var(--win9x-dark) var(--win9x-light) var(--win9x-light) var(--win9x-dark) !important;
+  box-shadow: inset 1px 1px 0 var(--win9x-shadow), inset -1px -1px 0 var(--win9x-highlight) !important;
+  transform: none !important;
+}
+
+.app-shell.app-style-windows9x .mister-hamburger-icon {
+  width: 12px !important;
+  height: 10px !important;
+  display: grid !important;
+  gap: 2px !important;
+}
+
+.app-shell.app-style-windows9x .mister-hamburger-icon span {
+  height: 2px !important;
+  min-height: 2px !important;
+  border-radius: 0 !important;
+  background: #000000 !important;
+  box-shadow: none !important;
+}
+
+.app-shell.window-controls-windows9x .topbar .window-controls,
+.app-shell.window-controls-windows9x .mister-electron-header.topbar .window-controls {
+  height: 22px !important;
+  min-height: 22px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 2px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.app-shell.window-controls-windows9x .topbar .window-control,
+.app-shell.window-controls-windows9x .mister-electron-header.topbar .window-control {
+  width: 24px !important;
+  height: 22px !important;
+  min-width: 24px !important;
+  min-height: 22px !important;
+  max-width: 24px !important;
+  max-height: 22px !important;
+  padding: 0 !important;
+  border-width: 2px !important;
+  border-style: solid !important;
+  border-color: #ffffff #404040 #404040 #ffffff !important;
+  background: #c0c0c0 !important;
+  color: #000000 !important;
+  box-shadow: inset 1px 1px 0 #dfdfdf, inset -1px -1px 0 #808080 !important;
+  transform: none !important;
+}
+
+.app-shell.window-controls-windows9x .topbar .window-control:active,
+.app-shell.window-controls-windows9x .mister-electron-header.topbar .window-control:active {
+  border-color: #404040 #ffffff #ffffff #404040 !important;
+  box-shadow: inset 1px 1px 0 #808080, inset -1px -1px 0 #dfdfdf !important;
+  transform: none !important;
+}
+
+.app-shell.window-controls-windows9x .topbar .window-control-glyph,
+.app-shell.window-controls-windows9x .mister-electron-header.topbar .window-control-glyph {
+  width: 14px !important;
+  height: 14px !important;
+  opacity: 1 !important;
+  background: #000000 !important;
+  transform: none !important;
+}
+
+.app-shell.window-controls-windows9x .topbar .window-minimize-glyph,
+.app-shell.window-controls-windows9x .mister-electron-header.topbar .window-minimize-glyph {
+  -webkit-mask-size: 12px 12px !important;
+  mask-size: 12px 12px !important;
+  transform: translateY(1px) !important;
+}
+
+.app-shell.window-controls-windows9x .topbar .window-maximize-glyph,
+.app-shell.window-controls-windows9x .mister-electron-header.topbar .window-maximize-glyph {
+  -webkit-mask-size: 13px 13px !important;
+  mask-size: 13px 13px !important;
+}
+
+.app-shell.window-controls-windows9x .topbar .window-close-glyph,
+.app-shell.window-controls-windows9x .mister-electron-header.topbar .window-close-glyph {
+  -webkit-mask-size: 14px 14px !important;
+  mask-size: 14px 14px !important;
+}
+
+.app-shell.app-style-windows9x .mister-electron-content {
+  border-top: 1px solid var(--win9x-highlight) !important;
+}
+
+.app-shell.app-style-windows9x > .mister-electron-sidebar .media-sidebar-scroll,
+.app-shell.app-style-windows9x .mister-electron-sidebar .media-sidebar-scroll {
+  padding-top: calc(var(--win9x-header-height-effective) + 6px) !important;
+}
+
+.app-shell.app-style-windows9x .main-content-themed-scrollbar {
+  top: calc(var(--win9x-header-height-effective) + var(--scrollbar-block-padding, var(--scrollbar-edge-padding, 7px))) !important;
+}
+
+.app-shell.app-style-windows9x {
+  --win9x-header-height-effective: clamp(22px, var(--header-height, 24px), 28px);
+  --win9x-control-face: #c0c0c0;
+  --win9x-selection: #000080;
+  --win9x-selection-text: #ffffff;
+  --win9x-border-width: 2px;
+  --mister-shell-header-height: var(--win9x-header-height-effective) !important;
+}
+
+.app-shell.app-style-windows9x,
+.app-shell.app-style-windows9x *,
+.app-shell.app-style-windows9x *::before,
+.app-shell.app-style-windows9x *::after {
+  border-radius: 0 !important;
+}
+
+.app-shell.app-style-windows9x .mister-electron-window,
+.app-shell.app-style-windows9x .app-window,
+.app-shell.app-style-windows9x .mister-electron-main,
+.app-shell.app-style-windows9x .mister-electron-sidebar,
+.app-shell.app-style-windows9x .mister-electron-content,
+.app-shell.app-style-windows9x .mister-page,
+.app-shell.app-style-windows9x :where(.mister-card,
+  .mister-page-header,
+  .mister-install-toolbar,
+  .mister-install-summary-row,
+  .mister-install-item-card,
+  .settings-modal,
+  .settings-panel,
+  .settings-sidebar,
+  .settings-section,
+  .settings-accordion-panel,
+  .settings-accordion-shell,
+  .custom-select-trigger,
+  .custom-select-menu,
+  input,
+  textarea,
+  button,
+  .mister-profile-list,
+  .mister-profile-list button,
+  .mister-stat-list div,
+  .mister-status-pill,
+  .mister-chip,
+  .mister-page-badge,
+  .mister-empty-value) {
+  border-radius: 0 !important;
+}
+
+.app-shell.app-style-windows9x .mister-electron-header.topbar,
+.app-shell.app-style-windows9x > .mister-electron-main > .mister-electron-header.topbar {
+  height: var(--win9x-header-height-effective) !important;
+  min-height: var(--win9x-header-height-effective) !important;
+  max-height: var(--win9x-header-height-effective) !important;
+  flex-basis: var(--win9x-header-height-effective) !important;
+  padding: 2px 3px !important;
+  border-width: 1px !important;
+  border-style: solid !important;
+  border-color: var(--win9x-light) var(--win9x-dark) var(--win9x-dark) var(--win9x-light) !important;
+  background: linear-gradient(90deg, #000080 0%, #1084d0 100%) !important;
+  box-shadow: none !important;
+}
+
+.app-shell.app-style-windows9x .mister-header-left::before {
+  padding-left: 2px !important;
+  font-size: 12px !important;
+  line-height: 1 !important;
+}
+
+.app-shell.app-style-windows9x .mister-header-actions.topbar-actions,
+.app-shell.app-style-windows9x .topbar-actions {
+  gap: 2px !important;
+}
+
+.app-shell.app-style-windows9x .mister-header-menu-button {
+  width: 20px !important;
+  height: 20px !important;
+  min-width: 20px !important;
+  min-height: 20px !important;
+  max-width: 20px !important;
+  max-height: 20px !important;
+  margin: 0 3px 0 0 !important;
+}
+
+.app-shell.app-style-windows9x .mister-hamburger-icon {
+  width: 11px !important;
+  height: 9px !important;
+  gap: 2px !important;
+}
+
+.app-shell.app-style-windows9x .mister-hamburger-icon span {
+  height: 1px !important;
+  min-height: 1px !important;
+}
+
+.app-shell.window-controls-windows9x :where(.topbar,
+  .mister-electron-header.topbar,
+  .mister-sidebar-window-controls) .window-controls {
+  height: 20px !important;
+  min-height: 20px !important;
+  gap: 2px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  align-items: center !important;
+}
+
+.app-shell.window-controls-windows9x :where(.topbar,
+  .mister-electron-header.topbar,
+  .mister-sidebar-window-controls) .window-control {
+  width: 22px !important;
+  height: 20px !important;
+  min-width: 22px !important;
+  min-height: 20px !important;
+  max-width: 22px !important;
+  max-height: 20px !important;
+  padding: 0 !important;
+  display: inline-grid !important;
+  place-items: center !important;
+  border-width: 2px !important;
+  border-style: solid !important;
+  border-color: #ffffff #404040 #404040 #ffffff !important;
+  background: #c0c0c0 !important;
+  color: #000000 !important;
+  box-shadow: inset 1px 1px 0 #dfdfdf, inset -1px -1px 0 #808080 !important;
+  transform: none !important;
+}
+
+.app-shell.window-controls-windows9x :where(.topbar,
+  .mister-electron-header.topbar,
+  .mister-sidebar-window-controls) .window-control:active {
+  border-color: #404040 #ffffff #ffffff #404040 !important;
+  box-shadow: inset 1px 1px 0 #808080, inset -1px -1px 0 #dfdfdf !important;
+  transform: none !important;
+}
+
+.app-shell.window-controls-windows9x :where(.topbar,
+  .mister-electron-header.topbar,
+  .mister-sidebar-window-controls) .window-control-glyph {
+  display: block !important;
+  width: 14px !important;
+  height: 12px !important;
+  margin: 0 !important;
+  position: relative !important;
+  background: transparent !important;
+  color: #000000 !important;
+  opacity: 1 !important;
+  -webkit-mask: none !important;
+  mask: none !important;
+  transform: none !important;
+}
+
+.app-shell.window-controls-windows9x :where(.topbar,
+  .mister-electron-header.topbar,
+  .mister-sidebar-window-controls) .window-control-glyph::before,
+.app-shell.window-controls-windows9x :where(.topbar,
+  .mister-electron-header.topbar,
+  .mister-sidebar-window-controls) .window-control-glyph::after {
+  display: block;
+  border-radius: 0 !important;
+  position: absolute;
+  background: #000000;
+  content: "";
+  pointer-events: none;
+}
+
+.app-shell.window-controls-windows9x :where(.topbar,
+  .mister-electron-header.topbar,
+  .mister-sidebar-window-controls) .window-minimize-glyph::before {
+  height: 2px;
+  left: 2px;
+  right: 2px;
+  bottom: 1px;
+}
+
+.app-shell.window-controls-windows9x :where(.topbar,
+  .mister-electron-header.topbar,
+  .mister-sidebar-window-controls) .window-minimize-glyph::after {
+  display: none;
+}
+
+.app-shell.window-controls-windows9x :where(.topbar,
+  .mister-electron-header.topbar,
+  .mister-sidebar-window-controls) .window-maximize-glyph::before {
+  width: 10px;
+  height: 9px;
+  border: 2px solid #000000;
+  border-top-width: 3px;
+  box-sizing: border-box;
+  left: 2px;
+  top: 1px;
+  background: transparent;
+}
+
+.app-shell.window-controls-windows9x :where(.topbar,
+  .mister-electron-header.topbar,
+  .mister-sidebar-window-controls) .window-maximize-glyph::after {
+  display: none;
+}
+
+.app-shell.window-controls-windows9x :where(.topbar,
+  .mister-electron-header.topbar,
+  .mister-sidebar-window-controls) .window-close-glyph::before,
+.app-shell.window-controls-windows9x :where(.topbar,
+  .mister-electron-header.topbar,
+  .mister-sidebar-window-controls) .window-close-glyph::after {
+  width: 12px;
+  height: 2px;
+  left: 1px;
+  top: 5px;
+  transform-origin: 50% 50%;
+}
+
+.app-shell.window-controls-windows9x :where(.topbar,
+  .mister-electron-header.topbar,
+  .mister-sidebar-window-controls) .window-close-glyph::before {
+  transform: rotate(45deg) !important;
+}
+
+.app-shell.window-controls-windows9x :where(.topbar,
+  .mister-electron-header.topbar,
+  .mister-sidebar-window-controls) .window-close-glyph::after {
+  transform: rotate(-45deg) !important;
+}
+
+/* ==========================================================================
+   04. DIALOGS, SETTINGS & PANEL CHROME
+   Settings and dialog surfaces reuse the same square bevel model while keeping close controls
+   optically centered.
+   ========================================================================== */
+
+.app-shell.app-style-windows9x :where(.settings-close-button,
+  .settings-close-button:hover,
+  .settings-close-button:active,
+  .settings-close-button:focus-visible) {
+  transform: translateY(-50%) !important;
+}
+
+.app-shell.app-style-windows9x .settings-close-button {
+  width: 22px !important;
+  height: 20px !important;
+  min-width: 22px !important;
+  min-height: 20px !important;
+  padding: 0 !important;
+  border-width: 2px !important;
+  border-style: solid !important;
+  border-color: #ffffff #404040 #404040 #ffffff !important;
+  background: #c0c0c0 !important;
+  color: #000000 !important;
+  box-shadow: inset 1px 1px 0 #dfdfdf, inset -1px -1px 0 #808080 !important;
+}
+
+.app-shell.app-style-windows9x .settings-close-button:active {
+  border-color: #404040 #ffffff #ffffff #404040 !important;
+  box-shadow: inset 1px 1px 0 #808080, inset -1px -1px 0 #dfdfdf !important;
+}
+
+.app-shell.app-style-windows9x .settings-close-button .window-close-glyph {
+  width: 14px !important;
+  height: 12px !important;
+  margin: 0 !important;
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  background: transparent !important;
+  -webkit-mask: none !important;
+  mask: none !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+.app-shell.app-style-windows9x .settings-close-button .window-close-glyph::before,
+.app-shell.app-style-windows9x .settings-close-button .window-close-glyph::after {
+  width: 12px;
+  height: 2px;
+  position: absolute;
+  left: 1px;
+  top: 5px;
+  background: #000000;
+  content: "";
+}
+
+.app-shell.app-style-windows9x .settings-close-button .window-close-glyph::before {
+  transform: rotate(45deg) !important;
+}
+
+.app-shell.app-style-windows9x .settings-close-button .window-close-glyph::after {
+  transform: rotate(-45deg) !important;
+}
+
+.app-shell.app-style-windows9x :where(.mister-card,
+  .mister-page-header,
+  .mister-install-toolbar,
+  .mister-install-summary-row,
+  .mister-install-item-card,
+  .mister-flash-progress,
+  .settings-panel,
+  .settings-section,
+  .settings-accordion-panel,
+  .custom-select-menu,
+  .modal,
+  .details-window,
+  .manual-pdf-toolbar,
+  .manual-pdf-viewer-shell) {
+  border-width: var(--win9x-border-width) !important;
+  border-style: solid !important;
+  border-color: var(--win9x-light) var(--win9x-dark) var(--win9x-dark) var(--win9x-light) !important;
+  background: var(--win9x-face, #c0c0c0) !important;
+  box-shadow: inset 1px 1px 0 var(--win9x-highlight), inset -1px -1px 0 var(--win9x-shadow) !important;
+}
+
+.app-shell.app-style-windows9x :where(.mister-card-header,
+  .settings-section h3,
+  .settings-page-header,
+  .manual-pdf-title-block) {
+  min-height: 22px !important;
+  padding: 6px 8px !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--win9x-shadow) !important;
+  font-weight: 700 !important;
+  background: var(--win9x-face, #c0c0c0) !important;
+  color: #000000 !important;
+  box-shadow: none !important;
+}
+
+.app-shell.app-style-windows9x :where(.mister-card-header *,
+  .settings-section h3 *,
+  .settings-page-header *,
+  .manual-pdf-title-block *) {
+  color: #000000 !important;
+}
+
+.app-shell.app-style-windows9x .mister-card-body {
+  border: 0 !important;
+  padding: 10px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.app-shell.app-style-windows9x .mister-empty-value {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: #000000 !important;
+}
+
+.app-shell.app-style-windows9x :where(.mister-profile-list,
+  .mister-network-scan-list,
+  .mister-file-list,
+  .mister-install-card-grid,
+  .mister-zap-list,
+  .mister-ra-games-list,
+  .mister-manuals-list) {
+  border-width: 2px !important;
+  border-style: solid !important;
+  border-color: var(--win9x-dark) var(--win9x-light) var(--win9x-light) var(--win9x-dark) !important;
+  background: #ffffff !important;
+  box-shadow: inset 1px 1px 0 var(--win9x-shadow), inset -1px -1px 0 var(--win9x-highlight) !important;
+  overflow: hidden !important;
+}
+
+.app-shell.app-style-windows9x .mister-profile-list button {
+  min-height: 38px !important;
+  padding: 5px 8px !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--win9x-dark) !important;
+  text-align: left !important;
+  background: var(--win9x-face, #c0c0c0) !important;
+  color: #000000 !important;
+  box-shadow: none !important;
+}
+
+.app-shell.app-style-windows9x .mister-profile-list button:last-child {
+  border-bottom: 0 !important;
+}
+
+.app-shell.app-style-windows9x .mister-profile-list button.active {
+  border-bottom-color: var(--win9x-selection, #000080) !important;
+  background: var(--win9x-selection, #000080) !important;
+  color: var(--win9x-selection-text, #ffffff) !important;
+}
+
+.app-shell.app-style-windows9x .mister-profile-list button.active * {
+  color: var(--win9x-selection-text, #ffffff) !important;
+}
+
+.app-shell.app-style-windows9x .mister-electron-sidebar {
+  border-right: 2px solid var(--win9x-dark) !important;
+  background: var(--win9x-face, #c0c0c0) !important;
+  box-shadow: inset 1px 0 0 var(--win9x-light), inset -1px 0 0 var(--win9x-shadow) !important;
+}
+
+.app-shell.app-style-windows9x .media-sidebar-section h2 {
+  font-weight: 700 !important;
+  text-shadow: none !important;
+  color: #000000 !important;
+}
+
+.app-shell.app-style-windows9x .media-sidebar-section nav {
+  gap: 6px !important;
+}
+
+.app-shell.app-style-windows9x .media-sidebar-section button {
+  height: 36px !important;
+  min-height: 36px !important;
+  padding: 4px 8px !important;
+  border-width: 2px !important;
+  border-style: solid !important;
+  border-color: var(--win9x-light) var(--win9x-dark) var(--win9x-dark) var(--win9x-light) !important;
+  text-shadow: none !important;
+  background: var(--media-sidebar-button-background-color, #c0c0c0) !important;
+  color: var(--media-sidebar-button-text-color, #000000) !important;
+  box-shadow: inset 1px 1px 0 var(--win9x-highlight), inset -1px -1px 0 var(--win9x-shadow) !important;
+  transform: none !important;
+}
+
+.app-shell.app-style-windows9x .media-sidebar-section button:hover {
+  background: var(--media-sidebar-button-hover-background-color, #d4d0c8) !important;
+  color: var(--media-sidebar-button-hover-text-color, #000000) !important;
+}
+
+.app-shell.app-style-windows9x .media-sidebar-section button:active,
+.app-shell.app-style-windows9x .media-sidebar-section button.active {
+  border-color: var(--win9x-dark) var(--win9x-light) var(--win9x-light) var(--win9x-dark) !important;
+  box-shadow: inset 1px 1px 0 var(--win9x-shadow), inset -1px -1px 0 var(--win9x-highlight) !important;
+  transform: none !important;
+}
+
+.app-shell.app-style-windows9x .media-sidebar-section button.active {
+  background: var(--media-sidebar-button-active-background-color, #000080) !important;
+  color: var(--media-sidebar-button-active-text-color, #ffffff) !important;
+}
+
+.app-shell.app-style-windows9x .media-sidebar-section button :where(.media-sidebar-label,
+  .media-sidebar-glyph) {
+  color: inherit !important;
+  background-color: currentColor !important;
+}
+
+.app-shell.app-style-windows9x .media-sidebar-section button.active :where(.media-sidebar-label,
+  .media-sidebar-glyph) {
+  color: var(--media-sidebar-button-active-text-color, #ffffff) !important;
+  background-color: currentColor !important;
+}
+
+.app-shell.app-style-windows9x :where(button,
+  .secondary-button,
+  .primary-button,
+  .primary-small,
+  .danger-button,
+  .key-button,
+  .quiet-button,
+  .mister-header-menu-button,
+  .mister-install-item-card):active:not(:disabled) {
+  transform: none !important;
+}
+
+.app-shell.app-style-windows9x.window-controls-windows9x .mister-electron-header.topbar .window-control-glyph,
+.app-shell.app-style-windows9x.window-controls-windows9x .topbar .window-control-glyph,
+.app-shell.app-style-windows9x.window-controls-windows9x .mister-sidebar-window-controls .window-control-glyph,
+.app-shell.app-style-windows9x.window-controls-windows9x .settings-close-button .window-control-glyph {
+  display: block !important;
+  width: 14px !important;
+  height: 12px !important;
+  min-width: 14px !important;
+  min-height: 12px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  position: relative !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  color: #000000 !important;
+  opacity: 1 !important;
+  box-shadow: none !important;
+  -webkit-mask: none !important;
+  mask: none !important;
+  transform: none !important;
+}
+
+.app-shell.app-style-windows9x.window-controls-windows9x .mister-electron-header.topbar .window-control-glyph::before,
+.app-shell.app-style-windows9x.window-controls-windows9x .mister-electron-header.topbar .window-control-glyph::after,
+.app-shell.app-style-windows9x.window-controls-windows9x .topbar .window-control-glyph::before,
+.app-shell.app-style-windows9x.window-controls-windows9x .topbar .window-control-glyph::after,
+.app-shell.app-style-windows9x.window-controls-windows9x .mister-sidebar-window-controls .window-control-glyph::before,
+.app-shell.app-style-windows9x.window-controls-windows9x .mister-sidebar-window-controls .window-control-glyph::after,
+.app-shell.app-style-windows9x.window-controls-windows9x .settings-close-button .window-control-glyph::before,
+.app-shell.app-style-windows9x.window-controls-windows9x .settings-close-button .window-control-glyph::after {
+  display: block !important;
+  border-radius: 0 !important;
+  position: absolute !important;
+  background: #000000 !important;
+  background-color: #000000 !important;
+  box-shadow: none !important;
+  content: "" !important;
+  pointer-events: none !important;
+}
+
+.app-shell.app-style-windows9x.window-controls-windows9x .mister-electron-header.topbar .window-minimize-glyph::before,
+.app-shell.app-style-windows9x.window-controls-windows9x .topbar .window-minimize-glyph::before,
+.app-shell.app-style-windows9x.window-controls-windows9x .mister-sidebar-window-controls .window-minimize-glyph::before {
+  width: auto !important;
+  height: 2px !important;
+  border: 0 !important;
+  left: 2px !important;
+  right: 2px !important;
+  top: auto !important;
+  bottom: 1px !important;
+  transform: none !important;
+}
+
+.app-shell.app-style-windows9x.window-controls-windows9x .mister-electron-header.topbar .window-minimize-glyph::after,
+.app-shell.app-style-windows9x.window-controls-windows9x .topbar .window-minimize-glyph::after,
+.app-shell.app-style-windows9x.window-controls-windows9x .mister-sidebar-window-controls .window-minimize-glyph::after {
+  display: none !important;
+}
+
+.app-shell.app-style-windows9x.window-controls-windows9x .mister-electron-header.topbar .window-maximize-glyph::before,
+.app-shell.app-style-windows9x.window-controls-windows9x .topbar .window-maximize-glyph::before,
+.app-shell.app-style-windows9x.window-controls-windows9x .mister-sidebar-window-controls .window-maximize-glyph::before {
+  width: 10px !important;
+  height: 9px !important;
+  border: 2px solid #000000 !important;
+  border-top-width: 3px !important;
+  box-sizing: border-box !important;
+  left: 2px !important;
+  top: 1px !important;
+  background: transparent !important;
+  transform: none !important;
+}
+
+.app-shell.app-style-windows9x.window-controls-windows9x .mister-electron-header.topbar .window-maximize-glyph::after,
+.app-shell.app-style-windows9x.window-controls-windows9x .topbar .window-maximize-glyph::after,
+.app-shell.app-style-windows9x.window-controls-windows9x .mister-sidebar-window-controls .window-maximize-glyph::after {
+  display: none !important;
+}
+
+.app-shell.app-style-windows9x.window-controls-windows9x .mister-electron-header.topbar .window-close-glyph::before,
+.app-shell.app-style-windows9x.window-controls-windows9x .mister-electron-header.topbar .window-close-glyph::after,
+.app-shell.app-style-windows9x.window-controls-windows9x .topbar .window-close-glyph::before,
+.app-shell.app-style-windows9x.window-controls-windows9x .topbar .window-close-glyph::after,
+.app-shell.app-style-windows9x.window-controls-windows9x .mister-sidebar-window-controls .window-close-glyph::before,
+.app-shell.app-style-windows9x.window-controls-windows9x .mister-sidebar-window-controls .window-close-glyph::after,
+.app-shell.app-style-windows9x.window-controls-windows9x .settings-close-button .window-close-glyph::before,
+.app-shell.app-style-windows9x.window-controls-windows9x .settings-close-button .window-close-glyph::after {
+  width: 12px !important;
+  height: 2px !important;
+  border: 0 !important;
+  left: 1px !important;
+  top: 5px !important;
+  transform-origin: 50% 50% !important;
+}
+
+.app-shell.app-style-windows9x.window-controls-windows9x .mister-electron-header.topbar .window-close-glyph::before,
+.app-shell.app-style-windows9x.window-controls-windows9x .topbar .window-close-glyph::before,
+.app-shell.app-style-windows9x.window-controls-windows9x .mister-sidebar-window-controls .window-close-glyph::before,
+.app-shell.app-style-windows9x.window-controls-windows9x .settings-close-button .window-close-glyph::before {
+  transform: rotate(45deg) !important;
+}
+
+.app-shell.app-style-windows9x.window-controls-windows9x .mister-electron-header.topbar .window-close-glyph::after,
+.app-shell.app-style-windows9x.window-controls-windows9x .topbar .window-close-glyph::after,
+.app-shell.app-style-windows9x.window-controls-windows9x .mister-sidebar-window-controls .window-close-glyph::after,
+.app-shell.app-style-windows9x.window-controls-windows9x .settings-close-button .window-close-glyph::after {
+  transform: rotate(-45deg) !important;
+}
+
+.app-shell.app-style-windows9x.window-controls-windows9x .mister-electron-header.topbar .window-control,
+.app-shell.app-style-windows9x.window-controls-windows9x .topbar .window-control,
+.app-shell.app-style-windows9x.window-controls-windows9x .mister-sidebar-window-controls .window-control {
+  width: 22px !important;
+  height: 20px !important;
+  min-width: 22px !important;
+  min-height: 20px !important;
+  max-width: 22px !important;
+  max-height: 20px !important;
+  padding: 0 !important;
+  border: 2px solid !important;
+  border-color: #ffffff #404040 #404040 #ffffff !important;
+  background: #c0c0c0 !important;
+  color: #000000 !important;
+  box-shadow: inset 1px 1px 0 #dfdfdf, inset -1px -1px 0 #808080 !important;
+  transform: none !important;
+}
+
+.app-shell.app-style-windows9x.window-controls-windows9x .mister-electron-header.topbar .window-control:active,
+.app-shell.app-style-windows9x.window-controls-windows9x .topbar .window-control:active,
+.app-shell.app-style-windows9x.window-controls-windows9x .mister-sidebar-window-controls .window-control:active {
+  border-color: #404040 #ffffff #ffffff #404040 !important;
+  box-shadow: inset 1px 1px 0 #808080, inset -1px -1px 0 #dfdfdf !important;
+  transform: none !important;
+}
+
+.app-shell.app-style-windows9x .settings-modal .settings-close-button,
+.app-shell.app-style-windows9x .settings-modal .settings-close-button:hover,
+.app-shell.app-style-windows9x .settings-modal .settings-close-button:active,
+.app-shell.app-style-windows9x .settings-modal .settings-close-button:focus-visible,
+.app-shell.app-style-windows9x .mister-confirm-close,
+.app-shell.app-style-windows9x .mister-confirm-close:hover,
+.app-shell.app-style-windows9x .mister-confirm-close:active,
+.app-shell.app-style-windows9x .mister-confirm-close:focus-visible {
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+}
+
+.app-shell.app-style-windows9x .settings-modal .settings-close-button .window-close-glyph,
+.app-shell.app-style-windows9x .settings-modal .settings-close-button:active .window-close-glyph,
+.app-shell.app-style-windows9x .mister-confirm-close .window-close-glyph,
+.app-shell.app-style-windows9x .mister-confirm-close:active .window-close-glyph {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  transform: translate(-50%, -50%) !important;
+  -webkit-mask: none !important;
+  mask: none !important;
+}
+
+.app-shell.app-style-windows9x .media-sidebar-section button .media-sidebar-label,
+.app-shell.app-style-windows9x .media-sidebar-section button.active .media-sidebar-label,
+.app-shell.app-style-windows9x .media-sidebar-section button:hover .media-sidebar-label,
+.app-shell.app-style-windows9x .media-sidebar-section button:active .media-sidebar-label {
+  display: block !important;
+  min-width: 0 !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  color: inherit !important;
+  -webkit-mask: none !important;
+  mask: none !important;
+  overflow: hidden !important;
+}
+
+.app-shell.app-style-windows9x .media-sidebar-section button .media-sidebar-glyph {
+  display: inline-grid !important;
+  place-items: center !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  color: inherit !important;
+  -webkit-mask: none !important;
+  mask: none !important;
+  overflow: hidden !important;
+}
+
+.app-shell.app-style-windows9x .media-sidebar-section button .media-sidebar-glyph-image,
+.app-shell.app-style-windows9x .media-sidebar-section button:hover .media-sidebar-glyph-image,
+.app-shell.app-style-windows9x .media-sidebar-section button:active .media-sidebar-glyph-image,
+.app-shell.app-style-windows9x .media-sidebar-section button.active .media-sidebar-glyph-image {
+  background: currentColor !important;
+  background-color: currentColor !important;
+  color: inherit !important;
+}
+
+.app-shell.app-style-windows9x .media-sidebar-section button .media-sidebar-count {
+  background: transparent !important;
+  background-color: transparent !important;
+  color: inherit !important;
+}
+
+.app-shell.app-style-windows9x :where(.mister-card,
+  .mister-page-header,
+  .mister-install-toolbar,
+  .mister-install-summary-row,
+  .mister-install-item-card,
+  .mister-flash-progress,
+  .settings-panel,
+  .settings-section,
+  .settings-accordion-panel,
+  .settings-accordion-shell,
+  .custom-select-menu,
+  .modal,
+  .details-window,
+  .manual-pdf-toolbar,
+  .manual-pdf-viewer-shell) {
+  border-width: 2px !important;
+  border-style: solid !important;
+  border-color: var(--win9x-light, #ffffff) var(--win9x-dark, #404040) var(--win9x-dark, #404040) var(--win9x-light, #ffffff) !important;
+  border-radius: 0 !important;
+}
+
+/* ==========================================================================
+   05. SUNKEN LISTS, ROWS & FEATURE SURFACES
+   Operational lists share one inset well so rows can fill edge-to-edge without producing
+   nested borders.
+   ========================================================================== */
+
+.app-shell.app-style-windows9x :where(.mister-profile-list,
+  .mister-network-scan-list,
+  .mister-file-list,
+  .mister-zap-list,
+  .mister-ra-games-list,
+  .mister-manuals-list,
+  input:not([type="range"]):not([type="checkbox"]):not([type="color"]),
+  textarea,
+  .search-input,
+  .key-input,
+  .mister-input,
+  .custom-select-trigger) {
+  border-width: 2px !important;
+  border-style: solid !important;
+  border-color: var(--win9x-dark, #404040) var(--win9x-light, #ffffff) var(--win9x-light, #ffffff) var(--win9x-dark, #404040) !important;
+  border-radius: 0 !important;
+}
+
+.app-shell.app-style-windows9x :where(.mister-card,
+  .mister-card *,
+  .mister-page-header,
+  .mister-page-header *,
+  .mister-profile-list,
+  .mister-profile-list *,
+  .media-sidebar-section button,
+  .media-sidebar-section button *,
+  .settings-modal,
+  .settings-modal *,
+  .mister-status-pill,
+  .mister-chip,
+  .mister-page-badge) {
+  border-radius: 0 !important;
+}
+
+.app-shell.app-style-windows9x {
+  --win9x-sidebar-active: #5e5e5e;
+  --win9x-sidebar-active-text: #ffffff;
+}
+
+.app-shell.app-style-windows9x .mister-electron-sidebar .custom-sidebar-glyph .media-sidebar-glyph-image,
+.app-shell.app-style-windows9x .mister-electron-sidebar .media-sidebar-glyph-image {
+  width: 16px !important;
+  height: 16px !important;
+  min-width: 16px !important;
+  min-height: 16px !important;
+  background-color: currentColor !important;
+  -webkit-mask-size: 16px 16px !important;
+  mask-size: 16px 16px !important;
+  -webkit-mask-repeat: no-repeat !important;
+  mask-repeat: no-repeat !important;
+  -webkit-mask-position: center !important;
+  mask-position: center !important;
+  image-rendering: pixelated !important;
+}
+
+.app-shell.app-style-windows9x .media-sidebar-section button {
+  border-radius: 0 !important;
+  overflow: hidden !important;
+}
+
+.app-shell.app-style-windows9x .media-sidebar-section button.active,
+.app-shell.app-style-windows9x .media-sidebar-section button[aria-current="page"] {
+  border-color: var(--win9x-dark) var(--win9x-light) var(--win9x-light) var(--win9x-dark) !important;
+  background: var(--win9x-sidebar-active) !important;
+  color: var(--win9x-sidebar-active-text) !important;
+  box-shadow: inset 1px 1px 0 #3f3f3f, inset -1px -1px 0 #a8a8a8 !important;
+}
+
+.app-shell.app-style-windows9x .media-sidebar-section button.active .media-sidebar-label,
+.app-shell.app-style-windows9x .media-sidebar-section button.active .media-sidebar-glyph,
+.app-shell.app-style-windows9x .media-sidebar-section button.active .media-sidebar-glyph-image {
+  color: #ffffff !important;
+}
+
+.app-shell.app-style-windows9x .media-sidebar-section button .media-sidebar-label {
+  background: transparent !important;
+}
+
+.app-shell.app-style-windows9x :where(.mister-card,
+  .mister-card-body,
+  .mister-card-header,
+  .mister-page-header,
+  .mister-profile-list,
+  .mister-profile-list button,
+  .mister-profile-actions,
+  .mister-profile-actions button,
+  .mister-page-badge,
+  .mister-status-pill,
+  .mister-empty-value) {
+  border-radius: 0 !important;
+  box-sizing: border-box !important;
+  clip-path: none !important;
+}
+
+.app-shell.app-style-windows9x :where(.mister-card,
+  .mister-page-header,
+  .settings-panel,
+  .settings-section,
+  .settings-modal) {
+  overflow: visible !important;
+}
+
+.app-shell.app-style-windows9x .mister-card-body {
+  padding-bottom: 12px !important;
+  overflow: visible !important;
+}
+
+.app-shell.app-style-windows9x .mister-profile-list {
+  margin-bottom: 10px !important;
+  overflow: hidden !important;
+}
+
+.app-shell.app-style-windows9x .mister-profile-list button,
+.app-shell.app-style-windows9x .mister-profile-list button:last-child {
+  border-radius: 0 !important;
+}
+
+.app-shell.app-style-windows9x .mister-profile-list button.active {
+  background: #000080 !important;
+  color: #ffffff !important;
+}
+
+.app-shell.app-style-windows9x .mister-profile-list button.active * {
+  color: #ffffff !important;
+}
+
+.app-shell.app-style-windows9x .mister-card,
+.app-shell.app-style-windows9x .mister-page-header,
+.app-shell.app-style-windows9x .mister-page {
+  padding-right: max(0px, var(--panel-padding-right, 0px)) !important;
+}
+
+.app-shell.app-style-windows9x .mister-card::after,
+.app-shell.app-style-windows9x .mister-page-header::after {
+  border: 0 solid transparent;
+  box-sizing: border-box;
+  position: absolute;
+  inset: 0;
+  content: "";
+  pointer-events: none;
+}
+
+.app-shell.app-style-windows9x :where(.mister-card,
+  .mister-page-header,
+  .mister-install-toolbar,
+  .mister-install-summary-row,
+  .mister-install-item-card,
+  .mister-flash-progress,
+  .settings-panel,
+  .settings-section,
+  .settings-accordion-panel,
+  .settings-accordion-shell,
+  .custom-select-menu,
+  .modal,
+  .details-window,
+  .manual-pdf-toolbar,
+  .manual-pdf-viewer-shell) {
+  border: 2px solid transparent !important;
+  border-radius: 0 !important;
+  position: relative !important;
+  box-shadow: none !important;
+  background-clip: padding-box !important;
+  overflow: visible !important;
+}
+
+.app-shell.app-style-windows9x :where(.mister-card,
+  .mister-page-header,
+  .mister-install-toolbar,
+  .mister-install-summary-row,
+  .mister-install-item-card,
+  .mister-flash-progress,
+  .settings-panel,
+  .settings-section,
+  .settings-accordion-panel,
+  .settings-accordion-shell,
+  .custom-select-menu,
+  .modal,
+  .details-window,
+  .manual-pdf-toolbar,
+  .manual-pdf-viewer-shell)::after {
+  border-radius: 0 !important;
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 20 !important;
+  background: transparent !important;
+  box-shadow: inset 1px 1px 0 var(--win9x-light, #ffffff),
+    inset 2px 2px 0 var(--win9x-highlight, #dfdfdf),
+    inset -1px -1px 0 var(--win9x-dark, #404040),
+    inset -2px -2px 0 var(--win9x-shadow, #808080) !important;
+  content: "" !important;
+  pointer-events: none !important;
+}
+
+.app-shell.app-style-windows9x :where(.mister-card,
+  .mister-page-header,
+  .mister-install-toolbar,
+  .mister-install-summary-row,
+  .mister-install-item-card,
+  .mister-flash-progress,
+  .settings-panel,
+  .settings-section,
+  .settings-accordion-panel,
+  .settings-accordion-shell,
+  .custom-select-menu,
+  .modal,
+  .details-window,
+  .manual-pdf-toolbar,
+  .manual-pdf-viewer-shell) > * {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+.app-shell.app-style-windows9x :where(.mister-card::before,
+  .mister-install-item-card::before,
+  .mister-page-header::before) {
+  display: none !important;
+}
+
+.app-shell.app-style-windows9x :where(.mister-profile-list,
+  .mister-network-scan-list,
+  .mister-file-list,
+  .mister-zap-list,
+  .mister-ra-games-list,
+  .mister-manuals-list) {
+  border: 2px solid transparent !important;
+  border-radius: 0 !important;
+  position: relative !important;
+  box-shadow: none !important;
+  background: #ffffff !important;
+  overflow: hidden !important;
+}
+
+.app-shell.app-style-windows9x :where(.mister-profile-list,
+  .mister-network-scan-list,
+  .mister-file-list,
+  .mister-zap-list,
+  .mister-ra-games-list,
+  .mister-manuals-list)::after {
+  border-radius: 0 !important;
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 20 !important;
+  box-shadow: inset 1px 1px 0 var(--win9x-dark, #404040),
+    inset 2px 2px 0 var(--win9x-shadow, #808080),
+    inset -1px -1px 0 var(--win9x-light, #ffffff),
+    inset -2px -2px 0 var(--win9x-highlight, #dfdfdf) !important;
+  content: "" !important;
+  pointer-events: none !important;
+}
+
+.app-shell.app-style-windows9x :where(.mister-profile-list,
+  .mister-network-scan-list,
+  .mister-file-list,
+  .mister-zap-list,
+  .mister-ra-games-list,
+  .mister-manuals-list) > * {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+.app-shell.app-style-windows9x .mister-page {
+  gap: 18px !important;
+  padding: 2px 4px 4px 2px !important;
+  overflow: visible !important;
+}
+
+.app-shell.app-style-windows9x :where(.mister-card-grid,
+  .mister-settings-layout,
+  .mister-zapscraper-layout,
+  .mister-flash-layout,
+  .connection-layout,
+  .mister-manuals-layout,
+  .mister-ra-layout) {
+  overflow: visible !important;
+}
+
+.app-shell.app-style-windows9x .mister-page-header {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  min-height: 68px !important;
+  padding: 16px 18px !important;
+}
+
+.app-shell.app-style-windows9x .mister-page-header > .mister-page-header-copy {
+  align-self: center !important;
+  justify-self: stretch !important;
+}
+
+.app-shell.app-style-windows9x .mister-page-header > .mister-page-header-status-slot {
+  align-self: center !important;
+  justify-self: end !important;
+  display: flex !important;
+  align-items: center !important;
+  height: auto !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.app-shell.app-style-windows9x .mister-page-header-status-slot > .mister-page-badge,
+.app-shell.app-style-windows9x .mister-page-header-status-slot > .mister-status-pill {
+  align-self: center !important;
+  min-height: 22px !important;
+  height: 22px !important;
+  padding: 3px 9px !important;
+  margin: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  line-height: 14px !important;
+}
+
+/* ==========================================================================
+   06. WINDOW FRAME & PERIMETER
+   The renderer-owned outer layers are disabled so the theme can draw one crisp, square native
+   frame.
+   ========================================================================== */
+
+.app-window-frame:has(.app-shell.app-style-windows9x) > .app-window-border-layer,
+.app-window-frame:has(.app-shell.app-style-windows9x) > .app-window-outer-glow-layer,
+.app-window-frame:has(.app-shell.app-style-windows9x) > .app-window-shadow-layer,
+.app-window-frame:has(.app-shell.app-style-windows9x) .app-window-inner-glow-layer {
+  display: none !important;
+}
+
+.app-window-frame:has(.app-shell.app-style-windows9x) > .app-window-surface {
+  border: 0 !important;
+  border-radius: 0 !important;
+  inset: var(--app-window-visual-margin, var(--app-window-shadow-margin-effective, 0px)) !important;
+  box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #404040, inset 2px 2px 0 #dfdfdf, inset -2px -2px 0 #808080 !important;
+  background: #c0c0c0 !important;
+  clip-path: inset(0) !important;
+  contain: paint !important;
+}
+
+.app-window-frame:has(.app-shell.app-style-windows9x) > .app-window-surface::before,
+.app-window-frame:has(.app-shell.app-style-windows9x) > .app-window-surface::after,
+.app-window-frame:has(.app-shell.app-style-windows9x) .app-window-surface > .app-shell::before,
+.app-window-frame:has(.app-shell.app-style-windows9x) .app-window-surface > .app-shell::after {
+  display: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  content: none !important;
+}
+
+.app-window-frame:has(.app-shell.app-style-windows9x) .app-window-surface > .app-shell {
+  border-radius: 0 !important;
+  background: #c0c0c0 !important;
+  clip-path: inset(0) !important;
+  contain: paint !important;
+  overflow: hidden !important;
+}
+
+/* ==========================================================================
+   07. FULL-WIDTH CHROME & SIDEBAR CASCADE LOCKS
+   These final rules make the title and footer span the entire window while the sidebar begins
+   beneath the caption bar.
+   ========================================================================== */
+
+.app-shell.app-style-windows9x.media-sidebar-open {
+  overflow: hidden !important;
+}
+
+.app-shell.app-style-windows9x .mister-electron-main {
+  background: var(--win9x-face, #c0c0c0) !important;
+  overflow: visible !important;
+}
+
+.app-shell.app-style-windows9x .mister-electron-sidebar {
+  border-radius: 0 !important;
+  padding-top: 0 !important;
+  z-index: 20 !important;
+}
+
+.app-shell.app-style-windows9x > .mister-electron-sidebar .media-sidebar-scroll,
+.app-shell.app-style-windows9x .mister-electron-sidebar .media-sidebar-scroll {
+  padding-top: calc(var(--win9x-header-height-effective, 24px) + 18px) !important;
+  padding-bottom: calc(var(--footer-height, 34px) + 10px) !important;
+}
+
+.app-shell.app-style-windows9x .mister-electron-header.topbar,
+.app-shell.app-style-windows9x > .mister-electron-main > .mister-electron-header.topbar {
+  margin-left: calc(-1 * var(--integrated-sidebar-width, 176px)) !important;
+  width: calc(100% + var(--integrated-sidebar-width, 176px)) !important;
+  max-width: none !important;
+  border-left: 0 !important;
+  border-right: 0 !important;
+  border-top: 0 !important;
+  border-bottom: 1px solid #404040 !important;
+  position: relative !important;
+  z-index: 80 !important;
+  box-shadow: inset 0 1px 0 #ffffff !important;
+}
+
+.app-shell.app-style-windows9x .mister-electron-header.topbar .mister-header-left,
+.app-shell.app-style-windows9x > .mister-electron-main > .mister-electron-header.topbar .mister-header-left {
+  padding-left: 4px !important;
+}
+
+.app-shell.app-style-windows9x .mister-electron-footer,
+.app-shell.app-style-windows9x > .mister-electron-main > .mister-electron-footer {
+  margin-left: calc(-1 * var(--integrated-sidebar-width, 176px)) !important;
+  width: calc(100% + var(--integrated-sidebar-width, 176px)) !important;
+  max-width: none !important;
+  min-height: 30px !important;
+  padding: 4px 8px !important;
+  border-top: 1px solid #808080 !important;
+  border-left: 0 !important;
+  border-right: 0 !important;
+  border-bottom: 0 !important;
+  position: relative !important;
+  z-index: 80 !important;
+  background: var(--win9x-face, #c0c0c0) !important;
+  box-shadow: inset 0 1px 0 #ffffff !important;
+}
+
+.app-shell.app-style-windows9x .mister-header-menu-button {
+  width: 18px !important;
+  height: 18px !important;
+  min-width: 18px !important;
+  min-height: 18px !important;
+  max-width: 18px !important;
+  max-height: 18px !important;
+  padding: 0 !important;
+  margin: 0 3px 0 0 !important;
+  border-width: 2px !important;
+  border-style: solid !important;
+  border-color: #ffffff #404040 #404040 #ffffff !important;
+  border-radius: 0 !important;
+  background: #c0c0c0 !important;
+  color: #000000 !important;
+  box-shadow: inset 1px 1px 0 #dfdfdf, inset -1px -1px 0 #808080 !important;
+  transform: none !important;
+}
+
+.app-shell.app-style-windows9x .mister-header-menu-button:hover {
+  background: #d4d0c8 !important;
+}
+
+.app-shell.app-style-windows9x .mister-header-menu-button:active {
+  border-color: #404040 #ffffff #ffffff #404040 !important;
+  box-shadow: inset 1px 1px 0 #808080, inset -1px -1px 0 #dfdfdf !important;
+  transform: none !important;
+}
+
+.app-shell.app-style-windows9x .mister-hamburger-icon {
+  width: 11px !important;
+  height: 9px !important;
+  display: grid !important;
+  align-content: center !important;
+  justify-content: center !important;
+  gap: 1px !important;
+  padding: 0 !important;
+}
+
+.app-shell.app-style-windows9x .mister-hamburger-icon span {
+  display: block !important;
+  width: 9px !important;
+  height: 1px !important;
+  min-height: 1px !important;
+  border-radius: 0 !important;
+  background: #000000 !important;
+  box-shadow: 0 1px 0 #808080 !important;
+  opacity: 1 !important;
+}
+
+.app-shell.app-style-windows9x.window-controls-left .mister-sidebar-window-controls {
+  top: 0 !important;
+  z-index: 90 !important;
+}
+
+.app-shell.app-style-windows9x {
+  --win9x-sidebar-extra-width: 6px;
+  --win9x-sidebar-width-effective: calc(var(--media-sidebar-width, 176px) + var(--win9x-sidebar-extra-width));
+  --integrated-sidebar-width: var(--win9x-sidebar-width-effective) !important;
+}
+
+.app-shell.app-style-windows9x.media-sidebar-open,
+.app-shell.app-style-windows9x {
+  grid-template-columns: var(--win9x-sidebar-width-effective) minmax(0, 1fr) !important;
+}
+
+.app-shell.app-style-windows9x .mister-electron-sidebar,
+.app-shell.app-style-windows9x > .mister-electron-sidebar {
+  width: var(--win9x-sidebar-width-effective) !important;
+  min-width: var(--win9x-sidebar-width-effective) !important;
+  max-width: var(--win9x-sidebar-width-effective) !important;
+  flex: 0 0 var(--win9x-sidebar-width-effective) !important;
+  border-right: 0 !important;
+  position: relative !important;
+  box-shadow: inset 1px 0 0 #ffffff, inset -1px 0 0 #808080 !important;
+}
+
+.app-shell.app-style-windows9x .mister-electron-sidebar::after,
+.app-shell.app-style-windows9x > .mister-electron-sidebar::after {
+  width: 3px !important;
+  position: absolute !important;
+  top: var(--win9x-header-height-effective, 24px) !important;
+  right: 0 !important;
+  bottom: var(--footer-height, 30px) !important;
+  z-index: 75 !important;
+  background: linear-gradient(to right, #808080 0, #808080 1px, #ffffff 1px, #ffffff 2px, #404040 2px, #404040 3px) !important;
+  box-shadow: none !important;
+  content: "" !important;
+  pointer-events: none !important;
+}
+
+.app-shell.app-style-windows9x > .mister-electron-sidebar .media-sidebar-scroll,
+.app-shell.app-style-windows9x .mister-electron-sidebar .media-sidebar-scroll {
+  padding-top: calc(var(--win9x-header-height-effective, 24px) + 24px) !important;
+  padding-right: calc(var(--media-sidebar-padding-x, 7px) + 6px) !important;
+}
+
+.app-shell.app-style-windows9x .media-sidebar-section button {
+  column-gap: 6px !important;
+  padding-left: 8px !important;
+  padding-right: 6px !important;
+}
+
+.app-shell.app-style-windows9x .media-sidebar-section button .media-sidebar-glyph,
+.app-shell.app-style-windows9x .media-sidebar-section button .media-sidebar-glyph-image,
+.app-shell.app-style-windows9x .media-sidebar-section button .custom-sidebar-glyph {
+  position: relative !important;
+  top: -1px !important;
+  transform: none !important;
+}
+
+.app-shell.app-style-windows9x .media-sidebar-section button .media-sidebar-label {
+  max-width: calc(100% + 6px) !important;
+  position: relative !important;
+  left: -6px !important;
+  transform: none !important;
+}
+
+.app-shell.app-style-windows9x .mister-electron-header.topbar,
+.app-shell.app-style-windows9x > .mister-electron-main > .mister-electron-header.topbar,
+.app-shell.app-style-windows9x .mister-electron-footer,
+.app-shell.app-style-windows9x > .mister-electron-main > .mister-electron-footer {
+  margin-left: calc(-1 * var(--win9x-sidebar-width-effective)) !important;
+  width: calc(100% + var(--win9x-sidebar-width-effective)) !important;
+}
+
+.app-shell.app-style-windows9x {
+  --win9x-sidebar-extra-width: 18px;
+  --integrated-sidebar-width: var(--win9x-sidebar-width-effective) !important;
+}
+
+.app-shell.app-style-windows9x > .mister-electron-sidebar .media-sidebar-scroll,
+.app-shell.app-style-windows9x .mister-electron-sidebar .media-sidebar-scroll {
+  padding-left: 8px !important;
+  padding-right: 8px !important;
+}
+
+.app-shell.app-style-windows9x .media-sidebar-section nav {
+  width: 100% !important;
+}
+
+.app-shell.app-style-windows9x .media-sidebar-section button {
+  width: 100% !important;
+  margin-left: 2px !important;
+  margin-right: 2px !important;
+  max-width: calc(100% - 4px) !important;
+  padding-left: 8px !important;
+  padding-right: 6px !important;
+  box-sizing: border-box !important;
+}
+
+.app-shell.app-style-windows9x .media-sidebar-section button .media-sidebar-label {
+  max-width: calc(100% + 10px) !important;
+  left: -10px !important;
+}
+
+.app-shell.app-style-windows9x .media-sidebar-section button .media-sidebar-glyph,
+.app-shell.app-style-windows9x .media-sidebar-section button .media-sidebar-glyph-image,
+.app-shell.app-style-windows9x .media-sidebar-section button .custom-sidebar-glyph {
+  top: -1px !important;
+}
+
+.app-shell.app-style-windows9x .mister-electron-sidebar::after,
+.app-shell.app-style-windows9x > .mister-electron-sidebar::after {
+  width: 3px !important;
+  right: 0 !important;
+  background: linear-gradient(to right, #808080 0, #808080 1px, #ffffff 1px, #ffffff 2px, #404040 2px, #404040 3px) !important;
+}

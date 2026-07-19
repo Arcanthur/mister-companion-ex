@@ -1,0 +1,32 @@
+# Dependencies and packaged output
+node_modules/
+release/
+
+# Portable runtime data
+Data/
+Themes/
+Tools/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+
+# Editors and operating systems
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+Desktop.ini

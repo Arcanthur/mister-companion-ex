@@ -1,0 +1,28 @@
+/** VaultKit Electron manifest for the MiSTer Companion port. */
+
+module.exports = Object.freeze({
+  id: "mister-companion",
+  appUserModelId: "com.arcanthur.mistercompanion.vaultkit",
+  productName: "MiSTer Companion EX",
+  windowTitle: "MiSTer Companion EX",
+  themePreviewTitle: "MiSTer Companion EX Theme Preview",
+  searchWindowTitle: "MiSTer Companion EX Search",
+  lddbSessionTitle: "MiSTer Companion EX Session",
+  startupStatus: "Starting MiSTer Companion EX...",
+  userAgentName: "MiSTerCompanionVaultKit/0.1",
+  portableDataFolder: "Data",
+  legacyPortableDataFolders: ["MiSTerCompanionVaultKitData"],
+  backendDataFolder: "Backend",
+  legacyBackendDataFolders: ["python-backend-data"],
+  themesFolder: "Themes",
+  fontsFolder: "Fonts",
+  assetsFolder: "Assets",
+  toolsFolder: "Tools",
+  packagedThemeAssetsFolder: "default-theme-assets",
+  devDataFolder: ".mister-companion-vaultkit-dev-data",
+  mediaScheme: "mister-vaultkit-media",
+  lddbPartition: "persist:mister-vaultkit",
+  iconPath: "build/mister-companion.png",
+  wordmarkPath: "build/mister-companion-ex-logo.png",
+  themeFileExtension: "mister-vaultkit-theme",
+});

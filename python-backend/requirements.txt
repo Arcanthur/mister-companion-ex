@@ -1,0 +1,7 @@
+paramiko
+requests
+websocket-client
+psutil
+pyserial
+Pillow
+certifi

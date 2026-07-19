@@ -1,0 +1,23 @@
+/* ==========================================================================
+   EMBEDDED APPLICATION FONTS
+   --------------------------------------------------------------------------
+   Fonts declared here are bundled by Vite so packaged builds do not depend on
+   the host operating system. Keep family names stable because saved themes
+   store the CSS font-family value rather than an asset path.
+   ========================================================================== */
+
+@font-face {
+  font-family: "Virtue";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("./assets/fonts/virtue.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Geneva Embedded";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("./assets/fonts/geneva.ttf") format("truetype");
+}

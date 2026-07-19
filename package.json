@@ -1,0 +1,69 @@
+{
+  "name": "mister-companion-ex",
+  "version": "0.4.53",
+  "displayVersion": "0.4.53-alpha",
+  "description": "MiSTer Companion EX Electron UI using the MiSTer Companion Python core backend.",
+  "private": true,
+  "main": "electron/main.cjs",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "electron": "electron .",
+    "start": "concurrently -k \"vite --host 127.0.0.1\" \"wait-on http://127.0.0.1:5173 && electron .\"",
+    "format:css": "node scripts/format-css.cjs",
+    "build": "node node_modules/vite/bin/vite.js build",
+    "dist": "node node_modules/vite/bin/vite.js build && electron-builder --win portable --x64"
+  },
+  "dependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "build": {
+    "appId": "com.arcanthur.mistercompanion.vaultkit",
+    "productName": "MiSTer Companion EX",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "package.json",
+      "CHANGELOG.md",
+      "build/**/*",
+      "!**/__pycache__/**",
+      "!**/*.pyc"
+    ],
+    "extraResources": [
+      {
+        "from": "python-backend",
+        "to": "python-backend"
+      },
+      {
+        "from": "src/assets/mister",
+        "to": "default-theme-assets"
+      }
+    ],
+    "win": {
+      "target": [
+        "portable"
+      ],
+      "artifactName": "MiSTer-Companion-EX-0.4.53-Windows.${ext}",
+      "icon": "build/mister-companion.png"
+    },
+    "artifactName": "MiSTer-Companion-EX-0.4.53-Windows.${ext}"
+  },
+  "allowScripts": {
+    "electron-winstaller@5.4.0": true,
+    "esbuild@0.25.12": true
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "concurrently": "^9.1.0",
+    "electron": "^42.5.0",
+    "electron-builder": "^26.15.3",
+    "postcss": "^8.5.16",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.7",
+    "wait-on": "^8.0.1"
+  },
+  "author": "Arcanthur / MiSTer Companion core by Anime0t4ku"
+}
