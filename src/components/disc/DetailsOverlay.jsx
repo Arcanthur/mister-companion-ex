@@ -4,7 +4,7 @@
  * Exports: DetailsOverlay
  */
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { selectedCoverLarge } from "../../utils/discUtils";
 import { fetchTMDBTrailer, savedTrailerForDisc, searchTMDB, trailerPlayerUrl } from "../../api/tmdb";
 import { SpecPill } from "./SpecPill";

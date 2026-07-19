@@ -4,7 +4,6 @@
  * Exports: CoverReviewModal
  */
 
-import React from "react";
 
 export function CoverReviewModal({ disc, index, total, onClose, onOpenLddb, onAddCover, onPasteCover, onUseNewestScan, onSkip, onPrevious }) {
   return (

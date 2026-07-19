@@ -4,7 +4,7 @@
  * Exports: LibraryHealthContent
  */
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { SettingsSectionHeading } from "../common/FormFields";
 import { selectedCover } from "../../utils/discUtils";
 

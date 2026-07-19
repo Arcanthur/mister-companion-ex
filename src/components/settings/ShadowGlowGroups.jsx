@@ -4,7 +4,6 @@
  * Exports: ShadowSettingsGroup, GlowSettingsGroup
  */
 
-import React from "react";
 import { ColorField, RangeField, ToggleField } from "../common/FormFields";
 import { themeToggleEnabled } from "../../theme/themeUtils";
 import { DEFAULT_THEME } from "../../theme/themePresets";

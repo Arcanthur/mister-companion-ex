@@ -4,7 +4,7 @@
  * Exports: DiscEditModal
  */
 
-import React, { useState, useRef } from "react";
+import { useState, useRef } from "react";
 import { fileToDataUrl, splitCsv } from "../../utils/discUtils";
 import { SettingsSectionHeading } from "../common/FormFields";
 import { CustomSelect } from "../common/CustomSelect";
@@ -49,7 +49,7 @@ export function DiscEditModal({ disc, apiKey, collections, mediaLibraries, onClo
   const editScrollRef = useRef(null);
 
   const setField = (key, value) => setForm((prev) => ({ ...prev, [key]: value }));
-  const useFile = async (file) => {
+  const handleFile = async (file) => {
     if (!file || !file.type.startsWith("image/")) return;
     setCover(await fileToDataUrl(file));
     setCoverName(file.name);
@@ -57,7 +57,7 @@ export function DiscEditModal({ disc, apiKey, collections, mediaLibraries, onClo
   const drop = async (event) => {
     event.preventDefault();
     event.stopPropagation();
-    await useFile(event.dataTransfer.files?.[0]);
+    await handleFile(event.dataTransfer.files?.[0]);
   };
   const save = () => {
     const tmdb = {
@@ -219,7 +219,7 @@ export function DiscEditModal({ disc, apiKey, collections, mediaLibraries, onClo
                   <div className="cover-drop" onDragOver={(e) => e.preventDefault()} onDrop={drop} onClick={() => fileRef.current?.click()}>
                     {cover ? <img src={cover} alt="Selected cover" /> : <span>Drag cover art here or click to choose</span>}
                   </div>
-                  <input ref={fileRef} type="file" accept="image/*" hidden onChange={(e) => useFile(e.target.files?.[0])} />
+                  <input ref={fileRef} type="file" accept="image/*" hidden onChange={(e) => handleFile(e.target.files?.[0])} />
                 </section>
                 <section className="edit-panel">
                   <SettingsSectionHeading title="Lookup and media" description="Search external metadata sources or attach a local trailer." />

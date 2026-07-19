@@ -518,7 +518,7 @@ function looksLikeHtml(buffer) {
   return text.startsWith("<!doctype html") || text.startsWith("<html") || text.includes("making sure you") || text.includes("not a bot");
 }
 
-function sniffImageMime(buffer, contentType, url) {
+function sniffImageMime(buffer, contentType, _url) {
   const cleanType = String(contentType || "").split(";")[0].toLowerCase();
   if (cleanType.startsWith("image/")) return cleanType;
   if (buffer?.length >= 3 && buffer[0] === 0xff && buffer[1] === 0xd8 && buffer[2] === 0xff) return "image/jpeg";
@@ -885,29 +885,6 @@ function readThemeFiles() {
     } catch {}
   }
   return uniqueThemeRecords(records);
-}
-
-function writeThemeFileSync(record) {
-  const safe = safeThemeRecord(record);
-  if (!safe) return null;
-  const directory = themeDirectory();
-  fsSync.mkdirSync(directory, { recursive: true });
-  const fileName = safeThemeFileName(safe.name);
-  fsSync.writeFileSync(path.join(directory, fileName), JSON.stringify({
-    schemaVersion: 1,
-    type: "mister-companion-vaultkit-theme",
-    name: safe.name,
-    theme: safe.theme,
-  }, null, 2), "utf8");
-  return fileName;
-}
-
-function migrateStateThemesToFiles(savedState) {
-  const records = uniqueThemeRecords(Array.isArray(savedState?.savedThemes) ? savedState.savedThemes : []);
-  if (!records.length) return;
-  for (const record of records) {
-    try { writeThemeFileSync(record); } catch {}
-  }
 }
 
 function themeStatePath() {
@@ -1838,6 +1815,7 @@ app.whenReady().then(async () => {
     ]);
   } catch {}
   try { startBackend(); logStartup("Python backend started", backendInfo().pythonCommand || "unknown"); } catch (error) { console.warn("Python backend deferred:", error.message); logStartup("Python backend deferred", error.stack || error.message); }
+  try { await startTrailerPlayerServer(); } catch (error) { console.warn("Trailer player server unavailable:", error.message); }
   setSplashProgress(58, "Loading VaultKit shell...");
   protocol.handle(appManifest.mediaScheme, (request) => {
     const parsed = new URL(request.url);

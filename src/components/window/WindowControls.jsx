@@ -4,7 +4,6 @@
  * Exports: WindowControls
  */
 
-import React from "react";
 
 export function WindowControls({ mirrored = false, controlStyle = "laservault", windowMaximized, onMinimize, onMaximize, onClose }) {
   const closeButton = <button key="close" className="window-control window-close" title="Close" aria-label="Close" onClick={onClose}><span className="window-control-glyph window-close-glyph" aria-hidden="true" /></button>;

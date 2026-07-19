@@ -1,7 +1,6 @@
 {
   "name": "mister-companion-ex",
-  "version": "0.4.53",
-  "displayVersion": "0.4.53-alpha",
+  "version": "0.4.53-alpha.0",
   "description": "MiSTer Companion EX Electron UI using the MiSTer Companion Python core backend.",
   "private": true,
   "main": "electron/main.cjs",
@@ -10,8 +9,14 @@
     "electron": "electron .",
     "start": "concurrently -k \"vite --host 127.0.0.1\" \"wait-on http://127.0.0.1:5173 && electron .\"",
     "format:css": "node scripts/format-css.cjs",
-    "build": "node node_modules/vite/bin/vite.js build",
-    "dist": "node node_modules/vite/bin/vite.js build && electron-builder --win portable --x64"
+    "lint": "eslint src electron scripts vite.config.js",
+    "test:js": "vitest run --config vitest.config.mjs --configLoader runner",
+    "test:python": "python -m unittest discover -s python-backend/tests -p \"test_*.py\"",
+    "test": "npm run test:js && npm run test:python",
+    "check": "npm run lint && npm run test && npm run build",
+    "release:verify": "node scripts/verify-release-version.cjs",
+    "build": "node node_modules/vite/bin/vite.js build --configLoader runner",
+    "dist": "node node_modules/vite/bin/vite.js build --configLoader runner && electron-builder --win portable --x64"
   },
   "dependencies": {
     "react": "^19.0.0",
@@ -45,23 +50,28 @@
       "target": [
         "portable"
       ],
-      "artifactName": "MiSTer-Companion-EX-0.4.53-Windows.${ext}",
+      "artifactName": "MiSTer-Companion-EX-${version}-Windows.${ext}",
       "icon": "build/mister-companion.png"
     },
-    "artifactName": "MiSTer-Companion-EX-0.4.53-Windows.${ext}"
+    "artifactName": "MiSTer-Companion-EX-${version}-Windows.${ext}"
   },
   "allowScripts": {
     "electron-winstaller@5.4.0": true,
     "esbuild@0.25.12": true
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@vitejs/plugin-react": "^4.3.4",
     "concurrently": "^9.1.0",
     "electron": "^42.5.0",
     "electron-builder": "^26.15.3",
+    "eslint": "^10.7.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "globals": "^17.7.0",
     "postcss": "^8.5.16",
     "typescript": "^5.7.2",
     "vite": "^6.0.7",
+    "vitest": "^4.1.10",
     "wait-on": "^8.0.1"
   },
   "author": "Arcanthur / MiSTer Companion core by Anime0t4ku"

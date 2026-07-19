@@ -4,7 +4,6 @@
  * Exports: LibraryInformation
  */
 
-import React from "react";
 
 export function LibraryInformation({ info }) {
   const total = info?.totalDiscs || 0;

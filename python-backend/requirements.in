@@ -1,0 +1,9 @@
+# Direct runtime dependencies for the Python 3.12 backend.
+# Regenerate requirements.txt with the command documented in README.md.
+paramiko
+requests
+websocket-client
+psutil
+pyserial
+Pillow
+certifi

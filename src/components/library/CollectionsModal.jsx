@@ -4,7 +4,7 @@
  * Exports: CollectionsModal
  */
 
-import React, { useState, useRef } from "react";
+import { useState, useRef } from "react";
 import { SettingsSectionHeading } from "../common/FormFields";
 import { ThemedScrollbar } from "../common/ThemedScrollbar";
 

@@ -4,7 +4,7 @@
  * Exports: ThemePreviewWindow, loadThemePreviewTheme, storeThemePreviewTheme, openThemePreviewWindow, updateThemePreviewWindow, ThemePreviewApp
  */
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { hydrateTheme, themeStyle, themeToggleEnabled, useCustomFont } from "../../theme/themeUtils";
 import { DEFAULT_THEME } from "../../theme/themePresets";
 import { ToggleField } from "../common/FormFields";

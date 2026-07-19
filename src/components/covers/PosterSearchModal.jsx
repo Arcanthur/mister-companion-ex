@@ -4,7 +4,7 @@
  * Exports: PosterSearchModal
  */
 
-import React, { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { fetchTMDBDetails, searchTMDB } from "../../api/tmdb";
 
 export function PosterSearchModal({ disc, apiKey, onClose, onChoose }) {

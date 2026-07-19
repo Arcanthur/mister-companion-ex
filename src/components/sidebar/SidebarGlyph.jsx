@@ -4,7 +4,6 @@
  * Exports: SidebarGlyphArtwork, SidebarGlyph
  */
 
-import React from "react";
 import { DEFAULT_SIDEBAR_GLYPHS } from "../../constants/libraryDefaults";
 
 export function SidebarGlyphArtwork({ glyphUrl, fallback, className = "media-sidebar-glyph" }) {

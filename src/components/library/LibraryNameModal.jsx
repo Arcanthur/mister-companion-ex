@@ -4,7 +4,7 @@
  * Exports: LibraryNameModal
  */
 
-import React, { useState } from "react";
+import { useState } from "react";
 
 export function LibraryNameModal({ onSave, onClose }) {
   const [name, setName] = useState("");

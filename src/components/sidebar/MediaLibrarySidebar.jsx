@@ -4,7 +4,6 @@
  * thresholds now come from the app module config instead of being hardcoded.
  */
 
-import React from "react";
 import { SidebarGlyph } from "./SidebarGlyph";
 import { BUILT_IN_CATEGORY_PREDICATES, visibleCollectionItems } from "../../framework/app/categoryScopes";
 

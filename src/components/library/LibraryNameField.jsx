@@ -4,7 +4,7 @@
  * Exports: LibraryNameField
  */
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 export function LibraryNameField({ library, onRename }) {
   const [draft, setDraft] = useState(library.name);

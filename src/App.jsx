@@ -328,7 +328,7 @@ function LogBox({ value }) {
   return <pre className="mister-log-box">{value || "No output yet."}</pre>;
 }
 
-function ThemeSettingsModal({ theme, savedThemes, onThemeChange, onSavedThemesChange, onClose }) {
+export function ThemeSettingsModal({ theme, savedThemes, onThemeChange, onSavedThemesChange, onClose }) {
   const [saveName, setSaveName] = useState("");
   const presets = useMemo(() => [...THEME_PRESETS, ...savedThemes.map((item) => ({ name: item.name, theme: item.theme, saved: true }))], [savedThemes]);
   const colorFields = [
@@ -472,7 +472,7 @@ function ConnectionPage({ profiles, connection, sdMode, chooseSdRoot, enableSdMo
   const selected = profiles[selectedIndex] || null;
   useEffect(() => {
     if (selected) setDraft({ ...selected, password: selected.password || "" });
-  }, [selectedIndex]);
+  }, [selected, setDraft]);
   return (
     <>
       <PageHeader title="Connection" subtitle="Saved MiSTer profiles, SSH controls, and local SD Card Mode." badge={<StatusPill connected={connection?.connected} sdMode={sdMode} />} badgeBare checking={checking} checkLabel="Checking connection…" />
@@ -941,7 +941,7 @@ function ScriptConfigModal({ script, values, setValues, onSave, onRemove, onClos
 }
 
 function ScriptsPage({ summary, refresh, runAction, loadConfig, saveConfig, removeConfig, openFolder, connected, checking, confirmAction }) {
-  const items = summary?.items || [];
+  const items = useMemo(() => summary?.items || [], [summary?.items]);
   const actions = summary?.actions || {};
   const statuses = summary?.statuses || {};
   const [selectedId, setSelectedId] = useState(items[0]?.id || "update_all");
@@ -1327,11 +1327,6 @@ function backupName(backup) {
 }
 
 
-function fileNameFromPath(path) {
-  const text = String(path || "").replace(/\\/g, "/").replace(/\/+$/, "");
-  return text.split("/").pop() || text || "/";
-}
-
 function splitRemotePath(path) {
   const normalized = String(path || "/media/fat").replace(/\\/g, "/").replace(/\/+$/, "") || "/media/fat";
   const parts = normalized.split("/").filter(Boolean);
@@ -1383,7 +1378,7 @@ function FileBrowserEntryIcon({ isFolder }) {
 function FileBrowserPage({ browser, connected, refresh, backendCall, host, jobs, refreshJobs, confirmAction, setBrowser, setError, checking }) {
   const savedPrefs = useMemo(() => loadFileBrowserPrefs(), []);
   const currentPath = browser?.path || savedPrefs.lastPath || "/media/fat";
-  const entries = browser?.entries || [];
+  const entries = useMemo(() => browser?.entries || [], [browser?.entries]);
   const roots = browser?.roots || [{ name: "SD Card", path: "/media/fat", available: true }];
   const [selectedPaths, setSelectedPaths] = useState([]);
   const [nameDraft, setNameDraft] = useState("");
@@ -1404,7 +1399,7 @@ function FileBrowserPage({ browser, connected, refresh, backendCall, host, jobs,
     setSelectedPaths([]);
     setNameDraft("");
     saveFileBrowserPrefs({ ...loadFileBrowserPrefs(), lastPath: currentPath, sort: sortSpec, columnWidths });
-  }, [currentPath]);
+  }, [columnWidths, currentPath, sortSpec]);
 
   useEffect(() => {
     setSelectedPaths((previous) => previous.filter((path) => entries.some((entry) => entry.path === path)));
@@ -1413,7 +1408,7 @@ function FileBrowserPage({ browser, connected, refresh, backendCall, host, jobs,
   useEffect(() => {
     if (selectedEntry) setNameDraft(selectedEntry.name || "");
     if (selectedCount !== 1) setNameDraft("");
-  }, [selectedEntry?.path, selectedCount]);
+  }, [selectedEntry, selectedCount]);
 
   useEffect(() => {
     saveFileBrowserPrefs({ ...loadFileBrowserPrefs(), lastPath: currentPath, sort: sortSpec, columnWidths });
@@ -1733,7 +1728,7 @@ function FileBrowserPage({ browser, connected, refresh, backendCall, host, jobs,
 }
 
 function SavesPage({ summary, refresh, startBackup, startMerge, restoreBackup, rebuildSync, setRetention, connected, sdMode, checking }) {
-  const devices = summary?.devices || [];
+  const devices = useMemo(() => summary?.devices || [], [summary?.devices]);
   const [selectedDevice, setSelectedDevice] = useState("");
   const [selectedBackup, setSelectedBackup] = useState("");
   const [backupBeforeRestore, setBackupBeforeRestore] = useState(true);
@@ -1752,13 +1747,13 @@ function SavesPage({ summary, refresh, startBackup, startMerge, restoreBackup, r
   }, [devices, selectedDevice]);
 
   const activeDevice = devices.find((device) => device.name === selectedDevice) || devices[0] || null;
-  const activeBackups = activeDevice?.backups || [];
+  const activeBackups = useMemo(() => activeDevice?.backups || [], [activeDevice?.backups]);
   useEffect(() => {
     if (!activeBackups.length) { setSelectedBackup(""); return; }
     if (!selectedBackup || !activeBackups.some((backup) => backupName(backup) === selectedBackup)) {
       setSelectedBackup(backupName(activeBackups[0]));
     }
-  }, [activeDevice?.name, activeBackups.length, selectedBackup]);
+  }, [activeBackups, selectedBackup]);
 
   const current = summary?.currentDevice || {};
   const canUseSaves = Boolean(connected || sdMode?.active || summary?.offlineActive);
@@ -1856,7 +1851,7 @@ function SavesPage({ summary, refresh, startBackup, startMerge, restoreBackup, r
 function ZapScraperPage({ summary, updateSettings, chooseFolder, startScan, startPlan, startScrape, startLogin, startScrapeSelected, backendCall, refreshJobs, busy, checking, confirmAction }) {
   const options = summary?.options || {};
   const settings = summary?.settings || {};
-  const systems = summary?.systems || [];
+  const systems = useMemo(() => summary?.systems || [], [summary?.systems]);
   const plans = summary?.plans || [];
   const [selectedPaths, setSelectedPaths] = useState(() => new Set());
   const [localStatus, setLocalStatus] = useState("");
@@ -2196,7 +2191,7 @@ function ZapScraperPage({ summary, updateSettings, chooseFolder, startScan, star
 
 
 function ManualsPage({ manuals, refresh, backendCall, checking, confirmAction }) {
-  const systems = manuals?.systems || [];
+  const systems = useMemo(() => manuals?.systems || [], [manuals?.systems]);
   const [selectedSystem, setSelectedSystem] = useState("");
   const [pdfPayload, setPdfPayload] = useState({ system: "", pdfs: [] });
   const [query, setQuery] = useState("");
@@ -2281,7 +2276,7 @@ function ManualsPage({ manuals, refresh, backendCall, checking, confirmAction })
     } finally {
       setBusy(false);
     }
-  }, [backendCall, loadSystem, refresh, selectedPdf?.path, selectedSystem]);
+  }, [backendCall, confirmAction, loadSystem, refresh, selectedPdf?.path, selectedSystem]);
 
   const openCacheFolder = useCallback(async () => {
     const path = manuals?.cacheRoot || (await backendCall("manuals.cacheRoot"))?.path;
@@ -2381,7 +2376,7 @@ function ZapScriptsPage({ summary, refresh, loadPage, startScan, startService, l
   const pageRequestRef = useRef(0);
   const serviceRefreshInFlightRef = useRef(false);
   const deferredQuery = useDeferredValue(query);
-  const scripts = summary?.scripts || [];
+  const scripts = useMemo(() => summary?.scripts || [], [summary?.scripts]);
   const systems = summary?.systems || [];
   const counts = summary?.counts || {};
   const db = summary?.db || {};
@@ -2434,7 +2429,7 @@ function ZapScriptsPage({ summary, refresh, loadPage, startScan, startService, l
   useEffect(() => {
     const timer = window.setTimeout(() => { resetAndLoad(); }, deferredQuery ? 140 : 0);
     return () => window.clearTimeout(timer);
-  }, [resetAndLoad, summary?.db?.path, summary?.counts?.total]);
+  }, [deferredQuery, resetAndLoad, summary?.db?.path, summary?.counts?.total]);
 
   const loadMoreEntries = useCallback(async () => {
     if (pageLoading || system === "Scripts" || pagedEntries.length >= entryTotal) return;
@@ -2699,7 +2694,7 @@ function FlashSdPage({ summary, refresh, refreshDrives, startFlash, startBackup,
   const [selectedDrive, setSelectedDrive] = useState("");
   const [status, setStatus] = useState("");
   const [macPassword, setMacPassword] = useState("");
-  const drives = summary?.drives || [];
+  const drives = useMemo(() => summary?.drives || [], [summary?.drives]);
   const selectedMode = modes.find((item) => item.id === mode) || modes[0];
   const selectedDriveInfo = drives.find((drive) => drive.device === selectedDrive) || null;
   const imageReady = Boolean(summary?.image?.installed);
@@ -2718,7 +2713,7 @@ function FlashSdPage({ summary, refresh, refreshDrives, startFlash, startBackup,
     if (!selectedDrive || !drives.some((drive) => drive.device === selectedDrive)) {
       setSelectedDrive(drives[0]?.device || "");
     }
-  }, [drives.length, selectedDrive]);
+  }, [drives, selectedDrive]);
 
   const refreshMode = async (nextMode = mode, includeDrives = false) => {
     setStatus("Refreshing Flash SD status...");
@@ -3008,7 +3003,7 @@ function RetroAchievementsPage({ data, settings, refresh, loadGame, openApiSetti
   const gamesListRef = useRef(null);
   const achievementsListRef = useRef(null);
   const [gamesCardCeiling, setGamesCardCeiling] = useState(null);
-  const games = source === "all" ? data?.allGames || [] : data?.recentGames || [];
+  const games = useMemo(() => source === "all" ? data?.allGames || [] : data?.recentGames || [], [data?.allGames, data?.recentGames, source]);
   const filteredGames = useMemo(() => {
     const text = search.trim().toLowerCase();
     return games.filter((game) => {
@@ -3366,7 +3361,7 @@ function BackendPage({ diagnostics, jobs, refreshDiagnostics, refreshJobs, clear
   );
 }
 
-function PlaceholderPage({ title, subtitle, notes }) {
+export function PlaceholderPage({ title, subtitle, notes }) {
   return (
     <>
       <PageHeader title={title} subtitle={subtitle} badge="Coming soon" />
@@ -3737,7 +3732,9 @@ export function MisterCompanionApp({ appConfig = MISTER_APP_CONFIG } = {}) {
     const opts = coerceRefreshOptions(overrides);
     if (!opts.force && zapScraper && isSectionFresh("zapscraper", opts.cacheMs) && !Object.keys(overrides || {}).some((key) => !["force", "cacheMs"].includes(key))) return zapScraper;
     return withSectionCheck("zapscraper", async () => {
-      const { force, cacheMs, ...payload } = opts || {};
+      const payload = { ...(opts || {}) };
+      delete payload.force;
+      delete payload.cacheMs;
       const result = await backendCall("zapscraper.summary", payload, { timeoutMs: 45000 });
       setZapScraper(result || { settings: {}, options: {}, systems: [] });
       return result;
@@ -3890,31 +3887,54 @@ export function MisterCompanionApp({ appConfig = MISTER_APP_CONFIG } = {}) {
     }
   }, [backendCall, refreshProfiles, refreshConnection, refreshCatalog, refreshRetroAchievementsSettings, refreshJobs, refreshIniOptions, refreshSdMode, withSectionCheck]);
 
-  useEffect(() => { refreshAll(); }, []);
+  const initialRefreshRef = useRef(refreshAll);
+  useEffect(() => { initialRefreshRef.current(); }, []);
 
+  const pageRefreshRef = useRef(null);
+  pageRefreshRef.current = {
+    catalog,
+    flashSd,
+    installStatuses,
+    refreshCatalog,
+    refreshDevice,
+    refreshDiagnostics,
+    refreshFileBrowser,
+    refreshFlashSd,
+    refreshIniList,
+    refreshIniOptions,
+    refreshInstallStatuses,
+    refreshJobs,
+    refreshManuals,
+    refreshRemoteStatus,
+    refreshSaves,
+    refreshScripts,
+    refreshZapScraper,
+    refreshZapScripts,
+  };
   useEffect(() => {
+    const refreshers = pageRefreshRef.current;
     const run = async () => {
       try {
-        if (page === "device") await refreshDevice();
-        else if (page === "remote") await refreshRemoteStatus();
+        if (page === "device") await refreshers.refreshDevice();
+        else if (page === "remote") await refreshers.refreshRemoteStatus();
         else if (page === "install") {
-          if (!(catalog?.items || []).length || !catalog?.meta?.live) await refreshCatalog({ fresh: false, allowNetwork: true });
-          if ((connection?.connected || sdMode?.active) && !Object.keys(installStatuses || {}).length) await refreshInstallStatuses(false);
+          if (!(refreshers.catalog?.items || []).length || !refreshers.catalog?.meta?.live) await refreshers.refreshCatalog({ fresh: false, allowNetwork: true });
+          if ((connection?.connected || sdMode?.active) && !Object.keys(refreshers.installStatuses || {}).length) await refreshers.refreshInstallStatuses(false);
         }
-        else if (page === "files") await refreshFileBrowser();
-        else if (page === "scripts") await refreshScripts();
+        else if (page === "files") await refreshers.refreshFileBrowser();
+        else if (page === "scripts") await refreshers.refreshScripts();
         else if (page === "settings") {
-          await refreshIniOptions().catch(() => {});
-          if (connection?.connected || sdMode?.active) await refreshIniList().catch(() => {});
+          await refreshers.refreshIniOptions().catch(() => {});
+          if (connection?.connected || sdMode?.active) await refreshers.refreshIniList().catch(() => {});
         }
-        else if (page === "saves") await refreshSaves();
-        else if (page === "manuals") await refreshManuals();
-        else if (page === "flash") await refreshFlashSd(flashSd?.mode || "mc_fusion", false);
-        else if (page === "zapscripts") await refreshZapScripts({ forceServiceProbe: false });
-        else if (page === "zapscraper") await refreshZapScraper();
+        else if (page === "saves") await refreshers.refreshSaves();
+        else if (page === "manuals") await refreshers.refreshManuals();
+        else if (page === "flash") await refreshers.refreshFlashSd(refreshers.flashSd?.mode || "mc_fusion", false);
+        else if (page === "zapscripts") await refreshers.refreshZapScripts({ forceServiceProbe: false });
+        else if (page === "zapscraper") await refreshers.refreshZapScraper();
         else if (page === "backend") {
-          await refreshDiagnostics().catch(() => {});
-          await refreshJobs().catch(() => {});
+          await refreshers.refreshDiagnostics().catch(() => {});
+          await refreshers.refreshJobs().catch(() => {});
         }
       } catch (error) {
         setError(error.message || "Page refresh failed.");
@@ -3923,12 +3943,14 @@ export function MisterCompanionApp({ appConfig = MISTER_APP_CONFIG } = {}) {
     run();
   }, [page, connection?.connected, sdMode?.active]);
 
+  const retroAchievementsRefreshRef = useRef(refreshRetroAchievementsDashboard);
+  retroAchievementsRefreshRef.current = refreshRetroAchievementsDashboard;
   useEffect(() => {
     if (page !== "retroachievements") return;
     if (!retroAchievements?.settings?.configured) return;
     if (retroAchievements?.profile) return;
-    refreshRetroAchievementsDashboard().catch((error) => setError(error.message || "RetroAchievements refresh failed."));
-  }, [page, retroAchievements?.settings?.configured]);
+    retroAchievementsRefreshRef.current().catch((error) => setError(error.message || "RetroAchievements refresh failed."));
+  }, [page, retroAchievements?.profile, retroAchievements?.settings?.configured]);
 
 
   const hasRunningJobs = useMemo(() => (jobs?.jobs || []).some((job) => job.status === "running" || job.status === "queued"), [jobs]);
@@ -4510,7 +4532,7 @@ export function MisterCompanionApp({ appConfig = MISTER_APP_CONFIG } = {}) {
     retroachievements: <RetroAchievementsPage data={retroAchievements} settings={retroAchievements?.settings || {}} refresh={refreshRetroAchievementsDashboard} loadGame={loadRetroAchievementsGame} openApiSettings={() => openSettings("api")} busy={busy} checking={isSectionBusy("retroachievements")} />,
     flash: <FlashSdPage confirmAction={confirmAction} summary={flashSd} refresh={refreshFlashSd} refreshDrives={startFlashDriveRefresh} startFlash={startFlashWrite} startBackup={startFlashBackup} jobs={jobs} refreshJobs={refreshJobs} host={host} profileName={profiles[selectedIndex]?.name || connection?.profile?.name || draft?.name || "MiSTer"} busy={busy} checking={isSectionBusy("flash")} openToolsSettings={() => openSettings("flash-tools")} />,
     scripts: <ScriptsPage confirmAction={confirmAction} summary={scriptsSummary} refresh={refreshScripts} runAction={runScriptAction} loadConfig={loadScriptConfig} saveConfig={saveScriptConfig} removeConfig={removeScriptConfig} openFolder={openScriptsFolder} connected={connection?.connected} checking={isSectionBusy("scripts")} />,
-    install: <InstallCenterPage catalog={catalog} statuses={installStatuses} artworkMap={installArtwork} onArtworkChange={setInstallItemArtwork} refreshCatalog={refreshCatalog} refreshInstallStatuses={refreshInstallStatuses} checkInstallStatus={checkInstallStatus} startInstall={startInstallItem} startUninstall={startUninstallItem} startAction={startInstallAction} openScriptsPage={(scriptId) => { setPage("scripts"); }} connected={connection?.connected} sdMode={sdMode} busy={busy} jobs={jobs} refreshJobs={refreshJobs} checking={isSectionBusy("install")} />,
+    install: <InstallCenterPage catalog={catalog} statuses={installStatuses} artworkMap={installArtwork} onArtworkChange={setInstallItemArtwork} refreshCatalog={refreshCatalog} refreshInstallStatuses={refreshInstallStatuses} checkInstallStatus={checkInstallStatus} startInstall={startInstallItem} startUninstall={startUninstallItem} startAction={startInstallAction} openScriptsPage={() => { setPage("scripts"); }} connected={connection?.connected} sdMode={sdMode} busy={busy} jobs={jobs} refreshJobs={refreshJobs} checking={isSectionBusy("install")} />,
     settings: <MisterSettingsPage
       ini={ini}
       iniFiles={iniFiles}
@@ -4547,7 +4569,6 @@ export function MisterCompanionApp({ appConfig = MISTER_APP_CONFIG } = {}) {
     backend: <BackendPage diagnostics={diagnostics} jobs={jobs} refreshDiagnostics={refreshDiagnostics} refreshJobs={refreshJobs} clearJobs={clearJobs} checking={isSectionBusy("backend")} />,
   };
 
-  const activeItem = appConfig.sidebar.flatMap((section) => section.items).find((item) => item.id === page);
   const leftWindowControlsEnabled = themeToggleEnabled(theme.windowControlsLeft) && String(theme.appStyle || "").toLowerCase() !== "macos9platinum";
   const activeFooterCheckLabels = {
     dashboard: "Loading dashboard…",

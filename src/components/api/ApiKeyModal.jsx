@@ -4,7 +4,7 @@
  * Exports: ApiKeyModal
  */
 
-import React, { useState } from "react";
+import { useState } from "react";
 
 export function ApiKeyModal({ onSave, onSkip }) {
   const [key, setKey] = useState("");

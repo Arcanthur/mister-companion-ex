@@ -111,7 +111,7 @@ function probePythonCommand(commandSpec) {
 }
 
 function rejectAllPending(error) {
-  for (const [_id, request] of pending.entries()) {
+  for (const request of pending.values()) {
     clearTimeout(request.timer);
     request.reject(error);
   }

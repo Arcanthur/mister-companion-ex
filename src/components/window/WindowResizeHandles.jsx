@@ -4,7 +4,7 @@
  * Exports: WINDOW_RESIZE_DIRECTIONS, WindowResizeHandles
  */
 
-import React, { useRef } from "react";
+import { useRef } from "react";
 import { getHostBridge } from "../../framework/host/hostBridge";
 
 export const WINDOW_RESIZE_DIRECTIONS = ["n", "s", "e", "w", "ne", "nw", "se", "sw"];

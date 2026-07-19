@@ -4,7 +4,6 @@
  * Exports: RangeField, SettingsSectionHeading, ColorField, ToggleField
  */
 
-import React from "react";
 import { colorWithOpacity, parseThemeColor } from "../../theme/themeUtils";
 
 export function RangeField({ label, value, min, max, step, suffix, onChange }) {

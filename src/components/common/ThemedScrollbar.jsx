@@ -4,7 +4,7 @@
  * Exports: ThemedScrollbar
  */
 
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 
 export function ThemedScrollbar({ scrollRef, className = "" }) {
   const trackRef = useRef(null);

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { DEFAULT_THEME } from "../../theme/themePresets";
 import { hydrateTheme, themeToggleEnabled, themeStyle, useCustomFont } from "../../theme/themeUtils";
 import { getHostBridge } from "../../framework/host/hostBridge";
@@ -51,6 +51,8 @@ function buildPdfSrc(baseUrl, page, zoom, rotation, nonce) {
   const separator = baseUrl.includes("?") ? "&" : "?";
   return `${baseUrl}${separator}viewer=${encodeURIComponent(cacheKey)}#${params.toString()}`;
 }
+
+const ZOOM_LEVELS = [50, 67, 75, 90, 100, 110, 125, 150, 175, 200, 250, 300];
 
 export function ManualPdfWindow() {
   const host = getHostBridge();
@@ -117,12 +119,11 @@ export function ManualPdfWindow() {
 
   const pdfSrc = useMemo(() => buildPdfSrc(pdfUrl, page, zoom, rotation, reloadNonce), [pdfUrl, page, zoom, rotation, reloadNonce]);
 
-  const zoomLevels = [50, 67, 75, 90, 100, 110, 125, 150, 175, 200, 250, 300];
   const stepZoom = useCallback((direction) => {
     const current = Number(zoom);
-    const index = Number.isFinite(current) ? zoomLevels.findIndex((item) => item >= current) : zoomLevels.indexOf(100);
-    const nextIndex = Math.max(0, Math.min(zoomLevels.length - 1, (index < 0 ? 4 : index) + direction));
-    setZoom(zoomLevels[nextIndex]);
+    const index = Number.isFinite(current) ? ZOOM_LEVELS.findIndex((item) => item >= current) : ZOOM_LEVELS.indexOf(100);
+    const nextIndex = Math.max(0, Math.min(ZOOM_LEVELS.length - 1, (index < 0 ? 4 : index) + direction));
+    setZoom(ZOOM_LEVELS[nextIndex]);
   }, [zoom]);
 
   const goToPage = useCallback((nextPage) => {
@@ -173,7 +174,7 @@ export function ManualPdfWindow() {
               <option value="auto">Auto</option>
               <option value="page-width">Fit Width</option>
               <option value="page-fit">Fit Page</option>
-              {zoomLevels.map((level) => <option key={level} value={level}>{level}%</option>)}
+              {ZOOM_LEVELS.map((level) => <option key={level} value={level}>{level}%</option>)}
             </ThemeAwareSelect>
             <button className="secondary-button" onClick={() => stepZoom(1)} title="Zoom in">+</button>
             <span className="manual-pdf-zoom-label">{formatZoomLabel(zoom)}</span>

@@ -38,7 +38,7 @@ function SettingsAccordionPanel({ expanded, children }) {
   );
 }
 
-export function SettingsModal({ theme, savedThemes, sidebarGlyphs, defaultSidebarGlyphs = DEFAULT_SIDEBAR_GLYPHS, mediaLibraries, onMediaLibrariesChange, onCreateLibrary, onSidebarGlyphsChange, apiKey, archiveBusy, hasLibrary, libraryInfo, listRoomy, onListRoomyChange, healthItems = [], metadataBusy, metadataProgress, onHealthEdit, onHealthRemove, onFetchMissingMetadata, onRefreshAllMetadata, lddbFinding, lddbProgress, lddbDelay, onLddbDelayChange, onOpenLddbSession, onOpenYoutubeLogin, onFindLddbCovers, onStopLddbCovers, onClearLddbCovers, onOpenCoverQueue, onApiKeyChange, onImportZip, onExportZip, onExportLddbLinks, onLoadXml, onResetLibrary, onChange, onOpenThemePreview, onUpdateThemePreview, onSaveCurrent, onOpenThemesFolder, onReloadThemes, onReset, onClose, appName = "LaserVault", appSubtitle = "Settings", appContext = "laservault", aboutLogoUrl = "", themePreviewEnabled = true, initialSection = "appearance", backendPanel = null, apiPanel = null, flashToolsPanel = null }) {
+export function SettingsModal({ theme, savedThemes, sidebarGlyphs, defaultSidebarGlyphs = DEFAULT_SIDEBAR_GLYPHS, mediaLibraries, onMediaLibrariesChange, onCreateLibrary, onSidebarGlyphsChange, apiKey, archiveBusy, hasLibrary, libraryInfo, listRoomy, onListRoomyChange, healthItems = [], metadataBusy, metadataProgress, onHealthEdit, onHealthRemove, onFetchMissingMetadata, onRefreshAllMetadata, onOpenLddbSession, onOpenYoutubeLogin, onApiKeyChange, onImportZip, onExportZip, onLoadXml, onResetLibrary, onChange, onOpenThemePreview, onUpdateThemePreview, onSaveCurrent, onOpenThemesFolder, onReloadThemes, onReset, onClose, appName = "LaserVault", appSubtitle = "Settings", appContext = "laservault", aboutLogoUrl = "", themePreviewEnabled = true, initialSection = "appearance", backendPanel = null, apiPanel = null, flashToolsPanel = null }) {
   const [transparencyExpanded, setTransparencyExpanded] = useState(false);
   const [gradientsExpanded, setGradientsExpanded] = useState(false);
   const [materialsExpanded, setMaterialsExpanded] = useState(false);
@@ -93,7 +93,7 @@ export function SettingsModal({ theme, savedThemes, sidebarGlyphs, defaultSideba
 
   useEffect(() => {
     if (themePreviewEnabled && themePreviewOpen) onUpdateThemePreview(theme);
-  }, [theme, themePreviewOpen, onUpdateThemePreview]);
+  }, [theme, themePreviewEnabled, themePreviewOpen, onUpdateThemePreview]);
   const setSettingsBackdropBlur = (disabled) => {
     setSettingsBackdropBlurDisabled(disabled);
     try { localStorage.setItem("misterDevDisableSettingsBackdropBlur", String(disabled)); } catch {}

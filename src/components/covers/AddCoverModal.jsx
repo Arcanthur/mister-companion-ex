@@ -4,7 +4,7 @@
  * Exports: AddCoverModal
  */
 
-import React, { useState } from "react";
+import { useState } from "react";
 
 export function AddCoverModal({ disc, onClose, onSaveUrl, onChooseFile }) {
   const [url, setUrl] = useState("");

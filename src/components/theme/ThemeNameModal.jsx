@@ -4,7 +4,7 @@
  * Exports: ThemeNameModal
  */
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { WindowTitlebar } from "../common/WindowTitlebar";
 
 export function ThemeNameModal({ onSave, onClose, placeholder = "My Theme" }) {
