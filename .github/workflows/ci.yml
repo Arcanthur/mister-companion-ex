@@ -29,6 +29,9 @@ jobs:
           node-version: 22
           cache: npm
 
+      - name: Verify public npm registry lockfile
+        run: npm run check:lockfile
+
       - name: Install Node.js dependencies
         run: npm ci
 

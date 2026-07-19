@@ -35,6 +35,9 @@ jobs:
           cache: pip
           cache-dependency-path: python-backend/requirements.txt
 
+      - name: Verify public npm registry lockfile
+        run: npm run check:lockfile
+
       - name: Install Node.js dependencies
         run: npm ci
 
@@ -47,8 +50,63 @@ jobs:
       - name: Validate source
         run: npm run check
 
-      - name: Build Windows portable executable
+      - name: Select Windows signing mode
+        id: signing
+        shell: pwsh
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+          WIN_CSC_LINK: ${{ secrets.WIN_CSC_LINK }}
+          WIN_CSC_KEY_PASSWORD: ${{ secrets.WIN_CSC_KEY_PASSWORD }}
+        run: |
+          $hasCertificate = -not [string]::IsNullOrWhiteSpace($env:WIN_CSC_LINK)
+          $hasPassword = -not [string]::IsNullOrWhiteSpace($env:WIN_CSC_KEY_PASSWORD)
+          $requiresSigning = $env:RELEASE_TAG -match '^v(?:[1-9]\d*)\.'
+
+          if ($hasCertificate -xor $hasPassword) {
+            throw "Windows signing is only partially configured. Set both WIN_CSC_LINK and WIN_CSC_KEY_PASSWORD, or remove both."
+          }
+
+          if ($hasCertificate) {
+            "enabled=true" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+            Write-Host "Windows signing is enabled."
+          } elseif ($requiresSigning) {
+            throw "Windows signing is required for $env:RELEASE_TAG and later. Configure both signing secrets before publishing."
+          } else {
+            "enabled=false" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+            Write-Warning "Windows signing is not configured. Publishing an unsigned pre-1.0 build."
+          }
+
+      - name: Build signed Windows portable executable
+        if: steps.signing.outputs.enabled == 'true'
+        run: npm run dist:signed
+        env:
+          WIN_CSC_LINK: ${{ secrets.WIN_CSC_LINK }}
+          WIN_CSC_KEY_PASSWORD: ${{ secrets.WIN_CSC_KEY_PASSWORD }}
+
+      - name: Build unsigned Windows portable executable
+        if: steps.signing.outputs.enabled != 'true'
         run: npm run dist
+
+      - name: Verify Authenticode signature
+        if: steps.signing.outputs.enabled == 'true'
+        shell: pwsh
+        run: |
+          $executables = @(Get-ChildItem release -File -Filter *.exe)
+          if ($executables.Count -eq 0) {
+            throw "No Windows executable was produced."
+          }
+          foreach ($executable in $executables) {
+            $signature = Get-AuthenticodeSignature -LiteralPath $executable.FullName
+            if ($signature.Status -ne "Valid" -or -not $signature.SignerCertificate) {
+              throw "$($executable.Name) does not have a valid Authenticode signature: $($signature.StatusMessage)"
+            }
+            if (-not $signature.TimeStamperCertificate) {
+              throw "$($executable.Name) has no trusted timestamp signature."
+            }
+            Write-Host "Verified $($executable.Name)"
+            Write-Host "Signer: $($signature.SignerCertificate.Subject)"
+            Write-Host "Timestamp: $($signature.TimeStamperCertificate.Subject)"
+          }
 
       - name: Create SHA-256 checksums
         shell: pwsh

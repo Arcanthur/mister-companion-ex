@@ -18,6 +18,10 @@ venv/
 .env
 .env.*
 !.env.example
+*.p12
+*.pfx
+*.pem
+*.key
 
 # Logs and temporary files
 *.log

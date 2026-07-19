@@ -13,10 +13,12 @@
     "test:js": "vitest run --config vitest.config.mjs --configLoader runner",
     "test:python": "python -m unittest discover -s python-backend/tests -p \"test_*.py\"",
     "test": "npm run test:js && npm run test:python",
-    "check": "npm run lint && npm run test && npm run build",
+    "check:lockfile": "node scripts/check-package-lock-registry.cjs",
+    "check": "npm run check:lockfile && npm run lint && npm run test && npm run build",
     "release:verify": "node scripts/verify-release-version.cjs",
     "build": "node node_modules/vite/bin/vite.js build --configLoader runner",
-    "dist": "node node_modules/vite/bin/vite.js build --configLoader runner && electron-builder --win portable --x64"
+    "dist": "node node_modules/vite/bin/vite.js build --configLoader runner && electron-builder --win portable --x64",
+    "dist:signed": "node node_modules/vite/bin/vite.js build --configLoader runner && electron-builder --win portable --x64 --config.forceCodeSigning=true"
   },
   "dependencies": {
     "react": "^19.0.0",

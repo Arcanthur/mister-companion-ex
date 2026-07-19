@@ -25,6 +25,8 @@ npm run dist
 
 The portable Windows build is written to `release/`. Direct Python dependencies are maintained in `python-backend/requirements.in`; `python-backend/requirements.txt` locks the complete tested dependency graph and verifies downloaded packages with hashes.
 
+Node dependencies are locked to the public npm registry. Run `npm run check:lockfile` before committing dependency changes; CI rejects lockfiles containing private or environment-specific package mirrors.
+
 ## Releases
 
 Releases use [Semantic Versioning](https://semver.org/) and tags prefixed with `v`. Prereleases use identifiers such as `v0.4.53-alpha.0`; stable releases use tags such as `v1.0.0`.
@@ -36,6 +38,8 @@ npm run release:verify -- v0.4.53-alpha.0
 ```
 
 Commit and push the version change before pushing the matching tag. A matching `v*.*.*` tag runs the full validation suite, builds the Windows portable executable, produces `SHA256SUMS.txt`, and creates a GitHub Release with generated notes. Tags containing a SemVer prerelease suffix are marked as GitHub prereleases automatically.
+
+Pre-1.0 Windows releases are built unsigned when signing credentials are absent. Version 1.0.0 and later require both signing secrets and a valid, timestamped Authenticode signature before publishing. See [Windows code signing setup](docs/WINDOWS_CODE_SIGNING.md).
 
 After intentionally changing `requirements.in`, regenerate the Windows/Python 3.12 lock with [uv](https://docs.astral.sh/uv/):
 
