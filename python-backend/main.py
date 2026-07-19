@@ -1408,7 +1408,7 @@ def method_remote_input(params: dict[str, Any]) -> dict[str, Any]:
 def method_install_center_catalog(params: dict[str, Any]) -> dict[str, Any]:
     """Return the live Hub catalog when possible, with a bundled fallback.
 
-    v0.2.2 only loaded the fallback catalog for normal renderer calls, which
+    An earlier fallback-only path loaded the bundled catalog for normal renderer calls, which
     meant many entries had no catalog version, thumbnail, release metadata, or
     item-specific action data. That made version checks and update buttons look
     inert. This keeps a small in-process cache, but refreshes from the Hub on

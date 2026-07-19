@@ -27,7 +27,6 @@
       "dist/**/*",
       "electron/**/*",
       "package.json",
-      "CHANGELOG.md",
       "build/**/*",
       "!**/__pycache__/**",
       "!**/*.pyc"

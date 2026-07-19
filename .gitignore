@@ -30,3 +30,9 @@ venv/
 .DS_Store
 Thumbs.db
 Desktop.ini
+
+# Local review and preview artifacts
+preview-*.html
+*live-preview*.png
+*_AUDIT.md
+*_CHECKLIST.md

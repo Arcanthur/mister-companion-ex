@@ -9,7 +9,7 @@ module.exports = Object.freeze({
   searchWindowTitle: "MiSTer Companion EX Search",
   lddbSessionTitle: "MiSTer Companion EX Session",
   startupStatus: "Starting MiSTer Companion EX...",
-  userAgentName: "MiSTerCompanionVaultKit/0.1",
+  userAgentName: "MiSTerCompanionEX/0.4.53",
   portableDataFolder: "Data",
   legacyPortableDataFolders: ["MiSTerCompanionVaultKitData"],
   backendDataFolder: "Backend",
