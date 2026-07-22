@@ -139,6 +139,57 @@ let themePreviewWindow = null;
 let themePreviewTheme = null;
 let startupLogPath = null;
 const manualFileTokens = new Map();
+const manualTempWindowCounts = new Map();
+
+function manualViewerTempRoot(filePath) {
+  const target = path.resolve(String(filePath || ""));
+  const parts = target.split(path.sep);
+  const markerIndex = parts.findIndex((part) => part.toLowerCase() === ".viewer_temp");
+  if (markerIndex < 0) return "";
+  const root = parts.slice(0, markerIndex + 1).join(path.sep) || path.parse(target).root;
+  return path.resolve(root);
+}
+
+function isTemporaryManualPath(filePath) {
+  const target = path.resolve(String(filePath || ""));
+  const tempRoot = manualViewerTempRoot(target);
+  if (!tempRoot) return false;
+  const relative = path.relative(tempRoot, target);
+  return Boolean(relative && relative !== ".." && !relative.startsWith(`..${path.sep}`) && !path.isAbsolute(relative));
+}
+
+function removeEmptyManualTempParents(startDirectory, tempRoot) {
+  let current = path.resolve(String(startDirectory || ""));
+  const root = path.resolve(String(tempRoot || ""));
+  while (current && current !== root) {
+    const relative = path.relative(root, current);
+    if (!relative || relative === ".." || relative.startsWith(`..${path.sep}`) || path.isAbsolute(relative)) break;
+    try {
+      if (fsSync.readdirSync(current).length) break;
+      fsSync.rmdirSync(current);
+    } catch {
+      break;
+    }
+    current = path.dirname(current);
+  }
+  try {
+    if (fsSync.existsSync(root) && fsSync.readdirSync(root).length === 0) fsSync.rmdirSync(root);
+  } catch {}
+}
+
+function releaseTemporaryManual(filePath) {
+  const target = path.resolve(String(filePath || ""));
+  if (!isTemporaryManualPath(target)) return;
+  const count = Math.max(0, Number(manualTempWindowCounts.get(target) || 0) - 1);
+  if (count > 0) {
+    manualTempWindowCounts.set(target, count);
+    return;
+  }
+  manualTempWindowCounts.delete(target);
+  const tempRoot = manualViewerTempRoot(target);
+  try { fsSync.rmSync(target, { force: true }); } catch {}
+  removeEmptyManualTempParents(path.dirname(target), tempRoot);
+}
 
 function ensureStartupLogPath() {
   if (startupLogPath) return startupLogPath;
@@ -1356,13 +1407,13 @@ function createManualPdfWindow(filePath, options = {}) {
     minWidth: 860,
     minHeight: 660,
     show: false,
-    title: `${title} - ${appManifest.windowTitle}`,
+    title: `${systemName}: ${title} - ${appManifest.windowTitle}`,
     frame: false,
-    thickFrame: true,
+    thickFrame: false,
     movable: true,
-    resizable: true,
-    maximizable: true,
-    minimizable: true,
+    resizable: false,
+    maximizable: false,
+    minimizable: false,
     transparent: true,
     roundedCorners: false,
     hasShadow: false,
@@ -1376,10 +1427,20 @@ function createManualPdfWindow(filePath, options = {}) {
     },
   });
   freelyResizableWindows.add(win);
+  const temporaryManual = isTemporaryManualPath(target);
+  if (temporaryManual) {
+    manualTempWindowCounts.set(target, Number(manualTempWindowCounts.get(target) || 0) + 1);
+  }
   win.removeMenu();
+  const sendFocusedState = (focused) => {
+    if (!win.isDestroyed()) win.webContents.send("window:focus-change", focused);
+  };
+  win.on("focus", () => sendFocusedState(true));
+  win.on("blur", () => sendFocusedState(false));
   win.once("ready-to-show", () => win.show());
   win.on("closed", () => {
     activeWindowMoves.delete(win);
+    if (temporaryManual) releaseTemporaryManual(target);
   });
   const query = {
     manualPdf: "1",
@@ -1703,6 +1764,11 @@ function createWindow() {
     webPreferences: { contextIsolation: true, nodeIntegration: false, webviewTag: true, preload: path.join(__dirname, "preload.cjs") },
   });
   mainWindow = win;
+  win.on("app-command", (event, command) => {
+    if (command !== "browser-backward" && command !== "browser-forward") return;
+    event.preventDefault();
+    if (!win.webContents.isDestroyed()) win.webContents.send("file-browser:history-command", command === "browser-backward" ? -1 : 1);
+  });
   win.on("closed", () => {
     activeWindowMoves.delete(win);
   });

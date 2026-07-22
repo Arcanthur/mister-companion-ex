@@ -90,3 +90,23 @@ export const FONT_SIZE_ROLE_FIELDS = [
   ["footerFontSize", "Footer and connection status"],
   ["sidebarFontSize", "Sidebar navigation"],
 ];
+
+/** Single source of truth for Platinum color controls. Each theme key appears once. */
+export const PLATINUM_COLOR_GROUPS = [
+  ["Platinum Chrome", [["mac9ChromeColor", "Window chrome"], ["mac9ContentColor", "Window content"], ["mac9WindowActiveOutlineColor", "Active window outline"], ["mac9WindowInactiveOutlineColor", "Inactive window outline"]]],
+  ["Platinum Panels", [["mac9PanelBackgroundColor", "Panel surface"], ["mac9PanelTitleBackgroundColor", "Title backing"], ["mac9PanelTextColor", "Panel text"], ["mac9PanelTitleTextColor", "Panel title text"], ["mac9PanelGrooveShadowColor", "Groove dark line"], ["mac9PanelInnerHighlightColor", "Inner top/left highlight"], ["mac9PanelOuterHighlightColor", "Outer right/bottom highlight"]]],
+  ["Platinum Title Bar", [["mac9TitlebarActiveTextColor", "Active title text"], ["mac9TitlebarInactiveTextColor", "Inactive title text"]]],
+  ["Platinum Text", [["mac9BodyTextColor", "Primary text"], ["mac9SecondaryTextColor", "Secondary text"], ["mac9DisabledTextColor", "Disabled text"], ["mac9LinkTextColor", "Links"], ["mac9FooterStatusTextColor", "Status text"]]],
+  ["Platinum Headings", [["settingsSidebarHeaderColor", "Settings sidebar heading"], ["settingsPageHeaderColor", "Settings page heading"], ["settingsSectionHeaderColor", "Section headings"], ["settingsSubheaderColor", "Section descriptions"], ["headerTextColor", "Page header text"], ["footerTextColor", "Footer text"]]],
+  ["Platinum Navigation Text", [["mediaSidebarTextColor", "Sidebar text"], ["mediaSidebarSectionTextColor", "Sidebar section text"], ["mediaSidebarButtonTextColor", "Button text"], ["mediaSidebarButtonHoverTextColor", "Button hover text"], ["mediaSidebarButtonActiveTextColor", "Button selected text"], ["settingsSidebarTextColor", "Settings navigation"], ["settingsSidebarActiveTextColor", "Settings selected text"], ["settingsSidebarPressedTextColor", "Settings pressed text"]]],
+  ["Platinum Surfaces", [["mac9ToolbarBackgroundColor", "Toolbars"], ["mac9SubheaderBackgroundColor", "Subheaders"], ["mac9FieldBackgroundColor", "Fields"], ["textBoxBorderColor", "Field border"], ["textBoxFocusBorderColor", "Focused field border"], ["mac9MenuBackgroundColor", "Menus"], ["dropdownMenuBorderColor", "Menu border"], ["mac9DocumentViewportColor", "Document viewport"]]],
+  ["Platinum Field and Menu Text", [["mac9FieldTextColor", "Field text"], ["textBoxPlaceholderColor", "Placeholder text"], ["mac9MenuTextColor", "Menu text"]]],
+  ["Platinum File Browser", [["mac9FileBrowserTextColor", "Row text"], ["mac9RowBackgroundColor", "Rows"], ["mac9RowAlternateBackgroundColor", "Alternate rows"], ["mac9SelectedColumnBackgroundColor", "Active column"], ["mac9SelectedColumnAlternateBackgroundColor", "Active column alternate"], ["mac9RowHoverBackgroundColor", "Inactive column hover background"], ["mac9RowHoverTextColor", "Inactive column hover text"], ["mac9SelectedColumnHoverBackgroundColor", "Active column hover background"], ["mac9SelectedColumnHoverTextColor", "Active column hover text"], ["mac9RowSelectedBackgroundColor", "Selected row background"], ["mac9RowSelectedTextColor", "Selected row text"]]],
+  ["Platinum Selection", [["mac9SelectionBackgroundColor", "Selection"], ["mac9SelectionTextColor", "Selection text"], ["mac9FocusRingColor", "Keyboard focus ring"]]],
+  ["Platinum Scrollbars", [["mac9ScrollbarTrackColor", "Track"], ["mac9ScrollbarThumbColor", "Thumb"], ["mac9ScrollbarThumbBorderColor", "Thumb border"]]],
+  ["Platinum Bevels", [["mac9BevelLightColor", "General highlight"], ["mac9BevelMidColor", "General middle"], ["mac9BevelDarkColor", "General shadow"], ["mac9BevelOutlineColor", "General outline"]]],
+  ["Button Surfaces", [["buttonBackgroundColor", "Normal"], ["buttonHoverBackgroundColor", "Hover"], ["buttonPressedColor", "Pressed"], ["buttonSelectedBackgroundColor", "Selected"], ["buttonDisabledBackgroundColor", "Disabled"]]],
+  ["Button Text", [["buttonTextColor", "Normal"], ["buttonHoverTextColor", "Hover"], ["buttonPressedTextColor", "Pressed"], ["buttonSelectedTextColor", "Selected"], ["buttonDisabledTextColor", "Disabled"]]],
+  ["Glyphs", [["glyphColor", "Normal"], ["glyphHoverColor", "Hover"], ["glyphPressedColor", "Pressed"], ["glyphSelectedColor", "Selected"], ["glyphDisabledColor", "Disabled"]]],
+  ["Dropdown Items", [["dropdownItemTextColor", "Normal text"], ["dropdownItemHoverBackgroundColor", "Hover background"], ["dropdownItemHoverTextColor", "Hover text"], ["dropdownItemSelectedBackgroundColor", "Selected background"], ["dropdownItemSelectedTextColor", "Selected text"], ["dropdownGroupTextColor", "Group text"]]],
+];

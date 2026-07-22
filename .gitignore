@@ -6,6 +6,8 @@ release/
 Data/
 Themes/
 Tools/
+python-backend/mister-companion/Manuals/
+python-backend/mister-companion/scrapecache/
 
 # Python
 __pycache__/
@@ -40,3 +42,4 @@ preview-*.html
 *live-preview*.png
 *_AUDIT.md
 *_CHECKLIST.md
+MiSTer Companion EX.zip

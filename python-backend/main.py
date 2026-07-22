@@ -132,12 +132,18 @@ try:
         clear_manuals_cache,
         remove_cached_pdf,
         get_manuals_cache_root,
+        get_temp_manuals_root,
+        cleanup_temp_manuals,
         has_cached_manuals,
     )
+    try:
+        cleanup_temp_manuals()
+    except Exception:
+        pass
 except Exception:
     scan_cached_systems = scan_cached_pdfs = scan_remote_systems = scan_remote_pdfs = None
     merge_systems = merge_pdfs = cache_remote_pdf = clear_manuals_cache = remove_cached_pdf = None
-    get_manuals_cache_root = has_cached_manuals = None
+    get_manuals_cache_root = get_temp_manuals_root = cleanup_temp_manuals = has_cached_manuals = None
 
 try:
     from core.zaplauncher_db import get_media_db_path, get_last_scan_time
@@ -323,7 +329,7 @@ def _redact_device(device: dict[str, Any]) -> dict[str, Any]:
     return redacted
 
 
-def _new_job(kind: str, label: str, target: Callable[[Callable[[str], None], dict[str, Any]], Any]) -> dict[str, Any]:
+def _new_job(kind: str, label: str, target: Callable[[Callable[[str], None], dict[str, Any]], Any], retry: dict[str, Any] | None = None) -> dict[str, Any]:
     job_id = uuid.uuid4().hex[:12]
     job = {
         "id": job_id,
@@ -336,6 +342,7 @@ def _new_job(kind: str, label: str, target: Callable[[Callable[[str], None], dic
         "result": None,
         "error": "",
         "cancelRequested": False,
+        "retry": retry,
     }
 
     def log(message: str):
@@ -346,18 +353,29 @@ def _new_job(kind: str, label: str, target: Callable[[Callable[[str], None], dic
 
     def runner():
         with jobs_lock:
+            if job.get("cancelRequested"):
+                job["status"] = "cancelled"
+                job["error"] = "File operation cancelled."
+                job["finishedAt"] = time.time()
+                return
             job["status"] = "running"
         try:
             result = target(log, job)
             with jobs_lock:
-                job["status"] = "completed"
-                job["result"] = result
+                if job.get("cancelRequested"):
+                    job["status"] = "cancelled"
+                    job["error"] = "File operation cancelled."
+                else:
+                    job["status"] = "completed"
+                    job["result"] = result
                 job["finishedAt"] = time.time()
         except Exception as exc:
             with jobs_lock:
-                job["status"] = "failed"
+                cancelled = bool(job.get("cancelRequested")) or bool(file_browser_core and isinstance(exc, file_browser_core.TransferCancelled))
+                job["status"] = "cancelled" if cancelled else "failed"
                 job["error"] = str(exc)
-                job["details"] = traceback.format_exc()
+                if not cancelled:
+                    job["details"] = traceback.format_exc()
                 job["finishedAt"] = time.time()
 
     with jobs_lock:
@@ -4837,7 +4855,7 @@ def _file_browser_path(params: dict[str, Any], key: str = "path", fallback: str 
     value = params.get(key)
     if value is None or str(value).strip() == "":
         value = fallback
-    return file_browser_core.clamp_to_root(value, fallback=fallback)
+    return file_browser_core.require_safe_path(value)
 
 
 def _file_browser_sources(params: dict[str, Any], plural_key: str = "sources", singular_key: str = "source") -> list[str]:
@@ -4850,7 +4868,7 @@ def _file_browser_sources(params: dict[str, Any], plural_key: str = "sources", s
     for value in values:
         if value is None or str(value).strip() == "":
             continue
-        path = file_browser_core.clamp_to_root(value)
+        path = file_browser_core.require_safe_path(value)
         if path not in paths:
             paths.append(path)
     return paths
@@ -4874,7 +4892,12 @@ def _file_browser_basename(remote_path: str) -> str:
     return str(remote_path or "").rstrip("/").rsplit("/", 1)[-1] or str(remote_path or "")
 
 
-def _file_browser_entry_payload(path: str, entries: list[dict[str, Any]] | None = None) -> dict[str, Any]:
+def _file_browser_entry_payload(
+    path: str,
+    entries: list[dict[str, Any]] | None = None,
+    available_bytes: int = 0,
+    available_label: str = "",
+) -> dict[str, Any]:
     entries = list(entries or [])
     for entry in entries:
         entry["sizeLabel"] = file_browser_core.format_size(entry.get("size", 0)) if file_browser_core else ""
@@ -4889,6 +4912,8 @@ def _file_browser_entry_payload(path: str, entries: list[dict[str, Any]] | None 
         "roots": file_browser_core.available_roots(connection) if file_browser_core else [],
         "entries": entries,
         "count": len(entries),
+        "availableBytes": int(available_bytes or 0),
+        "availableLabel": str(available_label or ""),
     }
 
 
@@ -4900,7 +4925,12 @@ def method_file_browser_summary(params: dict[str, Any]) -> dict[str, Any]:
         roots = file_browser_core.available_roots(connection)
         path = _file_browser_path(params, "path", roots[0]["path"] if roots else "/media/fat")
         listing = file_browser_core.list_directory(connection, path)
-        payload = _file_browser_entry_payload(listing.get("path") or path, listing.get("entries") or [])
+        payload = _file_browser_entry_payload(
+            listing.get("path") or path,
+            listing.get("entries") or [],
+            listing.get("availableBytes") or 0,
+            listing.get("availableLabel") or "",
+        )
         payload.update({"ready": True, "connected": True})
         return _ok(payload)
     except Exception as exc:
@@ -4914,7 +4944,12 @@ def method_file_browser_list(params: dict[str, Any]) -> dict[str, Any]:
     try:
         path = _file_browser_path(params)
         listing = file_browser_core.list_directory(connection, path)
-        payload = _file_browser_entry_payload(listing.get("path") or path, listing.get("entries") or [])
+        payload = _file_browser_entry_payload(
+            listing.get("path") or path,
+            listing.get("entries") or [],
+            listing.get("availableBytes") or 0,
+            listing.get("availableLabel") or "",
+        )
         payload.update({"ready": True, "connected": True})
         return _ok(payload)
     except Exception as exc:
@@ -4968,6 +5003,109 @@ def _file_job_progress(job: dict[str, Any], transferred: int, total: int, label:
             "percent": max(0, min(100, percent)),
             "label": label,
         }
+
+
+def _file_job_cancelled(job: dict[str, Any]) -> bool:
+    return bool(job.get("cancelRequested"))
+
+
+def _file_job_retry_remaining(job: dict[str, Any], key: str, values: list[Any], completed_count: int) -> None:
+    with jobs_lock:
+        retry_params = job.get("retry", {}).get("params") if isinstance(job.get("retry"), dict) else None
+        if isinstance(retry_params, dict):
+            retry_params[key] = list(values[completed_count:])
+
+
+class _FileBatchProgress:
+    def __init__(self, job: dict[str, Any], log, total_bytes: int, total_items: int, verb: str):
+        self.job = job
+        self.log = log
+        self.total_bytes = max(0, int(total_bytes or 0))
+        self.total_items = max(1, int(total_items or 1))
+        self.verb = verb
+        self.completed_bytes = 0
+        self.current_bytes = 0
+        self.current_item = 0
+        self.current_name = ""
+        self._publish()
+
+    def _publish(self):
+        current = min(self.total_bytes, self.completed_bytes + self.current_bytes)
+        percent = int((current / self.total_bytes) * 100) if self.total_bytes else int((self.current_item / self.total_items) * 100)
+        label = f"{self.verb} {min(self.current_item, self.total_items)} of {self.total_items}"
+        if self.current_name:
+            label += f" • {self.current_name}"
+        with jobs_lock:
+            self.job["progress"] = {
+                "current": current,
+                "total": self.total_bytes,
+                "percent": max(0, min(100, percent)),
+                "label": label,
+                "itemCurrent": min(self.current_item, self.total_items),
+                "itemTotal": self.total_items,
+                "bytesCurrent": current,
+                "bytesTotal": self.total_bytes,
+            }
+
+    def start_item(self, name: str):
+        self.finish_file()
+        self.current_item = min(self.total_items, self.current_item + 1)
+        self.current_name = str(name or "")
+        self._publish()
+
+    def message(self, message: str):
+        text = str(message or "")
+        self.log(text)
+        if text.startswith(("Uploading ", "Downloading ", "Copying ")):
+            self.finish_file()
+            self.current_name = text.rsplit("...", 1)[0].split(" ", 1)[-1]
+            self._publish()
+
+    def update(self, transferred: int, _file_total: int):
+        if _file_job_cancelled(self.job):
+            raise file_browser_core.TransferCancelled("File operation cancelled.")
+        self.current_bytes = max(0, int(transferred or 0))
+        self._publish()
+
+    def finish_file(self):
+        if self.current_bytes:
+            self.completed_bytes = min(self.total_bytes, self.completed_bytes + self.current_bytes)
+            self.current_bytes = 0
+
+    def skip(self, size: int):
+        self.finish_file()
+        self.completed_bytes = min(self.total_bytes, self.completed_bytes + max(0, int(size or 0)))
+        self._publish()
+
+    def complete(self):
+        self.finish_file()
+        self.completed_bytes = self.total_bytes
+        self.current_item = self.total_items
+        self.current_name = ""
+        self._publish()
+
+
+def _file_conflict_policy(params: dict[str, Any]) -> str:
+    value = str(params.get("conflictPolicy") or "").strip().lower()
+    if not value:
+        value = "replace" if bool(params.get("overwrite")) else "error"
+    if value not in {"error", "replace", "skip", "keepboth"}:
+        raise ValueError("Unsupported file conflict policy.")
+    return value
+
+
+def _file_remote_target_name(target_dir: str, desired_name: str, policy: str) -> str | None:
+    sftp = connection.client.open_sftp()
+    try:
+        target = file_browser_core.join_remote_path(target_dir, desired_name)
+        exists = file_browser_core.sftp_exists(sftp, target)
+        if exists and policy == "skip":
+            return None
+        if exists and policy == "keepboth":
+            return file_browser_core.available_remote_name(sftp, target_dir, desired_name)
+        return desired_name
+    finally:
+        sftp.close()
 
 
 def method_file_browser_conflicts(params: dict[str, Any]) -> dict[str, Any]:
@@ -5050,23 +5188,36 @@ def method_file_browser_upload_start(params: dict[str, Any]) -> dict[str, Any]:
         return _err(reason)
     local_paths = _file_browser_local_paths(params)
     remote_dir = _file_browser_path(params, "path")
+    conflict_policy = _file_conflict_policy(params)
     if not local_paths:
         return _err("Choose one or more local files or folders to upload.")
 
     def run_job(log, job):
         log(f"Uploading {len(local_paths)} item{'s' if len(local_paths) != 1 else ''} to {remote_dir}...")
-        progress = lambda transferred, total: _file_job_progress(job, transferred, total, "Uploading")
+        sizes = [file_browser_core.local_path_size(path) for path in local_paths]
+        batch = _FileBatchProgress(job, log, sum(sizes), len(local_paths), "Uploading")
         targets = []
-        for index, local_path in enumerate(local_paths, start=1):
+        for index, (local_path, source_size) in enumerate(zip(local_paths, sizes), start=1):
+            if _file_job_cancelled(job):
+                raise file_browser_core.TransferCancelled("File operation cancelled.")
+            batch.start_item(Path(local_path).name)
             log(f"[{index}/{len(local_paths)}] {local_path}")
-            target = file_browser_core.upload_path(connection, local_path, remote_dir, progress_callback=progress, message_callback=log, overwrite=bool(params.get("overwrite")))
+            target_name = _file_remote_target_name(remote_dir, Path(local_path).name, conflict_policy)
+            if target_name is None:
+                log(f"Skipping existing item: {Path(local_path).name}")
+                batch.skip(source_size)
+                _file_job_retry_remaining(job, "localPaths", local_paths, index)
+                continue
+            target = file_browser_core.upload_path(connection, local_path, remote_dir, progress_callback=batch.update, message_callback=batch.message, target_name=target_name, overwrite=conflict_policy == "replace", cancel_callback=lambda: _file_job_cancelled(job))
             targets.append(target)
-        _file_job_progress(job, 1, 1, "Complete")
+            _file_job_retry_remaining(job, "localPaths", local_paths, index)
+        batch.complete()
         log("Upload complete.")
         listing = file_browser_core.list_directory(connection, remote_dir)
-        return {"path": remote_dir, "targets": targets, "target": targets[0] if len(targets) == 1 else "", "summary": _file_browser_entry_payload(listing.get("path") or remote_dir, listing.get("entries") or [])}
+        return {"path": remote_dir, "targets": targets, "target": targets[0] if len(targets) == 1 else "", "summary": _file_browser_entry_payload(listing.get("path") or remote_dir, listing.get("entries") or [], listing.get("availableBytes") or 0, listing.get("availableLabel") or "")}
 
-    return _ok(_new_job("fileBrowser.upload", f"Upload to {remote_dir}", run_job))
+    retry = {"method": "fileBrowser.upload.start", "params": {"localPaths": local_paths, "path": remote_dir, "conflictPolicy": conflict_policy}}
+    return _ok(_new_job("fileBrowser.upload", f"Upload to {remote_dir}", run_job, retry=retry))
 
 
 def method_file_browser_download_start(params: dict[str, Any]) -> dict[str, Any]:
@@ -5075,24 +5226,50 @@ def method_file_browser_download_start(params: dict[str, Any]) -> dict[str, Any]
         return _err(reason)
     sources = _file_browser_sources(params)
     local_dir = str(params.get("localDir") or "").strip()
+    local_target = str(params.get("localTarget") or "").strip()
     if not sources:
         return _err("Select one or more items to download.")
+    if local_target and len(sources) != 1:
+        return _err("Save As can only be used with one item at a time.")
+    if local_target:
+        target_path = Path(local_target)
+        local_dir = str(target_path.parent)
+        target_name = target_path.name
+    else:
+        target_name = ""
     if not local_dir:
         return _err("Choose a local destination folder.")
 
     def run_job(log, job):
         log(f"Downloading {len(sources)} item{'s' if len(sources) != 1 else ''} to {local_dir}...")
-        progress = lambda transferred, total: _file_job_progress(job, transferred, total, "Downloading")
+        sizes = file_browser_core.remote_paths_size(connection, sources, cancel_callback=lambda: _file_job_cancelled(job))
+        batch = _FileBatchProgress(job, log, sum(sizes), len(sources), "Downloading")
         local_paths = []
         for index, source in enumerate(sources, start=1):
+            if _file_job_cancelled(job):
+                raise file_browser_core.TransferCancelled("File operation cancelled.")
+            batch.start_item(_file_browser_basename(source))
             log(f"[{index}/{len(sources)}] {source}")
-            target = file_browser_core.download_path(connection, source, local_dir, progress_callback=progress, message_callback=log, overwrite=bool(params.get("overwrite")))
+            target = file_browser_core.download_path(
+                connection,
+                source,
+                local_dir,
+                progress_callback=batch.update,
+                message_callback=batch.message,
+                target_name=target_name or None,
+                overwrite=bool(params.get("overwrite")),
+                cancel_callback=lambda: _file_job_cancelled(job),
+            )
             local_paths.append(target)
-        _file_job_progress(job, 1, 1, "Complete")
+            _file_job_retry_remaining(job, "sources", sources, index)
+        batch.complete()
         log("Download complete.")
         return {"sources": sources, "localPaths": local_paths, "localPath": local_paths[0] if len(local_paths) == 1 else local_dir}
 
-    return _ok(_new_job("fileBrowser.download", f"Download {len(sources)} item{'s' if len(sources) != 1 else ''}", run_job))
+    retry_params = {"sources": sources, "localDir": local_dir, "overwrite": bool(params.get("overwrite"))}
+    if local_target:
+        retry_params["localTarget"] = local_target
+    return _ok(_new_job("fileBrowser.download", f"Download {len(sources)} item{'s' if len(sources) != 1 else ''}", run_job, retry={"method": "fileBrowser.download.start", "params": retry_params}))
 
 
 def method_file_browser_delete_start(params: dict[str, Any]) -> dict[str, Any]:
@@ -5105,16 +5282,48 @@ def method_file_browser_delete_start(params: dict[str, Any]) -> dict[str, Any]:
     parent = file_browser_core.parent_path(sources[0])
 
     def run_job(log, job):
-        log(f"Deleting {len(sources)} item{'s' if len(sources) != 1 else ''}...")
-        for index, source in enumerate(sources, start=1):
-            log(f"[{index}/{len(sources)}] {source}")
-            file_browser_core.delete_path(connection, source)
-        _file_job_progress(job, 1, 1, "Complete")
-        log("Delete complete.")
+        log(f"Moving {len(sources)} item{'s' if len(sources) != 1 else ''} to Trash...")
+        trash_items = file_browser_core.trash_paths(
+            connection,
+            sources,
+            progress_callback=lambda current, total: _file_job_progress(job, current, total, f"Moving {current} of {total} to Trash"),
+            cancel_callback=lambda: _file_job_cancelled(job),
+        )
+        _file_job_progress(job, len(sources), len(sources), "Complete")
+        log("Items moved to Trash. They can be restored with Undo.")
         listing = file_browser_core.list_directory(connection, parent)
-        return {"path": parent, "summary": _file_browser_entry_payload(listing.get("path") or parent, listing.get("entries") or [])}
+        return {"path": parent, "trashItems": trash_items, "summary": _file_browser_entry_payload(listing.get("path") or parent, listing.get("entries") or [], listing.get("availableBytes") or 0, listing.get("availableLabel") or "")}
 
-    return _ok(_new_job("fileBrowser.delete", f"Delete {len(sources)} item{'s' if len(sources) != 1 else ''}", run_job))
+    retry = {"method": "fileBrowser.delete.start", "params": {"sources": sources}}
+    return _ok(_new_job("fileBrowser.delete", f"Move {len(sources)} item{'s' if len(sources) != 1 else ''} to Trash", run_job, retry=retry))
+
+
+def method_file_browser_restore_start(params: dict[str, Any]) -> dict[str, Any]:
+    ready, reason = _file_browser_ready()
+    if not ready:
+        return _err(reason)
+    items = params.get("items")
+    if not isinstance(items, list) or not items:
+        return _err("No trashed items are available to restore.")
+    conflict_policy = _file_conflict_policy(params)
+    if conflict_policy == "error":
+        conflict_policy = "keepboth"
+
+    def run_job(log, job):
+        log(f"Restoring {len(items)} item{'s' if len(items) != 1 else ''} from Trash...")
+        restored = file_browser_core.restore_trash_items(
+            connection,
+            items,
+            conflict_policy=conflict_policy,
+            progress_callback=lambda current, total: _file_job_progress(job, current, total, f"Restoring {current} of {total}"),
+            cancel_callback=lambda: _file_job_cancelled(job),
+        )
+        _file_job_progress(job, len(items), len(items), "Complete")
+        log(f"Restored {len(restored)} item{'s' if len(restored) != 1 else ''}.")
+        return {"restored": restored, "count": len(restored)}
+
+    retry = {"method": "fileBrowser.restore.start", "params": {"items": items, "conflictPolicy": conflict_policy}}
+    return _ok(_new_job("fileBrowser.restore", f"Restore {len(items)} item{'s' if len(items) != 1 else ''}", run_job, retry=retry))
 
 
 def method_file_browser_copy_start(params: dict[str, Any]) -> dict[str, Any]:
@@ -5123,23 +5332,37 @@ def method_file_browser_copy_start(params: dict[str, Any]) -> dict[str, Any]:
         return _err(reason)
     sources = _file_browser_sources(params)
     target_dir = _file_browser_path(params, "targetDir")
+    conflict_policy = _file_conflict_policy(params)
     if not sources:
         return _err("Select one or more items to copy.")
 
     def run_job(log, job):
         log(f"Copying {len(sources)} item{'s' if len(sources) != 1 else ''} to {target_dir}...")
-        progress = lambda transferred, total: _file_job_progress(job, transferred, total, "Copying")
+        sizes = file_browser_core.remote_paths_size(connection, sources, cancel_callback=lambda: _file_job_cancelled(job))
+        batch = _FileBatchProgress(job, log, sum(sizes), len(sources), "Copying")
         targets = []
-        for index, source in enumerate(sources, start=1):
+        for index, (source, source_size) in enumerate(zip(sources, sizes), start=1):
+            if _file_job_cancelled(job):
+                raise file_browser_core.TransferCancelled("File operation cancelled.")
+            batch.start_item(_file_browser_basename(source))
             log(f"[{index}/{len(sources)}] {source}")
-            target = file_browser_core.copy_path(connection, source, target_dir, progress_callback=progress, message_callback=log, overwrite=bool(params.get("overwrite")))
+            source_name = _file_browser_basename(source)
+            target_name = _file_remote_target_name(target_dir, source_name, conflict_policy)
+            if target_name is None:
+                log(f"Skipping existing item: {source_name}")
+                batch.skip(source_size)
+                _file_job_retry_remaining(job, "sources", sources, index)
+                continue
+            target = file_browser_core.copy_path(connection, source, target_dir, target_name=target_name, progress_callback=batch.update, message_callback=batch.message, overwrite=conflict_policy == "replace", cancel_callback=lambda: _file_job_cancelled(job))
             targets.append(target)
-        _file_job_progress(job, 1, 1, "Complete")
+            _file_job_retry_remaining(job, "sources", sources, index)
+        batch.complete()
         log("Copy complete.")
         listing = file_browser_core.list_directory(connection, target_dir)
-        return {"path": target_dir, "targets": targets, "target": targets[0] if len(targets) == 1 else "", "summary": _file_browser_entry_payload(listing.get("path") or target_dir, listing.get("entries") or [])}
+        return {"path": target_dir, "targets": targets, "target": targets[0] if len(targets) == 1 else "", "summary": _file_browser_entry_payload(listing.get("path") or target_dir, listing.get("entries") or [], listing.get("availableBytes") or 0, listing.get("availableLabel") or "")}
 
-    return _ok(_new_job("fileBrowser.copy", f"Copy {len(sources)} item{'s' if len(sources) != 1 else ''}", run_job))
+    retry = {"method": "fileBrowser.copy.start", "params": {"sources": sources, "targetDir": target_dir, "conflictPolicy": conflict_policy}}
+    return _ok(_new_job("fileBrowser.copy", f"Copy {len(sources)} item{'s' if len(sources) != 1 else ''}", run_job, retry=retry))
 
 
 def method_file_browser_move_start(params: dict[str, Any]) -> dict[str, Any]:
@@ -5148,23 +5371,37 @@ def method_file_browser_move_start(params: dict[str, Any]) -> dict[str, Any]:
         return _err(reason)
     sources = _file_browser_sources(params)
     target_dir = _file_browser_path(params, "targetDir")
+    conflict_policy = _file_conflict_policy(params)
     if not sources:
         return _err("Select one or more items to move.")
 
     def run_job(log, job):
         log(f"Moving {len(sources)} item{'s' if len(sources) != 1 else ''} to {target_dir}...")
-        progress = lambda transferred, total: _file_job_progress(job, transferred, total, "Moving")
+        sizes = file_browser_core.remote_paths_size(connection, sources, cancel_callback=lambda: _file_job_cancelled(job))
+        batch = _FileBatchProgress(job, log, sum(sizes), len(sources), "Moving")
         targets = []
-        for index, source in enumerate(sources, start=1):
+        for index, (source, source_size) in enumerate(zip(sources, sizes), start=1):
+            if _file_job_cancelled(job):
+                raise file_browser_core.TransferCancelled("File operation cancelled.")
+            batch.start_item(_file_browser_basename(source))
             log(f"[{index}/{len(sources)}] {source}")
-            target = file_browser_core.move_path(connection, source, target_dir, progress_callback=progress, message_callback=log, overwrite=bool(params.get("overwrite")))
+            source_name = _file_browser_basename(source)
+            target_name = _file_remote_target_name(target_dir, source_name, conflict_policy)
+            if target_name is None:
+                log(f"Skipping existing item: {source_name}")
+                batch.skip(source_size)
+                _file_job_retry_remaining(job, "sources", sources, index)
+                continue
+            target = file_browser_core.move_path(connection, source, target_dir, target_name=target_name, progress_callback=batch.update, message_callback=batch.message, overwrite=conflict_policy == "replace", cancel_callback=lambda: _file_job_cancelled(job))
             targets.append(target)
-        _file_job_progress(job, 1, 1, "Complete")
+            _file_job_retry_remaining(job, "sources", sources, index)
+        batch.complete()
         log("Move complete.")
         listing = file_browser_core.list_directory(connection, target_dir)
-        return {"path": target_dir, "targets": targets, "target": targets[0] if len(targets) == 1 else "", "summary": _file_browser_entry_payload(listing.get("path") or target_dir, listing.get("entries") or [])}
+        return {"path": target_dir, "targets": targets, "target": targets[0] if len(targets) == 1 else "", "summary": _file_browser_entry_payload(listing.get("path") or target_dir, listing.get("entries") or [], listing.get("availableBytes") or 0, listing.get("availableLabel") or "")}
 
-    return _ok(_new_job("fileBrowser.move", f"Move {len(sources)} item{'s' if len(sources) != 1 else ''}", run_job))
+    retry = {"method": "fileBrowser.move.start", "params": {"sources": sources, "targetDir": target_dir, "conflictPolicy": conflict_policy}}
+    return _ok(_new_job("fileBrowser.move", f"Move {len(sources)} item{'s' if len(sources) != 1 else ''}", run_job, retry=retry))
 
 
 METHODS: dict[str, Callable[[dict[str, Any]], dict[str, Any]]] = {
@@ -5194,6 +5431,7 @@ METHODS: dict[str, Callable[[dict[str, Any]], dict[str, Any]]] = {
     "fileBrowser.upload.start": method_file_browser_upload_start,
     "fileBrowser.download.start": method_file_browser_download_start,
     "fileBrowser.delete.start": method_file_browser_delete_start,
+    "fileBrowser.restore.start": method_file_browser_restore_start,
     "fileBrowser.copy.start": method_file_browser_copy_start,
     "fileBrowser.move.start": method_file_browser_move_start,
     "device.summary": method_device_summary,

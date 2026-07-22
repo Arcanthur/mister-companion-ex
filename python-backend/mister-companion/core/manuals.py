@@ -21,6 +21,18 @@ def ensure_manuals_cache_root() -> Path:
     return root
 
 
+def get_temp_manuals_root() -> Path:
+    return get_manuals_cache_root() / ".viewer_temp"
+
+
+def cleanup_temp_manuals() -> bool:
+    temp_root = get_temp_manuals_root()
+    if not temp_root.exists():
+        return False
+    shutil.rmtree(temp_root)
+    return True
+
+
 def sanitize_name(name: str) -> str:
     value = (name or "").strip()
     value = value.replace("\\", "_").replace("/", "_").replace(":", "_")

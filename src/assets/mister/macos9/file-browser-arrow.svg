@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12">
+  <defs>
+    <linearGradient id="lavender" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#cccefc"/>
+      <stop offset="0.55" stop-color="#989efa"/>
+      <stop offset="1" stop-color="#656cc7"/>
+    </linearGradient>
+  </defs>
+  <path d="M3 1 9 6 3 11Z" fill="url(#lavender)" stroke="#000000" stroke-width="1" stroke-linejoin="miter"/>
+  <path d="M3.8 2.35v7.3" fill="none" stroke="#cccefc" stroke-width=".65"/>
+</svg>

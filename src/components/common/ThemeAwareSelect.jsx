@@ -47,7 +47,7 @@ function collectOptions(children, inheritedGroup = "") {
   return options;
 }
 
-export function ThemeAwareSelect({ children, className = "", disabled = false, onChange, value, ...nativeProps }) {
+export function ThemeAwareSelect({ children, className = "", menuClassName = "", disabled = false, onChange, value, ...nativeProps }) {
   const [platinumActive, setPlatinumActive] = useState(isPlatinumThemeActive);
   const options = useMemo(() => collectOptions(children), [children]);
 
@@ -83,6 +83,7 @@ export function ThemeAwareSelect({ children, className = "", disabled = false, o
     <CustomSelect
       ariaLabel={ariaLabel}
       className={customClassName}
+      menuClassName={menuClassName}
       disabled={disabled}
       onChange={(nextValue) => {
         const selectedOption = options.find((option) => option.value === nextValue);

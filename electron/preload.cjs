@@ -51,6 +51,11 @@ const vaultKitBridge = {
     ipcRenderer.on("window:focus-change", listener);
     return () => ipcRenderer.removeListener("window:focus-change", listener);
   },
+  onFileBrowserHistoryCommand: (callback) => {
+    const listener = (_event, direction) => callback(Number(direction) < 0 ? -1 : 1);
+    ipcRenderer.on("file-browser:history-command", listener);
+    return () => ipcRenderer.removeListener("file-browser:history-command", listener);
+  },
   loadLibraryFile: () => ipcRenderer.sendSync("library:load"),
   saveLibraryFile: (serializedLibrary) => ipcRenderer.invoke("library:save", serializedLibrary),
   clearLibraryFile: () => ipcRenderer.invoke("library:clear"),

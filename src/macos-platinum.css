@@ -4581,7 +4581,7 @@ body:has(.app-shell.app-style-macos9platinum),
 .app-shell.app-style-macos9platinum .mister-electron-footer,
 .app-shell.app-style-macos9platinum > .mister-electron-main > .mister-electron-footer {
   display: grid !important;
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) !important;
+  grid-template-columns: minmax(0, 1fr) fit-content(calc(100vw - 96px)) minmax(0, 1fr) !important;
   align-items: center !important;
   justify-items: center !important;
   padding: 0 8px !important;
@@ -8109,7 +8109,7 @@ body:has(.app-shell.app-style-macos9platinum),
 }
 
 #root .app-shell.app-style-macos9platinum {
-  --mac9-sidebar-width-effective: calc(var(--media-sidebar-width, 228px) + 6px) !important;
+  --mac9-sidebar-width-effective: calc(var(--media-sidebar-width, 228px) + 22px) !important;
   --mac9-sidebar-width: var(--mac9-sidebar-width-effective) !important;
   --integrated-sidebar-width: var(--mac9-sidebar-width-effective) !important;
 }
@@ -13206,4 +13206,4094 @@ body:has(.app-shell.app-style-macos9platinum),
   object-position: center !important;
   background: transparent !important;
   overflow: hidden !important;
+}
+
+/* v0.4.54: Finder-style hierarchical list view for the Platinum file browser. */
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-list-card {
+  border-color: #555555 !important;
+  background: #eeeeee !important;
+  box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #777777 !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-list-card > h2 {
+  min-height: 23px !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+  padding: 2px 8px !important;
+  border-bottom: 1px solid #555555 !important;
+  background: #dddddd !important;
+  background-image: none !important;
+  color: #111111 !important;
+  font-weight: 400 !important;
+  line-height: 18px !important;
+  text-align: center !important;
+  box-shadow: inset 0 1px 0 #ffffff !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table-wrap {
+  min-height: min(601px, calc(100vh - 379px)) !important;
+  border: 1px solid #222222 !important;
+  background: #eeeeee !important;
+  box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #888888 !important;
+  scrollbar-color: auto !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table {
+  border-spacing: 0 !important;
+  background: #eeeeee !important;
+  color: #111111 !important;
+  font-size: var(--control-font-size-effective, 12px) !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table thead {
+  background: #c9c9c9 !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table th {
+  box-sizing: border-box !important;
+  height: 24px !important;
+  padding: 2px 7px !important;
+  border-top: 1px solid #ffffff !important;
+  border-right: 1px solid #555555 !important;
+  border-bottom: 1px solid #333333 !important;
+  border-left: 1px solid #eeeeee !important;
+  background: #c9c9c9 !important;
+  background-image: linear-gradient(180deg, #ededed 0, #c5c5c5 100%) !important;
+  color: #111111 !important;
+  font-weight: 400 !important;
+  line-height: 18px !important;
+  box-shadow: none !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table th:last-child {
+  border-right: 0 !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table th button {
+  min-height: 18px !important;
+  color: #111111 !important;
+  font-weight: 400 !important;
+  line-height: 18px !important;
+  transform: none !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-column-resizer {
+  top: 1px !important;
+  bottom: 1px !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-column-resizer::after {
+  background: #555555 !important;
+  opacity: 1 !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table tbody tr {
+  height: 23px !important;
+  background: #eeeeee !important;
+  color: #111111 !important;
+  transition: none !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table td {
+  box-sizing: border-box !important;
+  height: 23px !important;
+  padding: 1px 7px !important;
+  border-right: 1px solid #ffffff !important;
+  border-bottom: 1px solid #ffffff !important;
+  background: #eeeeee !important;
+  color: #111111 !important;
+  line-height: 20px !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table td:first-child {
+  background: #d8d8d8 !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table tbody tr.selected td {
+  background: #e2def6 !important;
+  color: #111111 !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table tbody tr.selected td:first-child {
+  background: #cec8eb !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-name-cell {
+  box-sizing: border-box !important;
+  min-height: 20px !important;
+  padding-left: calc(var(--finder-tree-depth, 0) * 18px) !important;
+  gap: 5px !important;
+  white-space: nowrap !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-drag-handle {
+  gap: 5px !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-name-cell strong {
+  color: inherit !important;
+  font-weight: 400 !important;
+  line-height: 20px !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+  overflow: hidden !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-icon {
+  width: 17px !important;
+  height: 17px !important;
+  flex: 0 0 17px !important;
+  color: #6254ac !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-icon.file {
+  color: #3d3d52 !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-icon.bitmap {
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-icon.bitmap img {
+  width: 16px !important;
+  height: 16px !important;
+  display: block !important;
+  object-fit: contain !important;
+  image-rendering: auto !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-icon svg {
+  width: 16px !important;
+  height: 16px !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table tbody tr.selected .mister-file-icon {
+  color: #3d3d52 !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files :is(.mister-finder-disclosure, .mister-finder-disclosure-spacer) {
+  box-sizing: border-box !important;
+  width: 13px !important;
+  min-width: 13px !important;
+  max-width: 13px !important;
+  height: 16px !important;
+  min-height: 16px !important;
+  max-height: 16px !important;
+  flex: 0 0 13px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  display: inline-grid !important;
+  place-items: center !important;
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-finder-disclosure {
+  cursor: pointer !important;
+  overflow: visible !important;
+  filter: drop-shadow(.75px .75px 0 #888888) !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-finder-disclosure > img {
+  width: 12px !important;
+  height: 12px !important;
+  display: block !important;
+  object-fit: contain !important;
+  image-rendering: auto !important;
+  filter: none !important;
+  transform: rotate(0deg) !important;
+  transform-origin: 50% 50% !important;
+  transition: transform 80ms linear !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-finder-disclosure.expanded > img {
+  transform: rotate(90deg) !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-finder-disclosure.loading > img {
+  opacity: .55 !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-list-card > .mister-card-footer,
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-footer {
+  border-top-color: #555555 !important;
+  background: #dddddd !important;
+  color: #111111 !important;
+}
+
+/* Finder column labels are header cells, not Platinum push buttons. Reset the
+   global button border-image completely so the beveled cell itself owns the
+   one-pixel classic header treatment. */
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table th > button,
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table th > button:hover,
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table th > button:active,
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table th > button:focus-visible {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  height: 18px !important;
+  min-height: 18px !important;
+  max-height: 18px !important;
+  margin: 0 !important;
+  padding: 0 3px !important;
+  border: 0 !important;
+  border-image: none !important;
+  border-image-source: none !important;
+  border-image-slice: 0 !important;
+  border-image-width: 0 !important;
+  border-radius: 0 !important;
+  display: block !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  color: #111111 !important;
+  font: inherit !important;
+  font-size: inherit !important;
+  font-weight: 400 !important;
+  line-height: 18px !important;
+  letter-spacing: normal !important;
+  text-align: left !important;
+  text-shadow: none !important;
+  text-transform: none !important;
+  box-shadow: none !important;
+  filter: none !important;
+  image-rendering: auto !important;
+  outline: 0 !important;
+  transform: none !important;
+}
+
+/* Use the theme's real four-piece thumb and arrow artwork instead of the
+   platform scrollbar. The shell keeps the classic rail beside the list so it
+   never overlays names or the Date Modified column. */
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table-shell {
+  min-width: 0 !important;
+  min-height: min(601px, calc(100vh - 379px)) !important;
+  max-height: min(716px, calc(100vh - 274px)) !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table-shell > .mister-file-table-wrap {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: inherit !important;
+  max-height: inherit !important;
+  padding-right: 20px !important;
+  overflow-x: auto !important;
+  overflow-y: auto !important;
+  scrollbar-width: none !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table-shell > .mister-file-table-wrap::-webkit-scrollbar {
+  width: 0 !important;
+  height: 0 !important;
+  display: none !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-browser-themed-scrollbar {
+  --themed-scrollbar-top-inset: 20px !important;
+  --themed-scrollbar-bottom-inset: 20px !important;
+  --themed-scrollbar-min-thumb: 21px !important;
+  width: 20px !important;
+  min-width: 20px !important;
+  max-width: 20px !important;
+  display: block !important;
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: auto !important;
+  z-index: 8 !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+/* Let the Finder list own the full interior of its enclosing white panel. The
+   status text remains below the list as unboxed information. */
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-list-card {
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-list-card > .mister-card-body {
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-finder-status-bar {
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  min-height: 24px !important;
+  padding: 3px 10px !important;
+  border: 0 !important;
+  border-bottom: 1px solid #222222 !important;
+  background: #d6d6d6 !important;
+  background-image: none !important;
+  color: #111111 !important;
+  box-shadow: inset 0 1px 0 #eeeeee !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-finder-status-summary {
+  text-align: center !important;
+  white-space: nowrap !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-finder-status-selection {
+  position: absolute !important;
+  right: 10px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  white-space: nowrap !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-list-card > .mister-card-footer {
+  min-height: 30px !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+  padding: 6px 10px !important;
+  border: 0 !important;
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-footer {
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  color: #111111 !important;
+}
+
+/* One-pixel raised header bevels follow the Finder reference. The currently
+   sorted header reverses its light and dark edges so it reads as depressed. */
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table th {
+  border-top: 1px solid #ffffff !important;
+  border-right: 1px solid #555555 !important;
+  border-bottom: 1px solid #444444 !important;
+  border-left: 1px solid #ffffff !important;
+  background: #d0d0d0 !important;
+  background-image: linear-gradient(180deg, #eeeeee 0, #c7c7c7 100%) !important;
+  box-shadow: inset -1px -1px 0 #9a9a9a !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table th.active-sort {
+  border-top-color: #555555 !important;
+  border-right-color: #eeeeee !important;
+  border-bottom-color: #ffffff !important;
+  border-left-color: #555555 !important;
+  background: #bcbcbc !important;
+  background-image: linear-gradient(180deg, #b9b9b9 0, #d2d2d2 100%) !important;
+  box-shadow: inset 1px 1px 0 #888888 !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table th.active-sort > button {
+  padding-top: 1px !important;
+  padding-left: 4px !important;
+}
+
+/* Finder shades the body of the active sort column. Keep selected rows fully
+   highlighted, while hover feedback preserves the darker column relationship. */
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table td:first-child {
+  background: #eeeeee !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table.finder-sort-name tbody tr:not(.selected) td:nth-child(1),
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table.finder-sort-size tbody tr:not(.selected) td:nth-child(2),
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table.finder-sort-type tbody tr:not(.selected) td:nth-child(3),
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table.finder-sort-modified tbody tr:not(.selected) td:nth-child(4) {
+  background: #d5d5d5 !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table.finder-sort-name tbody tr:not(.selected):hover td:nth-child(1),
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table.finder-sort-size tbody tr:not(.selected):hover td:nth-child(2),
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table.finder-sort-type tbody tr:not(.selected):hover td:nth-child(3),
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table.finder-sort-modified tbody tr:not(.selected):hover td:nth-child(4) {
+  background: transparent !important;
+}
+
+/* Paint hover once on the row, after the active-sort column rules, so the
+   translucent band stays continuous across every Finder column. */
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table tbody tr:not(.selected):hover {
+  background: #50202020 !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table tbody tr:not(.selected):hover td,
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table tbody tr:not(.selected):hover td:first-child {
+  background: transparent !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table.finder-sort-name tbody tr:not(.selected):hover td:nth-child(1),
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table.finder-sort-size tbody tr:not(.selected):hover td:nth-child(2),
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table.finder-sort-type tbody tr:not(.selected):hover td:nth-child(3),
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table.finder-sort-modified tbody tr:not(.selected):hover td:nth-child(4) {
+  background: #9f9f9f !important;
+  color: #ffffff !important;
+}
+
+/* Exact Finder header colors, outlines, alignment, and rotating sort glyph. */
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table th {
+  border: 1px solid #000000 !important;
+  background: #cccccc !important;
+  background-color: #cccccc !important;
+  background-image: none !important;
+  box-shadow: 0 1px 0 #5a5a5a, inset 1px 1px 0 #ffffff, inset -1px -1px 0 #9a9a9a !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table th.active-sort {
+  border: 1px solid #000000 !important;
+  background: #888888 !important;
+  background-color: #888888 !important;
+  background-image: none !important;
+  box-shadow: 0 1px 0 #5a5a5a, inset 1px 1px 0 #555555, inset -1px -1px 0 #b8b8b8 !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table th > button,
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table th.active-sort > button {
+  padding: 0 5px !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 9px !important;
+  align-items: center !important;
+  column-gap: 5px !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-finder-header-label {
+  min-width: 0 !important;
+  display: block !important;
+  color: #111111 !important;
+  text-align: left !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+  overflow: hidden !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table th:nth-child(2) .mister-finder-header-label,
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table td:nth-child(2) {
+  text-align: right !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-finder-sort-glyph {
+  width: 9px !important;
+  height: 7px !important;
+  border: 0 !important;
+  border-radius: 1px !important;
+  justify-self: end !important;
+  display: block !important;
+  background: #4f4f4f !important;
+  clip-path: polygon(50% 0, 100% 100%, 0 100%) !important;
+  transform: rotate(0deg) !important;
+  transform-origin: 50% 50% !important;
+  transition: transform 100ms linear !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-finder-sort-glyph.descending {
+  transform: rotate(180deg) !important;
+}
+
+/* Sticky table cells cannot reliably carry collapsed borders in Chromium: the
+   text sticks while the shared border layer scrolls away. Give Finder headers
+   independent borders and let the shell own the one continuous perimeter. */
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table-shell {
+  box-sizing: border-box !important;
+  border: 1px solid #222222 !important;
+  background: #eeeeee !important;
+  box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #888888 !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table-shell > .mister-file-table-wrap {
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table {
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table th {
+  border: 0 !important;
+  border-top: 1px solid #000000 !important;
+  border-right: 1px solid #000000 !important;
+  border-bottom: 1px solid #000000 !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 6 !important;
+  background-clip: padding-box !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table th:first-child {
+  border-left: 1px solid #000000 !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table th.active-sort {
+  border: 0 !important;
+  border-top: 1px solid #000000 !important;
+  border-right: 1px solid #000000 !important;
+  border-bottom: 1px solid #000000 !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table th.active-sort:first-child {
+  border-left: 1px solid #000000 !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-browser-themed-scrollbar {
+  top: 24px !important;
+  right: -1px !important;
+  bottom: -1px !important;
+  margin: 0 !important;
+  border-left: 0 !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table-shell > .mister-file-table-wrap {
+  padding-right: 0 !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table tbody td:last-child {
+  padding-right: 27px !important;
+}
+
+/* Keep header labels stationary across hover, press, and focus. Flex only
+   consumes glyph space when the active triangle actually exists, so the
+   right-aligned Size label shifts left only while Size is the sort column. */
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table th > button,
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table th > button:hover,
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table th > button:active,
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table th > button:focus-visible,
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table th.active-sort > button,
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table th.active-sort > button:hover,
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table th.active-sort > button:active,
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table th.active-sort > button:focus-visible {
+  padding: 0 5px !important;
+  display: flex !important;
+  grid-template-columns: none !important;
+  align-items: center !important;
+  column-gap: 0 !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-finder-header-label {
+  flex: 1 1 auto !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-finder-sort-glyph {
+  flex: 0 0 9px !important;
+  margin-left: 5px !important;
+  background: #232323 !important;
+}
+
+/* Finder storage choices and contextual commands. */
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-command-strip {
+  grid-template-columns: repeat(2, minmax(120px, 180px)) !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-root-radio-group {
+  gap: 18px !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-root-radio-group label {
+  color: #111111 !important;
+  font-weight: 400 !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-file-context-menu {
+  width: 190px !important;
+  padding: 3px !important;
+  border: 1px solid #000000 !important;
+  border-radius: 0 !important;
+  gap: 0 !important;
+  background: #dedede !important;
+  background-image: none !important;
+  color: #111111 !important;
+  box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #888888, 2px 2px 0 #000000 !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-context-menu > button {
+  appearance: none !important;
+  box-sizing: border-box !important;
+  display: block !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 20px !important;
+  min-height: 20px !important;
+  max-height: 20px !important;
+  padding: 1px 8px 1px 24px !important;
+  border: 0 !important;
+  border-image: none !important;
+  border-image-source: none !important;
+  border-image-slice: 0 !important;
+  border-image-width: 0 !important;
+  border-image-outset: 0 !important;
+  border-image-repeat: stretch !important;
+  border-radius: 0 !important;
+  font-family: "Virtue", Charcoal, Chicago, "Geneva Embedded", Geneva, sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 400 !important;
+  line-height: 18px !important;
+  letter-spacing: 0 !important;
+  text-align: left !important;
+  text-transform: none !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  color: #111111 !important;
+  -webkit-text-fill-color: #111111 !important;
+  box-shadow: none !important;
+  transform: none !important;
+  position: relative !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-context-glyph {
+  box-sizing: content-box !important;
+  width: 14px !important;
+  height: 14px !important;
+  padding: 0 2px !important;
+  position: absolute !important;
+  left: 3px !important;
+  top: 3px !important;
+  background: #3f3f3f !important;
+  -webkit-mask: var(--context-menu-glyph) center / 14px 14px no-repeat !important;
+  mask: var(--context-menu-glyph) center / 14px 14px no-repeat !important;
+  pointer-events: none !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-context-menu > button:disabled .mister-file-context-glyph {
+  background: #9f9f9f !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-context-menu > button:not(:disabled):hover,
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-context-menu > button:not(:disabled):focus-visible,
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-context-menu > button:not(:disabled):active {
+  border: 0 !important;
+  border-image: none !important;
+  border-image-source: none !important;
+  border-image-slice: 0 !important;
+  border-image-width: 0 !important;
+  background: #666699 !important;
+  background-image: none !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  box-shadow: none !important;
+  transform: none !important;
+  outline: 0 !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-context-menu > button:disabled {
+  border: 0 !important;
+  border-image: none !important;
+  border-image-source: none !important;
+  border-image-slice: 0 !important;
+  border-image-width: 0 !important;
+  opacity: 1 !important;
+  color: #777777 !important;
+  -webkit-text-fill-color: #777777 !important;
+  text-shadow: 1px 1px 0 #ffffff !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-file-context-separator {
+  height: 1px !important;
+  margin: 2px 1px 3px !important;
+  background: #777777 !important;
+  box-shadow: 0 1px 0 #ffffff !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-file-name-modal {
+  border-radius: 0 !important;
+  background: #dddddd !important;
+  color: #111111 !important;
+}
+
+/* Compact Platinum browser toolbar. */
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-list-card .mister-file-address-toolbar {
+  padding: 7px 8px !important;
+  border: 0 !important;
+  border-bottom: 1px solid #222222 !important;
+  background: #d6d6d6 !important;
+  background-image: none !important;
+  box-shadow: inset 0 1px 0 #ffffff !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-address-toolbar {
+  grid-template-columns: auto minmax(160px, 1fr) auto !important;
+  gap: 6px !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-address-field input {
+  height: 31px !important;
+  min-height: 31px !important;
+  max-height: 31px !important;
+  padding: 3px 7px !important;
+  border: 1px solid #333333 !important;
+  border-radius: 0 !important;
+  background: #ffffff !important;
+  color: #111111 !important;
+  box-shadow: inset 1px 1px 0 #777777, inset -1px -1px 0 #ffffff !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files :is(.mister-file-address-navigation, .mister-file-address-actions) > button {
+  /* The secondary PNG has six horizontal pixels of transparent framing when
+     nine-sliced at this height. A 37px box produces a visible 29x29px frame. */
+  width: 37px !important;
+  min-width: 37px !important;
+  max-width: 37px !important;
+  height: 31px !important;
+  min-height: 31px !important;
+  max-height: 31px !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-history-buttons {
+  box-sizing: border-box !important;
+  width: 66px !important;
+  min-width: 66px !important;
+  max-width: 66px !important;
+  height: 37px !important;
+  min-height: 37px !important;
+  max-height: 37px !important;
+  margin-block: -3px !important;
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  position: relative !important;
+  border: 1px solid transparent !important;
+  border-image-source: url("mister-vaultkit-media://asset/macos9/buttons/secondary-normal.png") !important;
+  border-image-slice: 8 8 9 8 fill !important;
+  border-image-width: 8px 8px 9px 8px !important;
+  border-image-outset: 0 !important;
+  border-image-repeat: stretch !important;
+  background: transparent !important;
+  overflow: hidden !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-history-buttons::after {
+  content: "" !important;
+  width: 1px !important;
+  position: absolute !important;
+  top: 4px !important;
+  bottom: 4px !important;
+  left: 50% !important;
+  z-index: 2 !important;
+  background: #5a5a5a !important;
+  pointer-events: none !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-history-buttons > button {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  height: 35px !important;
+  min-height: 35px !important;
+  max-height: 35px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-image: none !important;
+  border-radius: 0 !important;
+  position: relative !important;
+  z-index: 1 !important;
+  display: grid !important;
+  place-items: center !important;
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-history-buttons > button::before {
+  content: "" !important;
+  box-sizing: border-box !important;
+  width: 66px !important;
+  height: 37px !important;
+  position: absolute !important;
+  top: -1px !important;
+  z-index: 0 !important;
+  border: 1px solid transparent !important;
+  border-image-source: url("mister-vaultkit-media://asset/macos9/buttons/secondary-pressed-hover.png") !important;
+  border-image-slice: 8 8 9 8 fill !important;
+  border-image-width: 8px 8px 9px 8px !important;
+  border-image-outset: 0 !important;
+  border-image-repeat: stretch !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-history-buttons > button:first-child::before {
+  left: -1px !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-history-buttons > button:last-child::before {
+  right: -1px !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-history-buttons > button:not(:disabled):is(:hover, :active)::before {
+  opacity: 1 !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-history-buttons > button > .mister-file-address-glyph {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-history-buttons > button:first-child > .mister-file-address-glyph {
+  left: 2px !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-history-buttons > button:last-child > .mister-file-address-glyph {
+  left: -2px !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-address-navigation > button {
+  padding: 0 !important;
+  font-family: "Geneva Embedded", Geneva, sans-serif !important;
+  font-size: 16px !important;
+  line-height: 20px !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-address-actions > button {
+  padding: 0 !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-address-glyph {
+  width: 17px !important;
+  height: 17px !important;
+  filter: brightness(0) !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files :is(.mister-file-address-navigation, .mister-file-address-actions) > button:not(:disabled):is(:hover, :active) .mister-file-address-glyph,
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-history-buttons > button:not(:disabled):is(:hover, :active) .mister-file-address-glyph {
+  filter: none !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files :is(.mister-file-address-navigation, .mister-file-address-actions) > button:disabled .mister-file-address-glyph,
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-history-buttons > button:disabled .mister-file-address-glyph {
+  filter: brightness(0) !important;
+  opacity: .35 !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-storage-row {
+  margin-top: -10px !important;
+  padding: 6px 8px !important;
+  color: #111111 !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-electron-content.mister-section-files {
+  padding: 6px 36px 12px 12px !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-electron-sidebar .media-sidebar-scroll {
+  box-sizing: border-box !important;
+  padding: 12px 12px 66px !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-electron-sidebar .media-sidebar-section button {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-inline: 0 !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-electron-sidebar button.mister-sidebar-settings-button {
+  left: 12px !important;
+  right: 12px !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-list-card .mister-file-table-shell {
+  border-top: 0 !important;
+}
+
+/* Optional roomier Finder rows. Keep the viewport on whole-row dimensions. */
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table.comfy-rows tbody tr,
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table.comfy-rows td {
+  height: 29px !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table.comfy-rows td {
+  padding-top: 4px !important;
+  padding-bottom: 4px !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table-shell:has(.mister-file-table.comfy-rows) {
+  min-height: min(606px, calc(100vh - 374px)) !important;
+  max-height: min(722px, calc(100vh - 268px)) !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-file-activity-popup {
+  border: 1px solid #000000 !important;
+  border-radius: 0 !important;
+  background: #dddddd !important;
+  background-image: none !important;
+  color: #111111 !important;
+  box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #777777, 3px 3px 0 rgba(0, 0, 0, .7) !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-file-activity-popup-body {
+  padding: 10px !important;
+}
+
+/* Center the titlebar artwork in the 22px interior above its 1px lower rule.
+   These integer offsets leave matching visible space above and below. */
+#root .app-shell.app-style-macos9platinum {
+  --mac9-control-top: 2px !important;
+  --mac9-title-stripe-top: 4px !important;
+  --mac9-title-plaque-top: 3px !important;
+}
+
+/* Compact prompts belong in the center of the application window. */
+#root .app-shell.app-style-macos9platinum :is(
+  .mister-file-name-backdrop,
+  .mister-confirm-backdrop,
+  .mister-ra-detail-modal
+) {
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 20px !important;
+}
+
+/* The compact window itself is borderless. A non-interactive beveled box is
+   overlaid below to create the integrated OS 9 frame around titlebar + body. */
+#root .app-shell.app-style-macos9platinum :is(
+  .mister-file-name-modal,
+  .mister-confirm-modal,
+  .mister-ra-detail-modal > .modal,
+  .mister-file-activity-popup,
+  .compact-install-modal.mister-install-modal,
+  .mister-github-package-modal
+) {
+  box-sizing: border-box !important;
+  padding: 4px !important;
+  border: 1px solid #232323 !important;
+  border-radius: 0 !important;
+  outline: 0 !important;
+  background: #cccccc !important;
+  box-shadow: inset 1px 1px 0 #e0e0e0, 1px 1px 0 #000000 !important;
+  overflow: hidden !important;
+}
+
+#root .app-shell.app-style-macos9platinum :is(
+  .mister-file-name-modal,
+  .mister-confirm-modal,
+  .mister-ra-detail-modal > .modal,
+  .mister-file-activity-popup,
+  .compact-install-modal.mister-install-modal,
+  .mister-github-package-modal
+)::after {
+  content: "" !important;
+  box-sizing: border-box !important;
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 200 !important;
+  border-width: 1px !important;
+  border-style: solid !important;
+  border-color: #e0e0e0 #575757 #575757 #e0e0e0 !important;
+  box-shadow: none !important;
+  pointer-events: none !important;
+}
+
+#root .app-shell.app-style-macos9platinum :is(
+  .mister-file-name-modal,
+  .mister-confirm-modal,
+  .mister-ra-detail-modal > .modal,
+  .mister-file-activity-popup,
+  .compact-install-modal.mister-install-modal,
+  .mister-github-package-modal
+) > .mister-dialog-titlebar {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  height: 22px !important;
+  min-height: 22px !important;
+  max-height: 22px !important;
+  position: relative !important;
+  inset: auto !important;
+  border: 0 !important;
+  border-bottom: 0 !important;
+  background: #cccccc !important;
+  box-shadow: none !important;
+  clip-path: inset(0 1px 0 0) !important;
+}
+
+#root .app-shell.app-style-macos9platinum :is(
+  .mister-file-name-modal,
+  .mister-confirm-modal,
+  .mister-ra-detail-modal > .modal,
+  .mister-file-activity-popup,
+  .compact-install-modal.mister-install-modal,
+  .mister-github-package-modal
+) > .mister-dialog-titlebar > .mister-dialog-close {
+  left: 0 !important;
+  top: 0 !important;
+  box-shadow: 4px 0 0 #cccccc !important;
+}
+
+#root .app-shell.app-style-macos9platinum :is(
+  .mister-file-name-modal,
+  .mister-confirm-modal,
+  .mister-ra-detail-modal > .modal,
+  .mister-file-activity-popup,
+  .compact-install-modal.mister-install-modal,
+  .mister-github-package-modal
+) > .mister-dialog-titlebar::before {
+  display: none !important;
+  content: none !important;
+}
+
+#root .app-shell.app-style-macos9platinum :is(
+  .mister-file-name-modal,
+  .mister-confirm-modal,
+  .mister-ra-detail-modal > .modal,
+  .mister-file-activity-popup,
+  .compact-install-modal.mister-install-modal,
+  .mister-github-package-modal
+) > .mister-dialog-titlebar > .mister-dialog-title::before,
+#root .app-shell.app-style-macos9platinum :is(
+  .mister-file-name-modal,
+  .mister-confirm-modal,
+  .mister-ra-detail-modal > .modal,
+  .mister-file-activity-popup,
+  .compact-install-modal.mister-install-modal,
+  .mister-github-package-modal
+) > .mister-dialog-titlebar > .mister-dialog-title::after {
+  content: "" !important;
+  position: absolute !important;
+  top: 0 !important;
+  width: 100vw !important;
+  height: 16px !important;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    #dddddd 0,
+    #dddddd 1px,
+    #999999 1px,
+    #999999 2px,
+    #bbbbbb 2px,
+    #bbbbbb 3px
+  ) !important;
+  background-size: 100% 3px !important;
+  pointer-events: none !important;
+}
+
+#root .app-shell.app-style-macos9platinum :is(
+  .mister-file-name-modal,
+  .mister-confirm-modal,
+  .mister-ra-detail-modal > .modal,
+  .mister-file-activity-popup,
+  .compact-install-modal.mister-install-modal,
+  .mister-github-package-modal
+) > .mister-dialog-titlebar > .mister-dialog-title::before {
+  right: calc(100% + 4px) !important;
+}
+
+#root .app-shell.app-style-macos9platinum :is(
+  .mister-file-name-modal,
+  .mister-confirm-modal,
+  .mister-ra-detail-modal > .modal,
+  .mister-file-activity-popup,
+  .compact-install-modal.mister-install-modal,
+  .mister-github-package-modal
+) > .mister-dialog-titlebar > .mister-dialog-title::after {
+  left: calc(100% + 4px) !important;
+}
+
+#root .app-shell.app-style-macos9platinum :is(
+  .mister-file-name-modal,
+  .mister-confirm-modal,
+  .mister-ra-detail-modal > .modal,
+  .mister-file-activity-popup,
+  .compact-install-modal.mister-install-modal,
+  .mister-github-package-modal
+) > .mister-dialog-titlebar > .mister-dialog-title {
+  top: 1px !important;
+  padding-right: 4px !important;
+  padding-left: 4px !important;
+  border: 0 !important;
+  outline: 0 !important;
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  filter: none !important;
+  overflow: visible !important;
+}
+
+.app-window-frame.window-unfocused:has(.app-shell.app-style-macos9platinum)
+  .app-shell.app-style-macos9platinum :is(
+    .mister-file-name-modal,
+    .mister-confirm-modal,
+    .mister-ra-detail-modal > .modal,
+    .mister-file-activity-popup,
+    .compact-install-modal.mister-install-modal,
+    .mister-github-package-modal
+  ) > .mister-dialog-titlebar > .mister-dialog-title::before,
+.app-window-frame.window-unfocused:has(.app-shell.app-style-macos9platinum)
+  .app-shell.app-style-macos9platinum :is(
+    .mister-file-name-modal,
+    .mister-confirm-modal,
+    .mister-ra-detail-modal > .modal,
+    .mister-file-activity-popup,
+    .compact-install-modal.mister-install-modal,
+    .mister-github-package-modal
+  ) > .mister-dialog-titlebar > .mister-dialog-title::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* Install Center dialogs keep their existing maximum-height scrolling while
+   sharing the same integrated compact-window chrome as file-browser prompts. */
+#root .app-shell.app-style-macos9platinum :is(
+  .compact-install-modal.mister-install-modal,
+  .mister-github-package-modal
+) {
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+}
+
+#root .app-shell.app-style-macos9platinum :is(
+  .compact-install-modal.mister-install-modal,
+  .mister-github-package-modal
+)::before {
+  content: "" !important;
+  box-sizing: border-box !important;
+  position: absolute !important;
+  top: 26px !important;
+  right: 4px !important;
+  bottom: 4px !important;
+  left: 4px !important;
+  z-index: 0 !important;
+  border: 1px solid #232323 !important;
+  background: #dddddd !important;
+  box-shadow: inset 1px 1px 0 #929292, 1px 1px 0 #ffffff !important;
+  pointer-events: none !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-install-backdrop {
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 20px !important;
+}
+
+/* Settings uses the same integrated compact-window construction, scaled to
+   its existing full workspace dimensions. */
+#root .app-shell.app-style-macos9platinum .settings-modal:has(> .mister-dialog-titlebar) {
+  box-sizing: border-box !important;
+  padding: 4px !important;
+  border: 1px solid #232323 !important;
+  border-radius: 0 !important;
+  outline: 0 !important;
+  background: #cccccc !important;
+  box-shadow: inset 1px 1px 0 #e0e0e0, 1px 1px 0 #000000 !important;
+  overflow: hidden !important;
+}
+
+#root .app-shell.app-style-macos9platinum .settings-modal::after {
+  content: "" !important;
+  box-sizing: border-box !important;
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 200 !important;
+  border: 1px solid !important;
+  border-color: #e0e0e0 #575757 #575757 #e0e0e0 !important;
+  box-shadow: none !important;
+  pointer-events: none !important;
+}
+
+#root .app-shell.app-style-macos9platinum .settings-modal > .mister-dialog-titlebar {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  height: 22px !important;
+  min-height: 22px !important;
+  max-height: 22px !important;
+  position: relative !important;
+  inset: auto !important;
+  border: 0 !important;
+  background: #cccccc !important;
+  box-shadow: none !important;
+  clip-path: inset(0 1px 0 0) !important;
+}
+
+#root .app-shell.app-style-macos9platinum .settings-modal > .mister-dialog-titlebar > .mister-dialog-close {
+  left: 0 !important;
+  top: 0 !important;
+  box-shadow: 4px 0 0 #cccccc !important;
+}
+
+#root .app-shell.app-style-macos9platinum .settings-modal > .mister-dialog-titlebar::before {
+  display: none !important;
+  content: none !important;
+}
+
+#root .app-shell.app-style-macos9platinum .settings-modal > .mister-dialog-titlebar > .mister-dialog-title::before,
+#root .app-shell.app-style-macos9platinum .settings-modal > .mister-dialog-titlebar > .mister-dialog-title::after {
+  content: "" !important;
+  position: absolute !important;
+  top: 0 !important;
+  width: 100vw !important;
+  height: 16px !important;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    #dddddd 0,
+    #dddddd 1px,
+    #999999 1px,
+    #999999 2px,
+    #bbbbbb 2px,
+    #bbbbbb 3px
+  ) !important;
+  background-size: 100% 3px !important;
+  pointer-events: none !important;
+}
+
+#root .app-shell.app-style-macos9platinum .settings-modal > .mister-dialog-titlebar > .mister-dialog-title::before {
+  right: calc(100% + 4px) !important;
+}
+
+#root .app-shell.app-style-macos9platinum .settings-modal > .mister-dialog-titlebar > .mister-dialog-title::after {
+  left: calc(100% + 4px) !important;
+}
+
+#root .app-shell.app-style-macos9platinum .settings-modal > .mister-dialog-titlebar > .mister-dialog-title {
+  top: 1px !important;
+  padding-right: 4px !important;
+  padding-left: 4px !important;
+  border: 0 !important;
+  outline: 0 !important;
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  filter: none !important;
+  overflow: visible !important;
+}
+
+.app-window-frame.window-unfocused:has(.app-shell.app-style-macos9platinum)
+  .app-shell.app-style-macos9platinum .settings-modal > .mister-dialog-titlebar > .mister-dialog-title::before,
+.app-window-frame.window-unfocused:has(.app-shell.app-style-macos9platinum)
+  .app-shell.app-style-macos9platinum .settings-modal > .mister-dialog-titlebar > .mister-dialog-title::after {
+  display: none !important;
+  content: none !important;
+}
+
+#root .app-shell.app-style-macos9platinum .settings-modal > .settings-workspace {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  height: calc(100% - 22px) !important;
+  min-height: 0 !important;
+  border: 1px solid #232323 !important;
+  background: #dddddd !important;
+  box-shadow: inset 1px 1px 0 #929292, 1px 1px 0 #ffffff !important;
+}
+
+#root .app-shell.app-style-macos9platinum .settings-modal-backdrop {
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 20px !important;
+}
+
+#root .app-shell.app-style-macos9platinum .settings-modal .settings-sidebar {
+  padding: 0 !important;
+  overflow: visible !important;
+}
+
+#root .app-shell.app-style-macos9platinum .settings-modal .settings-sidebar::after {
+  top: -1px !important;
+}
+
+#root .app-shell.app-style-macos9platinum .settings-modal .settings-nav {
+  box-sizing: border-box !important;
+  padding: 12px !important;
+}
+
+#root .app-shell.app-style-macos9platinum .settings-modal :is(
+  .settings-nav button,
+  .settings-nav-about
+) {
+  padding: 0 12px 0 6px !important;
+}
+
+#root .app-shell.app-style-macos9platinum .settings-modal .settings-page-header {
+  width: calc(100% + 1px) !important;
+  margin-right: -1px !important;
+  border-bottom: 1px solid #404040 !important;
+  box-shadow: none !important;
+}
+
+#root .app-shell.app-style-macos9platinum .settings-modal .settings-page-header::before {
+  content: "" !important;
+  display: block !important;
+  box-sizing: border-box !important;
+  position: absolute !important;
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  z-index: 2 !important;
+  border: 1px solid #404040 !important;
+  border-top-width: 2px !important;
+  border-left-width: 2px !important;
+  border-bottom-width: 2px !important;
+  background: transparent !important;
+  pointer-events: none !important;
+}
+
+#root .app-shell.app-style-macos9platinum .settings-modal .settings-page-header::after {
+  content: "" !important;
+  display: block !important;
+  height: 1px !important;
+  position: absolute !important;
+  right: var(--scrollbar-thickness, 16px) !important;
+  bottom: -1px !important;
+  left: 0 !important;
+  z-index: 1 !important;
+  background: #ffffff !important;
+  pointer-events: none !important;
+}
+
+#root .app-shell.app-style-macos9platinum .settings-modal .settings-themed-scrollbar {
+  top: 31px !important;
+  right: 0 !important;
+  bottom: -1px !important;
+}
+
+#root .app-shell.app-style-macos9platinum .settings-modal > .settings-workspace::before {
+  display: none !important;
+  content: none !important;
+}
+
+#root .app-shell.app-style-macos9platinum .settings-modal > .settings-workspace::after {
+  content: "" !important;
+  display: block !important;
+  width: 1px !important;
+  position: absolute !important;
+  top: 31px !important;
+  bottom: 0 !important;
+  left: 195px !important;
+  z-index: 30 !important;
+  background: #232323 !important;
+  pointer-events: none !important;
+}
+
+#root .app-shell.app-style-macos9platinum .settings-modal::before {
+  content: "" !important;
+  display: block !important;
+  width: auto !important;
+  height: 1px !important;
+  position: absolute !important;
+  left: 4px !important;
+  right: 4px !important;
+  bottom: 5px !important;
+  z-index: 201 !important;
+  background: #232323 !important;
+  opacity: 1 !important;
+  pointer-events: none !important;
+}
+
+/* Lower only the main application titlebar contents; dialog titlebars retain
+   their compact-window alignment. */
+#root .app-shell.app-style-macos9platinum .mister-electron-header.topbar::before {
+  top: calc(var(--mac9-title-stripe-top) + 2px) !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-header-left {
+  top: calc(var(--mac9-title-plaque-top) + 3px) !important;
+}
+
+#root .app-shell.app-style-macos9platinum :is(
+  .mister-header-actions,
+  .topbar-actions
+) .window-control,
+#root .app-shell.app-style-macos9platinum .mister-header-menu-button {
+  top: calc(var(--mac9-control-top) + 2px) !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-list-card {
+  box-sizing: border-box !important;
+  border: 2px solid #232323 !important;
+  box-shadow: inset 1px 1px 0 #929292, 1px 1px 0 #ffffff !important;
+}
+
+#root .app-shell.app-style-macos9platinum :is(
+  .mister-file-name-modal,
+  .mister-confirm-modal,
+  .mister-ra-detail-modal > .modal,
+  .mister-file-activity-popup
+) > .mister-small-dialog-body {
+  box-sizing: border-box !important;
+  border: 1px solid #232323 !important;
+  background: #dddddd !important;
+  box-shadow: inset 1px 1px 0 #929292, 1px 1px 0 #ffffff !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-file-name-modal > .mister-small-dialog-body {
+  padding: 14px 24px 24px !important;
+}
+
+/* PDF viewer: use the same integrated Platinum window and compact browser
+   control language as the file browser. */
+.manual-pdf-window-frame:has(.app-shell.app-style-macos9platinum) {
+  --app-window-visual-margin: 8px !important;
+}
+
+.manual-pdf-window-frame.is-maximized:has(.app-shell.app-style-macos9platinum) {
+  --app-window-visual-margin: 0px !important;
+}
+
+.manual-pdf-window-frame:has(.app-shell.app-style-macos9platinum) > .app-window-surface {
+  box-sizing: border-box !important;
+  padding: 4px !important;
+  border: 1px solid #232323 !important;
+  background: #cccccc !important;
+  box-shadow: inset 1px 1px 0 #e0e0e0, 1px 1px 0 #000000 !important;
+}
+
+.manual-pdf-window-frame:has(.app-shell.app-style-macos9platinum) > .app-window-surface::after {
+  content: "" !important;
+  display: block !important;
+  box-sizing: border-box !important;
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 200 !important;
+  border: 1px solid !important;
+  border-color: #e0e0e0 #575757 #575757 #e0e0e0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  pointer-events: none !important;
+}
+
+.manual-pdf-window-frame .app-shell.app-style-macos9platinum.manual-pdf-window {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  grid-template-columns: none !important;
+  padding: 0 !important;
+  background: #cccccc !important;
+  overflow: hidden !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-header {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  max-width: none !important;
+  height: 22px !important;
+  min-height: 22px !important;
+  max-height: 22px !important;
+  margin: 0 !important;
+  padding: 0 4px !important;
+  display: block !important;
+  position: relative !important;
+  z-index: 3 !important;
+  border: 0 !important;
+  background-color: #cccccc !important;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    #dddddd 0,
+    #dddddd 1px,
+    #999999 1px,
+    #999999 2px,
+    #bbbbbb 2px,
+    #bbbbbb 3px
+  ) !important;
+  background-position: 0 3px !important;
+  background-size: 100% 3px !important;
+  background-repeat: repeat-x !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+}
+
+.manual-pdf-window-frame.window-unfocused #root .app-shell.app-style-macos9platinum .manual-pdf-header,
+.manual-pdf-window-frame.window-unfocused .app-shell.app-style-macos9platinum .manual-pdf-header {
+  background-image: none !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-header::before,
+#root .app-shell.app-style-macos9platinum .manual-pdf-header::after {
+  display: none !important;
+  content: none !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-title-block {
+  box-sizing: border-box !important;
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: calc(100% - 150px) !important;
+  height: 18px !important;
+  min-height: 18px !important;
+  margin: 0 !important;
+  padding: 0 4px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  position: absolute !important;
+  top: 1px !important;
+  left: 50% !important;
+  z-index: 5 !important;
+  border: 0 !important;
+  background: #cccccc !important;
+  box-shadow: 4px 0 0 #cccccc, -4px 0 0 #cccccc !important;
+  transform: translateX(-50%) !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-title-block::before {
+  display: none !important;
+  content: none !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-title {
+  display: block !important;
+  max-width: 100% !important;
+  font-family: "Geneva Embedded", Geneva, sans-serif !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  line-height: 16px !important;
+  color: #111111 !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-header > .mister-header-actions {
+  width: auto !important;
+  min-width: 0 !important;
+  height: 14px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  position: absolute !important;
+  top: 2px !important;
+  right: 0 !important;
+  z-index: 8 !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-header > .manual-pdf-window-controls-left {
+  right: auto !important;
+  left: 0 !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-toolbar {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  min-height: 47px !important;
+  margin: 0 !important;
+  padding: 7px 8px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  border: 1px solid #232323 !important;
+  border-bottom: 0 !important;
+  border-radius: 0 !important;
+  background: #d6d6d6 !important;
+  box-shadow: inset 1px 1px 0 #ffffff !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-toolbar button {
+  box-sizing: border-box !important;
+  height: 31px !important;
+  min-height: 31px !important;
+  max-height: 31px !important;
+  min-width: 37px !important;
+  padding: 0 10px !important;
+  flex: 0 0 auto !important;
+  border: 1px solid transparent !important;
+  border-image-source: url("mister-vaultkit-media://asset/macos9/buttons/secondary-normal.png") !important;
+  border-image-slice: 8 8 9 8 fill !important;
+  border-image-width: 8px 8px 9px 8px !important;
+  border-image-outset: 0 !important;
+  border-image-repeat: stretch !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: #202020 !important;
+  image-rendering: pixelated !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-toolbar button:not(:disabled):is(:hover, :active) {
+  border-image-source: url("mister-vaultkit-media://asset/macos9/buttons/secondary-pressed-hover.png") !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-toolbar button:disabled {
+  border-image-source: url("mister-vaultkit-media://asset/macos9/buttons/secondary-disabled.png") !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-toolbar :is(input, .custom-select-trigger) {
+  box-sizing: border-box !important;
+  height: 31px !important;
+  min-height: 31px !important;
+  max-height: 31px !important;
+  border: 1px solid #333333 !important;
+  border-radius: 0 !important;
+  background: #ffffff !important;
+  color: #111111 !important;
+  box-shadow: inset 1px 1px 0 #777777, inset -1px -1px 0 #ffffff !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-toolbar-divider {
+  height: 29px !important;
+  margin: 0 1px !important;
+  background: #777777 !important;
+  box-shadow: 1px 0 0 #ffffff !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-subheader {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  min-height: 24px !important;
+  padding: 3px 8px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  border: 1px solid #232323 !important;
+  border-top: 1px solid #5a5a5a !important;
+  border-radius: 0 !important;
+  background: #d6d6d6 !important;
+  box-shadow: inset 0 1px 0 #ffffff !important;
+  color: #111111 !important;
+  font-size: 11px !important;
+  line-height: 16px !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-content {
+  box-sizing: border-box !important;
+  margin: 0 !important;
+  padding: 8px !important;
+  border: 1px solid #232323 !important;
+  border-top: 0 !important;
+  background: #dddddd !important;
+  box-shadow: inset 1px 1px 0 #929292, 1px 1px 0 #ffffff !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-viewport,
+#root .app-shell.app-style-macos9platinum .manual-pdf-loading {
+  border: 1px solid #232323 !important;
+  border-radius: 0 !important;
+  box-shadow: inset 1px 1px 0 #777777 !important;
+}
+
+/* Match the file-browser address-row proportions exactly. The earlier PDF
+   pass used the dialog-button 8px slice, which made every control too heavy. */
+#root .app-shell.app-style-macos9platinum .manual-pdf-toolbar {
+  height: 45px !important;
+  min-height: 45px !important;
+  max-height: 45px !important;
+  padding: 6px 8px !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-toolbar button:not(.custom-select-trigger) {
+  border-image-width: 6px !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-toolbar .manual-pdf-icon-button {
+  width: 37px !important;
+  min-width: 37px !important;
+  max-width: 37px !important;
+  padding: 0 !important;
+  display: grid !important;
+  place-items: center !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-tool-glyph {
+  box-sizing: border-box !important;
+  width: 11px !important;
+  height: 11px !important;
+  display: block !important;
+  position: relative !important;
+  background: transparent !important;
+  color: #232323 !important;
+  pointer-events: none !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-tool-glyph:is(.previous, .next)::before {
+  content: "" !important;
+  box-sizing: border-box !important;
+  width: 7px !important;
+  height: 7px !important;
+  position: absolute !important;
+  top: 2px !important;
+  border-bottom: 2px solid currentColor !important;
+  border-left: 2px solid currentColor !important;
+  border-radius: 1px !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-tool-glyph.previous::before {
+  left: 3px !important;
+  transform: rotate(45deg) !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-tool-glyph.next::before {
+  left: 0 !important;
+  transform: rotate(225deg) !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-tool-glyph:is(.minus, .plus)::before {
+  content: "" !important;
+  width: 9px !important;
+  height: 2px !important;
+  position: absolute !important;
+  top: 5px !important;
+  left: 1px !important;
+  border-radius: 1px !important;
+  background: currentColor !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-tool-glyph.plus::after {
+  content: "" !important;
+  width: 2px !important;
+  height: 9px !important;
+  position: absolute !important;
+  top: 1px !important;
+  left: 5px !important;
+  border-radius: 1px !important;
+  background: currentColor !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-toolbar .manual-pdf-page-field {
+  gap: 5px !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-toolbar .manual-pdf-page-field input {
+  width: 52px !important;
+  min-width: 52px !important;
+  padding-right: 5px !important;
+  padding-left: 5px !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-toolbar > .manual-pdf-zoom-select {
+  width: 118px !important;
+  min-width: 118px !important;
+  max-width: 118px !important;
+  flex: 0 0 118px !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-toolbar > .manual-pdf-zoom-select .custom-select-trigger {
+  --platinum-dropdown-menu-left-inset: 0;
+  --platinum-dropdown-button-width: 0;
+  width: 118px !important;
+  min-width: 118px !important;
+  max-width: 118px !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-toolbar .manual-pdf-toolbar-divider {
+  height: 27px !important;
+}
+
+/* Fresh PDF viewer construction. This intentionally avoids the main topbar
+   classes so the standalone window cannot inherit sidebar-era positioning. */
+.manual-pdf-window-frame:has(.app-shell.app-style-macos9platinum) {
+  --app-window-visual-margin: 8px !important;
+}
+
+.manual-pdf-window-frame.is-maximized:has(.app-shell.app-style-macos9platinum) {
+  --app-window-visual-margin: 0px !important;
+}
+
+.manual-pdf-window-frame:has(.app-shell.app-style-macos9platinum) > .app-window-surface {
+  box-sizing: border-box !important;
+  padding: 4px !important;
+  border: 1px solid #232323 !important;
+  border-radius: 0 !important;
+  background: #cccccc !important;
+  box-shadow: inset 1px 1px 0 #e0e0e0, 1px 1px 0 #000000 !important;
+  clip-path: inset(0) !important;
+}
+
+.manual-pdf-window-frame:has(.app-shell.app-style-macos9platinum) > .app-window-surface::after {
+  content: "" !important;
+  display: block !important;
+  box-sizing: border-box !important;
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 200 !important;
+  border: 1px solid !important;
+  border-color: #e0e0e0 #575757 #575757 #e0e0e0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  pointer-events: none !important;
+}
+
+#root .app-shell.app-style-macos9platinum.manual-pdf-window {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  height: 100% !important;
+  padding: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  grid-template: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: #cccccc !important;
+  box-shadow: none !important;
+  clip-path: inset(0) !important;
+  overflow: hidden !important;
+}
+
+/* FINAL PDF POPUP CHROME — specificity deliberately exceeds legacy PDF rules below. */
+#root > .manual-pdf-window-frame.manual-pdf-window-frame {
+  box-sizing: border-box !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  position: relative !important;
+  background: transparent !important;
+  overflow: hidden !important;
+}
+
+#root > .manual-pdf-window-frame.manual-pdf-window-frame::before {
+  content: none !important;
+  display: none !important;
+}
+
+#root > .manual-pdf-window-frame.manual-pdf-window-frame::after {
+  content: none !important;
+  display: none !important;
+}
+
+html:has(#root > .manual-pdf-window-frame),
+body:has(#root > .manual-pdf-window-frame),
+#root:has(> .manual-pdf-window-frame) {
+  background: transparent !important;
+}
+
+#root > .manual-pdf-window-frame.manual-pdf-window-frame > .app-window-shadow-layer,
+#root > .manual-pdf-window-frame.manual-pdf-window-frame > .app-window-outer-glow-layer,
+#root > .manual-pdf-window-frame.manual-pdf-window-frame > .app-window-border-layer,
+#root > .manual-pdf-window-frame.manual-pdf-window-frame > .app-window-surface > .app-window-inner-glow-layer {
+  display: none !important;
+}
+
+#root > .manual-pdf-window-frame.manual-pdf-window-frame > .app-window-surface {
+  box-sizing: border-box !important;
+  position: absolute !important;
+  z-index: 1 !important;
+  inset: 0 2px 2px 0 !important;
+  width: auto !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 4px !important;
+  border: 1px solid #232323 !important;
+  border-radius: 0 !important;
+  background: #cccccc !important;
+  box-shadow: inset 1px 1px 0 #e0e0e0, 2px 2px 0 #303030 !important;
+  clip-path: none !important;
+  overflow: hidden !important;
+}
+
+#root > .manual-pdf-window-frame.manual-pdf-window-frame > .app-window-surface::after {
+  content: "" !important;
+  box-sizing: border-box !important;
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 200 !important;
+  border: 1px solid !important;
+  border-color: #e0e0e0 #575757 #575757 #e0e0e0 !important;
+  pointer-events: none !important;
+}
+
+#root > .manual-pdf-window-frame.manual-pdf-window-frame > .app-window-surface > .manual-pdf-window.app-shell.app-style-macos9platinum {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: #cccccc !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+}
+
+#root > .manual-pdf-window-frame > .app-window-surface > .manual-pdf-window.app-shell.app-style-macos9platinum .manual-pdf-titlebar {
+  box-sizing: border-box !important;
+  position: relative !important;
+  width: 100% !important;
+  height: 22px !important;
+  min-height: 22px !important;
+  max-height: 22px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: block !important;
+  flex: 0 0 22px !important;
+  border: 0 !important;
+  background: #cccccc !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+  -webkit-app-region: drag !important;
+}
+
+#root > .manual-pdf-window-frame > .app-window-surface > .manual-pdf-window.app-shell.app-style-macos9platinum .manual-pdf-titlebar::before,
+#root > .manual-pdf-window-frame > .app-window-surface > .manual-pdf-window.app-shell.app-style-macos9platinum .manual-pdf-titlebar::after {
+  content: none !important;
+  display: none !important;
+}
+
+#root > .manual-pdf-window-frame > .app-window-surface > .manual-pdf-window.app-shell.app-style-macos9platinum .manual-pdf-titlebar > .mister-dialog-close {
+  box-sizing: border-box !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  z-index: 3 !important;
+  width: 18px !important;
+  min-width: 18px !important;
+  max-width: 18px !important;
+  height: 18px !important;
+  min-height: 18px !important;
+  max-height: 18px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent url("mister-vaultkit-media://asset/macos9/control-close-normal.png") center / 18px 18px no-repeat !important;
+  box-shadow: 4px 0 0 #cccccc !important;
+  image-rendering: pixelated !important;
+  -webkit-app-region: no-drag !important;
+}
+
+#root > .manual-pdf-window-frame > .app-window-surface > .manual-pdf-window.app-shell.app-style-macos9platinum .manual-pdf-titlebar > .mister-dialog-close:active {
+  background-image: url("mister-vaultkit-media://asset/macos9/control-close-pressed.png") !important;
+}
+
+#root > .manual-pdf-window-frame > .app-window-surface > .manual-pdf-window.app-shell.app-style-macos9platinum .manual-pdf-titlebar > .mister-dialog-close > * {
+  display: none !important;
+}
+
+#root > .manual-pdf-window-frame > .app-window-surface > .manual-pdf-window.app-shell.app-style-macos9platinum .manual-pdf-titlebar > .manual-pdf-title {
+  box-sizing: border-box !important;
+  position: absolute !important;
+  top: 1px !important;
+  left: 50% !important;
+  z-index: 2 !important;
+  width: auto !important;
+  max-width: calc(100% - 88px) !important;
+  height: 18px !important;
+  margin: 0 !important;
+  padding: 0 4px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: var(--mac9-titlebar-active-text-color, var(--titlebar-text-color-effective, #202020)) !important;
+  -webkit-text-fill-color: var(--mac9-titlebar-active-text-color, var(--titlebar-text-color-effective, #202020)) !important;
+  font-family: var(--titlebar-font-effective, var(--app-font)) !important;
+  font-size: var(--titlebar-font-size-effective, 12px) !important;
+  font-weight: var(--titlebar-font-weight-effective, 400) !important;
+  font-style: var(--titlebar-font-style-effective, normal) !important;
+  line-height: 18px !important;
+  text-decoration: none !important;
+  text-shadow: none !important;
+  white-space: nowrap !important;
+  overflow: visible !important;
+  transform: translateX(-50%) !important;
+}
+
+#root > .manual-pdf-window-frame > .app-window-surface > .manual-pdf-window.app-shell.app-style-macos9platinum .manual-pdf-titlebar > .manual-pdf-title::before,
+#root > .manual-pdf-window-frame > .app-window-surface > .manual-pdf-window.app-shell.app-style-macos9platinum .manual-pdf-titlebar > .manual-pdf-title::after {
+  content: "" !important;
+  display: block !important;
+  position: absolute !important;
+  top: 0 !important;
+  width: 50vw !important;
+  height: 16px !important;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    #dddddd 0,
+    #dddddd 1px,
+    #999999 1px,
+    #999999 2px,
+    #bbbbbb 2px,
+    #bbbbbb 3px
+  ) !important;
+  background-size: 100% 3px !important;
+  pointer-events: none !important;
+}
+
+#root > .manual-pdf-window-frame > .app-window-surface > .manual-pdf-window.app-shell.app-style-macos9platinum .manual-pdf-titlebar > .manual-pdf-title::before {
+  right: calc(100% + 4px) !important;
+}
+
+#root > .manual-pdf-window-frame > .app-window-surface > .manual-pdf-window.app-shell.app-style-macos9platinum .manual-pdf-titlebar > .manual-pdf-title::after {
+  left: calc(100% + 4px) !important;
+}
+
+#root > .manual-pdf-window-frame.window-focused > .app-window-surface > .manual-pdf-window.app-shell.app-style-macos9platinum .manual-pdf-titlebar > .manual-pdf-title {
+  color: var(--mac9-titlebar-active-text-color, #202020) !important;
+  -webkit-text-fill-color: var(--mac9-titlebar-active-text-color, #202020) !important;
+}
+
+#root > .manual-pdf-window-frame.window-unfocused > .app-window-surface > .manual-pdf-window.app-shell.app-style-macos9platinum .manual-pdf-titlebar > .manual-pdf-title {
+  color: var(--mac9-titlebar-inactive-text-color, #444444) !important;
+  -webkit-text-fill-color: var(--mac9-titlebar-inactive-text-color, #444444) !important;
+}
+
+#root > .manual-pdf-window-frame.window-unfocused > .app-window-surface > .manual-pdf-window.app-shell.app-style-macos9platinum .manual-pdf-titlebar > .manual-pdf-title::before,
+#root > .manual-pdf-window-frame.window-unfocused > .app-window-surface > .manual-pdf-window.app-shell.app-style-macos9platinum .manual-pdf-titlebar > .manual-pdf-title::after {
+  display: none !important;
+  content: none !important;
+}
+
+#root > .manual-pdf-window-frame > .app-window-surface > .manual-pdf-window.app-shell.app-style-macos9platinum .manual-pdf-inner-panel {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  height: calc(100% - 22px) !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex !important;
+  flex: 1 1 auto !important;
+  flex-direction: column !important;
+  border: 1px solid #232323 !important;
+  border-radius: 0 !important;
+  background: #dddddd !important;
+  box-shadow: inset 1px 1px 0 #929292, 1px 1px 0 #ffffff !important;
+  overflow: hidden !important;
+}
+
+/* A 37px Platinum control plus 6px padding on each side requires a 49px
+   toolbar. The legacy 45px rail clipped the lower four pixels of every asset. */
+#root > .manual-pdf-window-frame > .app-window-surface > .manual-pdf-window.app-shell.app-style-macos9platinum .manual-pdf-toolbar {
+  box-sizing: border-box !important;
+  height: 49px !important;
+  min-height: 49px !important;
+  max-height: 49px !important;
+  padding: 6px 8px !important;
+  flex: 0 0 49px !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+}
+
+#root > .manual-pdf-window-frame > .app-window-surface > .manual-pdf-window.app-shell.app-style-macos9platinum .manual-pdf-toolbar .manual-pdf-control-group,
+#root > .manual-pdf-window-frame > .app-window-surface > .manual-pdf-window.app-shell.app-style-macos9platinum .manual-pdf-toolbar .manual-pdf-tool-button,
+#root > .manual-pdf-window-frame > .app-window-surface > .manual-pdf-window.app-shell.app-style-macos9platinum .manual-pdf-toolbar .manual-pdf-page-field,
+#root > .manual-pdf-window-frame > .app-window-surface > .manual-pdf-window.app-shell.app-style-macos9platinum .manual-pdf-toolbar .manual-pdf-zoom-select,
+#root > .manual-pdf-window-frame > .app-window-surface > .manual-pdf-window.app-shell.app-style-macos9platinum .manual-pdf-toolbar .manual-pdf-zoom-select > .custom-select-trigger,
+#root > .manual-pdf-window-frame > .app-window-surface > .manual-pdf-window.app-shell.app-style-macos9platinum .manual-pdf-toolbar .manual-pdf-zoom-select .custom-select-value {
+  height: 37px !important;
+  min-height: 37px !important;
+  max-height: 37px !important;
+}
+
+#root > .manual-pdf-window-frame > .app-window-surface > .manual-pdf-window.app-shell.app-style-macos9platinum .manual-pdf-toolbar .manual-pdf-tool-button {
+  border: 1px solid transparent !important;
+  border-image-source: url("mister-vaultkit-media://asset/macos9/buttons/secondary-normal.png") !important;
+  border-image-slice: 8 8 9 8 fill !important;
+  border-image-width: 8px 8px 9px 8px !important;
+  border-image-outset: 0 !important;
+  border-image-repeat: stretch !important;
+  overflow: visible !important;
+}
+
+#root > .manual-pdf-window-frame > .app-window-surface > .manual-pdf-window.app-shell.app-style-macos9platinum .manual-pdf-toolbar .manual-pdf-tool-button:not(:disabled):is(:hover, :active) {
+  border-image-source: url("mister-vaultkit-media://asset/macos9/buttons/secondary-pressed-hover.png") !important;
+}
+
+#root > .manual-pdf-window-frame > .app-window-surface > .manual-pdf-window.app-shell.app-style-macos9platinum .manual-pdf-toolbar .manual-pdf-zoom-select,
+#root > .manual-pdf-window-frame > .app-window-surface > .manual-pdf-window.app-shell.app-style-macos9platinum .manual-pdf-toolbar .manual-pdf-zoom-select > .custom-select-trigger {
+  overflow: visible !important;
+}
+
+/* PDF zoom control: use the same three-piece Platinum dropdown artwork as
+   the rest of the app. The old composite border image exposed its transparent
+   lower edge over the normal field artwork. */
+#root > .manual-pdf-window-frame > .app-window-surface > .manual-pdf-window.app-shell.app-style-macos9platinum .manual-pdf-zoom-select,
+#root > .manual-pdf-window-frame > .app-window-surface > .manual-pdf-window.app-shell.app-style-macos9platinum .manual-pdf-zoom-select > .custom-select-trigger {
+  width: 168px !important;
+  min-width: 168px !important;
+  max-width: 168px !important;
+}
+
+#root > .manual-pdf-window-frame > .app-window-surface > .manual-pdf-window.app-shell.app-style-macos9platinum .manual-pdf-zoom-select {
+  flex: 0 0 168px !important;
+}
+
+#root > .manual-pdf-window-frame > .app-window-surface > .manual-pdf-window.app-shell.app-style-macos9platinum .manual-pdf-zoom-select > .custom-select-trigger {
+  --platinum-dropdown-menu-left-inset: 7px;
+  --platinum-dropdown-button-width: 31px;
+  box-sizing: border-box !important;
+  padding: 0 39px 0 15px !important;
+  border: 0 !important;
+  border-image: none !important;
+  border-radius: 0 !important;
+  background-color: transparent !important;
+  background-image:
+    url("mister-vaultkit-media://asset/macos9/dropdowns/left-normal.png"),
+    url("mister-vaultkit-media://asset/macos9/dropdowns/right-normal.png"),
+    url("mister-vaultkit-media://asset/macos9/dropdowns/center-normal.png") !important;
+  background-position: left center, right center, 10px center !important;
+  background-size: 11px 37px, 35px 37px, calc(100% - 44px) 37px !important;
+  background-repeat: no-repeat, no-repeat, no-repeat !important;
+  box-shadow: none !important;
+  color: #202020 !important;
+  -webkit-text-fill-color: #202020 !important;
+  image-rendering: pixelated !important;
+}
+
+#root > .manual-pdf-window-frame > .app-window-surface > .manual-pdf-window.app-shell.app-style-macos9platinum .manual-pdf-zoom-select > .custom-select-trigger:is(:hover, :focus, :focus-visible, [aria-expanded="true"]):not(:disabled) {
+  background-image:
+    url("mister-vaultkit-media://asset/macos9/dropdowns/left-selected-hover.png"),
+    url("mister-vaultkit-media://asset/macos9/dropdowns/right-selected-hover.png"),
+    url("mister-vaultkit-media://asset/macos9/dropdowns/center-selected-hover.png") !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+#root > .manual-pdf-window-frame > .app-window-surface > .manual-pdf-window.app-shell.app-style-macos9platinum .manual-pdf-content {
+  padding: 0 !important;
+}
+
+/* This menu is portaled to body, so it carries a dedicated class rather than
+   relying on an ancestor selector from the PDF window. */
+.custom-select-menu.app-style-macos9platinum.manual-pdf-zoom-menu {
+  background: #dddddd !important;
+}
+
+.custom-select-menu.app-style-macos9platinum.manual-pdf-zoom-menu .custom-select-option,
+.custom-select-menu.app-style-macos9platinum.manual-pdf-zoom-menu .custom-select-confirmation-overlay {
+  width: 100% !important;
+  border: 0 !important;
+  border-image: none !important;
+  box-shadow: none !important;
+}
+
+/* FINAL PDF POPUP CHROME
+   Keep this block last: earlier PDF experiments intentionally lose to the
+   same integrated frame/titlebar construction used by Platinum dialogs. */
+.manual-pdf-window-frame {
+  box-sizing: border-box !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: #cccccc !important;
+  overflow: hidden !important;
+}
+
+.manual-pdf-window-frame #root,
+.manual-pdf-window-frame #root > .app-shell.app-style-macos9platinum,
+.manual-pdf-window-frame #root > .app-shell.app-style-macos9platinum > .app-window-surface {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+}
+
+.manual-pdf-window-frame #root > .app-shell.app-style-macos9platinum {
+  position: relative !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: #cccccc !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+}
+
+.manual-pdf-window-frame #root > .app-shell.app-style-macos9platinum::before,
+.manual-pdf-window-frame #root > .app-shell.app-style-macos9platinum::after,
+.manual-pdf-window-frame #root > .app-shell.app-style-macos9platinum > .app-window-shadow,
+.manual-pdf-window-frame #root > .app-shell.app-style-macos9platinum > .app-window-glow,
+.manual-pdf-window-frame #root > .app-shell.app-style-macos9platinum > .app-window-border {
+  display: none !important;
+}
+
+.manual-pdf-window-frame #root > .app-shell.app-style-macos9platinum > .app-window-surface {
+  position: absolute !important;
+  inset: 0 !important;
+  padding: 4px !important;
+  border: 1px solid #232323 !important;
+  border-radius: 0 !important;
+  background: #cccccc !important;
+  box-shadow: inset 1px 1px 0 #e0e0e0, 1px 1px 0 #000000 !important;
+  clip-path: none !important;
+  overflow: hidden !important;
+}
+
+.manual-pdf-window-frame #root .app-shell.app-style-macos9platinum .manual-pdf-shell {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: #cccccc !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+}
+
+.manual-pdf-window-frame #root .app-shell.app-style-macos9platinum .mister-dialog-titlebar.manual-pdf-titlebar {
+  box-sizing: border-box !important;
+  position: relative !important;
+  width: 100% !important;
+  height: 22px !important;
+  min-height: 22px !important;
+  max-height: 22px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: block !important;
+  flex: 0 0 22px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: #cccccc !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+}
+
+.manual-pdf-window-frame #root .app-shell.app-style-macos9platinum .mister-dialog-titlebar.manual-pdf-titlebar::before,
+.manual-pdf-window-frame #root .app-shell.app-style-macos9platinum .mister-dialog-titlebar.manual-pdf-titlebar::after {
+  content: none !important;
+  display: none !important;
+}
+
+.manual-pdf-window-frame #root .app-shell.app-style-macos9platinum .manual-pdf-titlebar > .mister-dialog-close {
+  box-sizing: border-box !important;
+  position: absolute !important;
+  top: 2px !important;
+  left: 0 !important;
+  z-index: 3 !important;
+  width: 18px !important;
+  min-width: 18px !important;
+  max-width: 18px !important;
+  height: 18px !important;
+  min-height: 18px !important;
+  max-height: 18px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent url("mister-vaultkit-media://asset/macos9/control-close-normal.png") center / 18px 18px no-repeat !important;
+  box-shadow: none !important;
+  image-rendering: pixelated !important;
+}
+
+.manual-pdf-window-frame #root .app-shell.app-style-macos9platinum .manual-pdf-titlebar > .mister-dialog-close:active {
+  background-image: url("mister-vaultkit-media://asset/macos9/control-close-pressed.png") !important;
+}
+
+.manual-pdf-window-frame #root .app-shell.app-style-macos9platinum .manual-pdf-titlebar > .mister-dialog-close > * {
+  display: none !important;
+}
+
+.manual-pdf-window-frame #root .app-shell.app-style-macos9platinum .manual-pdf-titlebar > .mister-dialog-title.manual-pdf-title {
+  box-sizing: border-box !important;
+  position: absolute !important;
+  inset: 0 auto auto 50% !important;
+  z-index: 2 !important;
+  width: auto !important;
+  max-width: calc(100% - 88px) !important;
+  height: 22px !important;
+  margin: 0 !important;
+  padding: 2px 4px 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: var(--titlebar-text-color-effective, #202020) !important;
+  font-family: var(--titlebar-font-effective, var(--app-font)) !important;
+  font-size: var(--titlebar-font-size-effective, 12px) !important;
+  font-weight: var(--titlebar-font-weight-effective, 700) !important;
+  font-style: var(--titlebar-font-style-effective, normal) !important;
+  line-height: 18px !important;
+  text-decoration: none !important;
+  text-shadow: none !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  transform: translateX(-50%) !important;
+}
+
+.manual-pdf-window-frame #root .app-shell.app-style-macos9platinum .manual-pdf-titlebar > .mister-dialog-title.manual-pdf-title::before,
+.manual-pdf-window-frame #root .app-shell.app-style-macos9platinum .manual-pdf-titlebar > .mister-dialog-title.manual-pdf-title::after {
+  content: "" !important;
+  display: block !important;
+  position: absolute !important;
+  top: 4px !important;
+  width: 50vw !important;
+  height: 12px !important;
+  background: repeating-linear-gradient(to bottom, #777777 0 1px, transparent 1px 3px) !important;
+  pointer-events: none !important;
+}
+
+.manual-pdf-window-frame #root .app-shell.app-style-macos9platinum .manual-pdf-titlebar > .mister-dialog-title.manual-pdf-title::before {
+  right: calc(100% + 4px) !important;
+}
+
+.manual-pdf-window-frame #root .app-shell.app-style-macos9platinum .manual-pdf-titlebar > .mister-dialog-title.manual-pdf-title::after {
+  left: calc(100% + 4px) !important;
+}
+
+.manual-pdf-window-frame.window-unfocused #root .app-shell.app-style-macos9platinum .manual-pdf-titlebar > .mister-dialog-title.manual-pdf-title {
+  color: var(--titlebar-inactive-text-color-effective, #707070) !important;
+}
+
+.manual-pdf-window-frame.window-unfocused #root .app-shell.app-style-macos9platinum .manual-pdf-titlebar > .mister-dialog-title.manual-pdf-title::before,
+.manual-pdf-window-frame.window-unfocused #root .app-shell.app-style-macos9platinum .manual-pdf-titlebar > .mister-dialog-title.manual-pdf-title::after {
+  display: none !important;
+}
+
+.manual-pdf-window-frame #root .app-shell.app-style-macos9platinum .manual-pdf-inner-panel {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  height: calc(100% - 22px) !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex !important;
+  flex: 1 1 auto !important;
+  flex-direction: column !important;
+  border: 1px solid #232323 !important;
+  border-radius: 0 !important;
+  background: #dddddd !important;
+  box-shadow: inset 1px 1px 0 #929292, 1px 1px 0 #ffffff !important;
+  overflow: hidden !important;
+}
+
+/* PDF viewer correction pass: use the exact established window metrics and
+   remove the transparent frameless-window gutter. */
+.manual-pdf-window-frame:has(.app-shell.app-style-macos9platinum),
+.manual-pdf-window-frame.is-maximized:has(.app-shell.app-style-macos9platinum) {
+  --app-window-visual-margin: 0px !important;
+  padding: 0 !important;
+  background: #cccccc !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-titlebar,
+#root .app-shell.app-style-macos9platinum .manual-pdf-titlebar > .manual-pdf-title {
+  background-color: var(--mac9-face, #cccccc) !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-titlebar > .manual-pdf-title {
+  color: var(--text-color, #202020) !important;
+  font-family: var(--titlebar-font-effective, var(--app-font)) !important;
+  font-size: var(--titlebar-font-size-effective, var(--app-font-size, 12px)) !important;
+  font-weight: var(--titlebar-font-weight-effective, 400) !important;
+  font-style: var(--titlebar-font-style-effective, normal) !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-titlebar-controls .window-control {
+  width: 18px !important;
+  min-width: 18px !important;
+  max-width: 18px !important;
+  height: 18px !important;
+  min-height: 18px !important;
+  max-height: 18px !important;
+  top: 2px !important;
+  background-size: 18px 18px !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-titlebar-controls .window-minimize {
+  right: 22px !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-toolbar {
+  height: 51px !important;
+  min-height: 51px !important;
+  max-height: 51px !important;
+  padding: 6px 8px !important;
+  flex-basis: 51px !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-control-group {
+  height: 37px !important;
+  min-height: 37px !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-toolbar .manual-pdf-tool-button {
+  height: 37px !important;
+  min-height: 37px !important;
+  max-height: 37px !important;
+  padding: 0 12px !important;
+  border-image-width: 8px 8px 9px 8px !important;
+  line-height: 18px !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-toolbar .manual-pdf-icon-button {
+  width: 43px !important;
+  min-width: 43px !important;
+  max-width: 43px !important;
+  padding: 0 !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-page-field {
+  height: 37px !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-page-field input {
+  height: 31px !important;
+  min-height: 31px !important;
+  max-height: 31px !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-zoom-select,
+#root .app-shell.app-style-macos9platinum .manual-pdf-zoom-select .custom-select-trigger {
+  width: 124px !important;
+  min-width: 124px !important;
+  max-width: 124px !important;
+  height: 37px !important;
+  min-height: 37px !important;
+  max-height: 37px !important;
+  margin: 0 !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-zoom-select {
+  flex: 0 0 124px !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-zoom-select .custom-select-trigger,
+#root .app-shell.app-style-macos9platinum .manual-pdf-zoom-select .custom-select-trigger[aria-expanded="false"] {
+  box-sizing: border-box !important;
+  padding: 0 4px !important;
+  border-style: solid !important;
+  border-width: 0 35px 0 11px !important;
+  border-image-source: url("mister-vaultkit-media://asset/macos9/dropdowns/dropdown-normal-composite.png") !important;
+  border-image-slice: 0 35 0 11 fill !important;
+  border-image-width: 0 35px 0 11px !important;
+  border-image-outset: 0 !important;
+  border-image-repeat: stretch !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  line-height: 35px !important;
+  image-rendering: pixelated !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-zoom-select .custom-select-trigger:is(:hover, :focus, :focus-visible),
+#root .app-shell.app-style-macos9platinum .manual-pdf-zoom-select .custom-select-trigger[aria-expanded="true"] {
+  border-image-source: url("mister-vaultkit-media://asset/macos9/dropdowns/dropdown-selected-hover-composite.png") !important;
+  background: transparent !important;
+  background-image: none !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-zoom-select .custom-select-value {
+  height: 37px !important;
+  min-height: 37px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  line-height: 35px !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-toolbar-divider {
+  height: 31px !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-viewport {
+  position: relative !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-iframe {
+  width: calc(100% - 20px) !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-platinum-scrollbar {
+  box-sizing: border-box !important;
+  width: 20px !important;
+  position: absolute !important;
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  z-index: 10 !important;
+  display: grid !important;
+  grid-template-rows: 20px minmax(0, 1fr) 20px !important;
+  border-left: 1px solid #232323 !important;
+  background: #b9b9b9 !important;
+  pointer-events: auto !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-scroll-button {
+  box-sizing: border-box !important;
+  width: 19px !important;
+  min-width: 19px !important;
+  max-width: 19px !important;
+  height: 20px !important;
+  min-height: 20px !important;
+  max-height: 20px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-image: none !important;
+  border-radius: 0 !important;
+  background-color: transparent !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: 20px 20px !important;
+  box-shadow: none !important;
+  image-rendering: pixelated !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-scroll-button.up {
+  background-image: url("mister-vaultkit-media://asset/macos9/scrollbars/Up_Normal.png") !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-scroll-button.up:active {
+  background-image: url("mister-vaultkit-media://asset/macos9/scrollbars/Up_Pressed.png") !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-scroll-button.down {
+  background-image: url("mister-vaultkit-media://asset/macos9/scrollbars/Down_Normal.png") !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-scroll-button.down:active {
+  background-image: url("mister-vaultkit-media://asset/macos9/scrollbars/Down_Pressed.png") !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-scroll-track {
+  min-height: 0 !important;
+  position: relative !important;
+  background: #b9b9b9 url("mister-vaultkit-media://asset/macos9/scrollbars/Scrollbar_Track.png") center / 20px 20px repeat-y !important;
+  overflow: hidden !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-scroll-thumb {
+  width: 18px !important;
+  height: min(112px, 24%) !important;
+  min-height: 24px !important;
+  position: absolute !important;
+  top: 1px !important;
+  left: 0 !important;
+  border: 1px solid #232323 !important;
+  background: #7770d8 url("mister-vaultkit-media://asset/macos9/scrollbars/Scrollbar_Stretch.png") center / 18px 6px repeat-y !important;
+  box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #575757 !important;
+}
+
+/* PDF.js document surface. Unlike Chromium's embedded PDF plugin, this scroll
+   container is owned by the app and can use the real Platinum scrollbar. */
+#root .app-shell.app-style-macos9platinum .manual-pdf-viewport {
+  display: block !important;
+  position: relative !important;
+  background: #222222 !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-document-scroll {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  padding-right: 20px !important;
+  overflow: auto !important;
+  scrollbar-width: none !important;
+  scrollbar-gutter: auto !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-document-scroll::-webkit-scrollbar {
+  width: 0 !important;
+  height: 0 !important;
+  display: none !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-document-pages {
+  box-sizing: border-box !important;
+  width: max-content !important;
+  min-width: 100% !important;
+  min-height: 100% !important;
+  padding: 10px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 12px !important;
+  background: #222222 !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-rendered-page {
+  width: max-content !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: block !important;
+  flex: 0 0 auto !important;
+  border: 0 !important;
+  background: #ffffff !important;
+  box-shadow: 1px 1px 0 #000000 !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-rendered-page > canvas {
+  display: block !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: #ffffff !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-themed-scrollbar {
+  --themed-scrollbar-top-inset: 20px !important;
+  --themed-scrollbar-bottom-inset: 20px !important;
+  --themed-scrollbar-min-thumb: 21px !important;
+  box-sizing: border-box !important;
+  width: 20px !important;
+  min-width: 20px !important;
+  max-width: 20px !important;
+  display: block !important;
+  position: absolute !important;
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: auto !important;
+  z-index: 12 !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+/* Standalone PDF chrome now uses the exact compact-dialog frame. Override the
+   generic window compositing inset, which otherwise reserves the theme's
+   invisible border width even after its visual margin is zeroed. */
+.manual-pdf-window-frame:has(.app-shell.app-style-macos9platinum) {
+  box-sizing: border-box !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: #cccccc !important;
+}
+
+.manual-pdf-window-frame:has(.app-shell.app-style-macos9platinum) > .app-window-surface {
+  box-sizing: border-box !important;
+  width: auto !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 4px !important;
+  inset: 0 !important;
+  border: 1px solid #232323 !important;
+  border-radius: 0 !important;
+  background: #cccccc !important;
+  box-shadow: inset 1px 1px 0 #e0e0e0, 1px 1px 0 #000000 !important;
+  clip-path: inset(0) !important;
+  contain: paint !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-dialog-titlebar.manual-pdf-titlebar {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  height: 22px !important;
+  min-height: 22px !important;
+  max-height: 22px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: #cccccc !important;
+  background-color: #cccccc !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  clip-path: inset(0 1px 0 0) !important;
+  opacity: 1 !important;
+  filter: none !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-dialog-titlebar.manual-pdf-titlebar::before,
+#root .app-shell.app-style-macos9platinum .mister-dialog-titlebar.manual-pdf-titlebar::after {
+  display: none !important;
+  content: none !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-dialog-titlebar.manual-pdf-titlebar > .mister-dialog-title.manual-pdf-title {
+  box-sizing: border-box !important;
+  width: auto !important;
+  max-width: calc(100% - 170px) !important;
+  height: 18px !important;
+  min-height: 18px !important;
+  max-height: 18px !important;
+  margin: 0 !important;
+  padding: 0 4px !important;
+  top: 1px !important;
+  left: 50% !important;
+  border: 0 !important;
+  outline: 0 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  color: #202020 !important;
+  -webkit-text-fill-color: #202020 !important;
+  font-family: var(--titlebar-font-effective, var(--app-font)) !important;
+  font-size: var(--titlebar-font-size-effective, var(--app-font-size, 12px)) !important;
+  font-weight: var(--titlebar-font-weight-effective, 400) !important;
+  font-style: var(--titlebar-font-style-effective, normal) !important;
+  line-height: 18px !important;
+  text-shadow: none !important;
+  opacity: 1 !important;
+  filter: none !important;
+  transform: translateX(-50%) !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-dialog-titlebar.manual-pdf-titlebar > .mister-dialog-title.manual-pdf-title::before,
+#root .app-shell.app-style-macos9platinum .mister-dialog-titlebar.manual-pdf-titlebar > .mister-dialog-title.manual-pdf-title::after {
+  content: "" !important;
+  display: block !important;
+  width: 100vw !important;
+  height: 16px !important;
+  position: absolute !important;
+  top: 0 !important;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    #dddddd 0,
+    #dddddd 1px,
+    #999999 1px,
+    #999999 2px,
+    #bbbbbb 2px,
+    #bbbbbb 3px
+  ) !important;
+  background-size: 100% 3px !important;
+  opacity: 1 !important;
+  pointer-events: none !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-dialog-titlebar.manual-pdf-titlebar > .mister-dialog-title.manual-pdf-title::before {
+  right: calc(100% + 4px) !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-dialog-titlebar.manual-pdf-titlebar > .mister-dialog-title.manual-pdf-title::after {
+  left: calc(100% + 4px) !important;
+}
+
+.manual-pdf-window-frame.window-unfocused .app-shell.app-style-macos9platinum
+  .mister-dialog-titlebar.manual-pdf-titlebar > .mister-dialog-title.manual-pdf-title::before,
+.manual-pdf-window-frame.window-unfocused .app-shell.app-style-macos9platinum
+  .mister-dialog-titlebar.manual-pdf-titlebar > .mister-dialog-title.manual-pdf-title::after {
+  display: none !important;
+  content: none !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-dialog-titlebar.manual-pdf-titlebar .manual-pdf-titlebar-controls .window-control {
+  width: 18px !important;
+  min-width: 18px !important;
+  max-width: 18px !important;
+  height: 18px !important;
+  min-height: 18px !important;
+  max-height: 18px !important;
+  top: 2px !important;
+  border: 0 !important;
+  opacity: 1 !important;
+  filter: none !important;
+  background-size: 18px 18px !important;
+  image-rendering: pixelated !important;
+}
+
+.manual-pdf-window-frame.window-focused .app-shell.app-style-macos9platinum
+  .mister-dialog-titlebar.manual-pdf-titlebar > .mister-dialog-title.manual-pdf-title {
+  color: var(--mac9-titlebar-active-text-color, #202020) !important;
+  -webkit-text-fill-color: var(--mac9-titlebar-active-text-color, #202020) !important;
+}
+
+.manual-pdf-window-frame.window-unfocused .app-shell.app-style-macos9platinum
+  .mister-dialog-titlebar.manual-pdf-titlebar > .mister-dialog-title.manual-pdf-title {
+  color: var(--mac9-titlebar-inactive-text-color, #444444) !important;
+  -webkit-text-fill-color: var(--mac9-titlebar-inactive-text-color, #444444) !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-titlebar {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  height: 22px !important;
+  min-height: 22px !important;
+  max-height: 22px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: block !important;
+  position: relative !important;
+  z-index: 5 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: #cccccc !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-titlebar > .manual-pdf-title {
+  box-sizing: border-box !important;
+  width: auto !important;
+  max-width: calc(100% - 150px) !important;
+  height: 18px !important;
+  margin: 0 !important;
+  padding: 0 4px !important;
+  display: flex !important;
+  align-items: center !important;
+  position: absolute !important;
+  top: 1px !important;
+  left: 50% !important;
+  z-index: 3 !important;
+  border: 0 !important;
+  outline: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: #111111 !important;
+  font-family: "Geneva Embedded", Geneva, sans-serif !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  line-height: 16px !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  transform: translateX(-50%) !important;
+  overflow: visible !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-titlebar > .manual-pdf-title::before,
+#root .app-shell.app-style-macos9platinum .manual-pdf-titlebar > .manual-pdf-title::after {
+  content: "" !important;
+  width: 100vw !important;
+  height: 16px !important;
+  position: absolute !important;
+  top: 0 !important;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    #dddddd 0,
+    #dddddd 1px,
+    #999999 1px,
+    #999999 2px,
+    #bbbbbb 2px,
+    #bbbbbb 3px
+  ) !important;
+  background-size: 100% 3px !important;
+  pointer-events: none !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-titlebar > .manual-pdf-title::before {
+  right: calc(100% + 4px) !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-titlebar > .manual-pdf-title::after {
+  left: calc(100% + 4px) !important;
+}
+
+.manual-pdf-window-frame.window-unfocused #root .app-shell.app-style-macos9platinum .manual-pdf-titlebar > .manual-pdf-title::before,
+.manual-pdf-window-frame.window-unfocused #root .app-shell.app-style-macos9platinum .manual-pdf-titlebar > .manual-pdf-title::after,
+.manual-pdf-window-frame.window-unfocused .app-shell.app-style-macos9platinum .manual-pdf-titlebar > .manual-pdf-title::before,
+.manual-pdf-window-frame.window-unfocused .app-shell.app-style-macos9platinum .manual-pdf-titlebar > .manual-pdf-title::after {
+  display: none !important;
+  content: none !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-titlebar-controls,
+#root .app-shell.app-style-macos9platinum .manual-pdf-titlebar-controls .window-controls {
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: block !important;
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 6 !important;
+  transform: none !important;
+  justify-self: center !important;
+  pointer-events: none !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-titlebar-controls .window-control {
+  box-sizing: border-box !important;
+  width: 13px !important;
+  min-width: 13px !important;
+  max-width: 13px !important;
+  height: 13px !important;
+  min-height: 13px !important;
+  max-height: 13px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: block !important;
+  position: absolute !important;
+  top: 2px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background-color: transparent !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: 13px 13px !important;
+  box-shadow: none !important;
+  transform: none !important;
+  image-rendering: pixelated !important;
+  pointer-events: auto !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-titlebar-controls .window-close {
+  left: 0 !important;
+  right: auto !important;
+  background-image: url("mister-vaultkit-media://asset/macos9/control-close-normal.png") !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-titlebar-controls .window-close:active {
+  background-image: url("mister-vaultkit-media://asset/macos9/control-close-pressed.png") !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-titlebar-controls .window-minimize {
+  right: 17px !important;
+  left: auto !important;
+  background-image: url("mister-vaultkit-media://asset/macos9/control-minimize-normal.png") !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-titlebar-controls .window-minimize:active {
+  background-image: url("mister-vaultkit-media://asset/macos9/control-minimize-pressed.png") !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-titlebar-controls .window-maximize {
+  right: 0 !important;
+  left: auto !important;
+  background-image: url("mister-vaultkit-media://asset/macos9/control-maximize-normal.png") !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-titlebar-controls .window-maximize:active {
+  background-image: url("mister-vaultkit-media://asset/macos9/control-maximize-pressed.png") !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-titlebar-controls .window-control-glyph {
+  display: none !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-inner-panel {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  height: calc(100% - 22px) !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  border: 1px solid #232323 !important;
+  border-radius: 0 !important;
+  background: #dddddd !important;
+  box-shadow: inset 1px 1px 0 #929292, 1px 1px 0 #ffffff !important;
+  overflow: hidden !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-toolbar {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  height: 45px !important;
+  min-height: 45px !important;
+  max-height: 45px !important;
+  margin: 0 !important;
+  padding: 6px 8px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  flex: 0 0 45px !important;
+  border: 0 !important;
+  border-bottom: 1px solid #232323 !important;
+  border-radius: 0 !important;
+  background: #d6d6d6 !important;
+  box-shadow: inset 0 1px 0 #ffffff !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-control-group {
+  height: 31px !important;
+  min-height: 31px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  flex: 0 0 auto !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-toolbar .manual-pdf-tool-button {
+  box-sizing: border-box !important;
+  width: auto !important;
+  min-width: 37px !important;
+  max-width: none !important;
+  height: 31px !important;
+  min-height: 31px !important;
+  max-height: 31px !important;
+  margin: 0 !important;
+  padding: 0 10px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex: 0 0 auto !important;
+  border: 1px solid transparent !important;
+  border-image-source: url("mister-vaultkit-media://asset/macos9/buttons/secondary-normal.png") !important;
+  border-image-slice: 8 8 9 8 fill !important;
+  border-image-width: 6px !important;
+  border-image-outset: 0 !important;
+  border-image-repeat: stretch !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: #202020 !important;
+  font-family: var(--control-font-effective, var(--app-font)) !important;
+  font-size: var(--control-font-size-effective, 12px) !important;
+  font-weight: var(--control-font-weight-effective, 400) !important;
+  line-height: 16px !important;
+  text-shadow: none !important;
+  transform: none !important;
+  image-rendering: pixelated !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-toolbar .manual-pdf-tool-button:not(:disabled):is(:hover, :active) {
+  border-image-source: url("mister-vaultkit-media://asset/macos9/buttons/secondary-pressed-hover.png") !important;
+  color: #ffffff !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-toolbar .manual-pdf-icon-button {
+  width: 37px !important;
+  min-width: 37px !important;
+  max-width: 37px !important;
+  padding: 0 !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-page-field {
+  height: 31px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  color: #202020 !important;
+  font-size: var(--control-font-size-effective, 12px) !important;
+  line-height: 16px !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-page-field input {
+  box-sizing: border-box !important;
+  width: 52px !important;
+  min-width: 52px !important;
+  max-width: 52px !important;
+  height: 31px !important;
+  min-height: 31px !important;
+  max-height: 31px !important;
+  margin: 0 !important;
+  padding: 2px 5px !important;
+  border: 1px solid #333333 !important;
+  border-radius: 0 !important;
+  background: #ffffff !important;
+  color: #111111 !important;
+  box-shadow: inset 1px 1px 0 #777777, inset -1px -1px 0 #ffffff !important;
+  text-align: center !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-zoom-select {
+  width: 118px !important;
+  min-width: 118px !important;
+  max-width: 118px !important;
+  height: 31px !important;
+  min-height: 31px !important;
+  max-height: 31px !important;
+  margin: 0 !important;
+  flex: 0 0 118px !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-zoom-select .custom-select-trigger {
+  --platinum-dropdown-menu-left-inset: 0;
+  --platinum-dropdown-button-width: 0;
+  box-sizing: border-box !important;
+  width: 118px !important;
+  min-width: 118px !important;
+  max-width: 118px !important;
+  height: 31px !important;
+  min-height: 31px !important;
+  max-height: 31px !important;
+  margin: 0 !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-toolbar-divider {
+  width: 1px !important;
+  min-width: 1px !important;
+  height: 27px !important;
+  margin: 0 !important;
+  flex: 0 0 1px !important;
+  background: #777777 !important;
+  box-shadow: 1px 0 0 #ffffff !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-subheader {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  height: 24px !important;
+  min-height: 24px !important;
+  max-height: 24px !important;
+  margin: 0 !important;
+  padding: 3px 7px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  flex: 0 0 24px !important;
+  border: 0 !important;
+  border-bottom: 1px solid #232323 !important;
+  border-radius: 0 !important;
+  background: #d6d6d6 !important;
+  box-shadow: inset 0 1px 0 #ffffff !important;
+  color: #111111 !important;
+  font-size: 11px !important;
+  line-height: 16px !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-content {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  height: auto !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 8px !important;
+  display: grid !important;
+  flex: 1 1 auto !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: #dddddd !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-viewport,
+#root .app-shell.app-style-macos9platinum .manual-pdf-loading {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  border: 1px solid #232323 !important;
+  border-radius: 0 !important;
+  background: #222222 !important;
+  box-shadow: inset 1px 1px 0 #777777 !important;
+  overflow: hidden !important;
+}
+
+/* Standalone PDF viewer bevel corner fix.
+   A four-color CSS border miters its side colors at the corners, leaving the
+   light top edge visible at the top-right and the light left edge visible at
+   the bottom-left. Draw the bevel as ordered one-pixel edge layers instead so
+   the dark right and bottom edges own those two corner pixels. */
+#root > .manual-pdf-window-frame.manual-pdf-window-frame > .app-window-surface::after {
+  border: 0 !important;
+  background:
+    linear-gradient(#575757, #575757) right top / 1px 100% no-repeat,
+    linear-gradient(#575757, #575757) left bottom / 100% 1px no-repeat,
+    linear-gradient(#e0e0e0, #e0e0e0) left top / 100% 1px no-repeat,
+    linear-gradient(#e0e0e0, #e0e0e0) left top / 1px 100% no-repeat !important;
+  box-shadow: none !important;
+}
+
+
+/* PDF viewer status and zoom-menu refinements. The zoom list contains fifteen
+   fixed entries, so it should display as a complete classic popup without a
+   scrollbar rail. */
+#root .app-shell.app-style-macos9platinum .manual-pdf-subheader {
+  justify-content: center !important;
+  text-align: center !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-subheader > span {
+  width: 100% !important;
+  display: block !important;
+  text-align: center !important;
+}
+
+.custom-select-menu.app-style-macos9platinum.manual-pdf-zoom-menu {
+  max-height: min(348px, calc(100vh - 24px)) !important;
+}
+
+.custom-select-menu.app-style-macos9platinum.manual-pdf-zoom-menu .custom-select-scroll-area {
+  max-height: none !important;
+  padding-right: 2px !important;
+  overflow-y: hidden !important;
+  scrollbar-width: none !important;
+}
+
+.custom-select-menu.app-style-macos9platinum.manual-pdf-zoom-menu .dropdown-themed-scrollbar {
+  display: none !important;
+  background: transparent !important;
+}
+
+/* PDF viewport mouse panning. Keep this last so the grab cursor wins over
+   the document-page and canvas cursor rules in the Platinum cascade. */
+#root .app-shell.app-style-macos9platinum .manual-pdf-document-scroll.is-pannable {
+  cursor: grab !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-document-scroll.is-dragging,
+#root .app-shell.app-style-macos9platinum .manual-pdf-document-scroll.is-dragging * {
+  cursor: grabbing !important;
+  user-select: none !important;
+}
+
+/* PDF viewer focus shadow. Preserve the one-pixel inset Platinum bevel, but
+   remove the external window shadow whenever the standalone viewer is not the
+   active window. This rule must remain after the PDF chrome overrides above. */
+#root > .manual-pdf-window-frame.window-focused.manual-pdf-window-frame > .app-window-surface {
+  box-shadow: inset 1px 1px 0 #e0e0e0, 1px 1px 0 #000000 !important;
+}
+
+#root > .manual-pdf-window-frame.window-unfocused.manual-pdf-window-frame > .app-window-surface {
+  box-shadow: inset 1px 1px 0 #e0e0e0 !important;
+  filter: none !important;
+}
+
+
+/* PDF/titlebar stripe asset refresh: 18px three-slice stripes */
+.app-shell.app-style-macos9platinum,
+#root .app-shell.app-style-macos9platinum {
+  --mac9-titlebar-stripe-left-image: url("mister-vaultkit-media://asset/macos9/titlebar-stripes-left.png") !important;
+  --mac9-titlebar-stripe-center-image: url("mister-vaultkit-media://asset/macos9/titlebar-stripes-center.png") !important;
+  --mac9-titlebar-stripe-right-image: url("mister-vaultkit-media://asset/macos9/titlebar-stripes-right.png") !important;
+}
+
+.app-shell.app-style-macos9platinum .mister-electron-header.topbar::before,
+.app-shell.app-style-macos9platinum .mister-electron-header.topbar::after {
+  top: 4px !important;
+  height: 18px !important;
+  min-height: 18px !important;
+  background-color: transparent !important;
+  background-image: var(--mac9-titlebar-stripe-left-image),
+    var(--mac9-titlebar-stripe-right-image),
+    var(--mac9-titlebar-stripe-center-image) !important;
+  background-position: left top, right top, 4px top !important;
+  background-size: 4px 18px, 4px 18px, calc(100% - 8px) 18px !important;
+  background-repeat: no-repeat, no-repeat, no-repeat !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-dialog-titlebar > .mister-dialog-title::before,
+#root .app-shell.app-style-macos9platinum .mister-dialog-titlebar > .mister-dialog-title::after {
+  height: 18px !important;
+  background-image: var(--mac9-titlebar-stripe-left-image),
+    var(--mac9-titlebar-stripe-right-image),
+    var(--mac9-titlebar-stripe-center-image) !important;
+  background-position: left top, right top, 4px top !important;
+  background-size: 4px 18px, 4px 18px, calc(100% - 8px) 18px !important;
+  background-repeat: no-repeat, no-repeat, no-repeat !important;
+}
+
+.manual-pdf-window-frame #root .app-shell.app-style-macos9platinum .manual-pdf-titlebar > .mister-dialog-title.manual-pdf-title::before,
+.manual-pdf-window-frame #root .app-shell.app-style-macos9platinum .manual-pdf-titlebar > .mister-dialog-title.manual-pdf-title::after,
+#root .app-shell.app-style-macos9platinum .mister-dialog-titlebar.manual-pdf-titlebar > .mister-dialog-title.manual-pdf-title::before,
+#root .app-shell.app-style-macos9platinum .mister-dialog-titlebar.manual-pdf-titlebar > .mister-dialog-title.manual-pdf-title::after {
+  top: 2px !important;
+}
+
+/* Platinum three-slice titlebar geometry correction.
+   All active titlebars use two independent 18px stripe sets flanking a
+   centered, opaque title plaque. The plaque matches the stripe height so the
+   assets' highlight rows cannot bleed beneath the title text. */
+.app-window-frame #root .app-shell.app-style-macos9platinum .mister-electron-header.topbar,
+.app-window-frame #root .app-shell.app-style-macos9platinum > .mister-electron-main > .mister-electron-header.topbar {
+  background: var(--mac9-face, #d6d6d6) !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.app-window-frame #root .app-shell.app-style-macos9platinum .mister-electron-header.topbar::before,
+.app-window-frame #root .app-shell.app-style-macos9platinum .mister-electron-header.topbar::after {
+  display: block !important;
+  content: "" !important;
+  top: 4px !important;
+  height: 18px !important;
+  min-height: 18px !important;
+  max-height: 18px !important;
+  border: 0 !important;
+  background-color: transparent !important;
+  background-image: var(--mac9-titlebar-stripe-left-image),
+    var(--mac9-titlebar-stripe-right-image),
+    var(--mac9-titlebar-stripe-center-image) !important;
+  background-position: left top, right top, 4px top !important;
+  background-size: 4px 18px, 4px 18px, calc(100% - 8px) 18px !important;
+  background-repeat: no-repeat, no-repeat, no-repeat !important;
+  box-shadow: none !important;
+  image-rendering: pixelated !important;
+}
+
+.app-window-frame #root .app-shell.app-style-macos9platinum .mister-header-left {
+  top: 4px !important;
+  height: 18px !important;
+  min-height: 18px !important;
+  max-height: 18px !important;
+  background: var(--mac9-face, #d6d6d6) !important;
+  box-shadow: none !important;
+}
+
+.app-window-frame #root .app-shell.app-style-macos9platinum .mister-header-left::before {
+  height: 18px !important;
+  min-height: 18px !important;
+  max-height: 18px !important;
+  line-height: 18px !important;
+  background: var(--mac9-face, #d6d6d6) !important;
+  box-shadow: none !important;
+}
+
+/* Remove every older full-width/gradient popup stripe layer. The title's two
+   pseudo-elements below are the only popup stripe surfaces. */
+.app-window-frame #root .app-shell.app-style-macos9platinum .mister-dialog-titlebar::before,
+.app-window-frame #root .app-shell.app-style-macos9platinum .mister-dialog-titlebar::after {
+  display: none !important;
+  content: none !important;
+  background: none !important;
+}
+
+.app-window-frame #root .app-shell.app-style-macos9platinum .mister-dialog-titlebar {
+  box-sizing: border-box !important;
+  position: relative !important;
+  height: 22px !important;
+  min-height: 22px !important;
+  max-height: 22px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: #cccccc !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+}
+
+.app-window-frame #root .app-shell.app-style-macos9platinum .mister-dialog-titlebar > .mister-dialog-close {
+  top: 2px !important;
+  width: 18px !important;
+  min-width: 18px !important;
+  max-width: 18px !important;
+  height: 18px !important;
+  min-height: 18px !important;
+  max-height: 18px !important;
+}
+
+.app-window-frame #root .app-shell.app-style-macos9platinum .mister-dialog-titlebar > .mister-dialog-title {
+  box-sizing: border-box !important;
+  position: absolute !important;
+  z-index: 2 !important;
+  top: 2px !important;
+  left: 50% !important;
+  width: auto !important;
+  max-width: calc(100% - 88px) !important;
+  height: 18px !important;
+  min-height: 18px !important;
+  max-height: 18px !important;
+  margin: 0 !important;
+  padding: 0 4px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 0 !important;
+  background: #cccccc !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  line-height: 18px !important;
+  white-space: nowrap !important;
+  overflow: visible !important;
+  transform: translateX(-50%) !important;
+}
+
+.app-window-frame #root .app-shell.app-style-macos9platinum .mister-dialog-titlebar > .mister-dialog-title::before,
+.app-window-frame #root .app-shell.app-style-macos9platinum .mister-dialog-titlebar > .mister-dialog-title::after {
+  display: block !important;
+  content: "" !important;
+  box-sizing: border-box !important;
+  position: absolute !important;
+  top: 0 !important;
+  width: 100vw !important;
+  height: 18px !important;
+  min-height: 18px !important;
+  max-height: 18px !important;
+  border: 0 !important;
+  background-color: transparent !important;
+  background-image: var(--mac9-titlebar-stripe-left-image),
+    var(--mac9-titlebar-stripe-right-image),
+    var(--mac9-titlebar-stripe-center-image) !important;
+  background-position: left top, right top, 4px top !important;
+  background-size: 4px 18px, 4px 18px, calc(100% - 8px) 18px !important;
+  background-repeat: no-repeat, no-repeat, no-repeat !important;
+  box-shadow: none !important;
+  image-rendering: pixelated !important;
+  pointer-events: none !important;
+}
+
+.app-window-frame #root .app-shell.app-style-macos9platinum .mister-dialog-titlebar > .mister-dialog-title::before {
+  right: calc(100% + 4px) !important;
+  left: auto !important;
+}
+
+.app-window-frame #root .app-shell.app-style-macos9platinum .mister-dialog-titlebar > .mister-dialog-title::after {
+  left: calc(100% + 4px) !important;
+  right: auto !important;
+}
+
+.app-window-frame.window-unfocused #root .app-shell.app-style-macos9platinum .mister-electron-header.topbar::before,
+.app-window-frame.window-unfocused #root .app-shell.app-style-macos9platinum .mister-electron-header.topbar::after,
+.app-window-frame.window-unfocused #root .app-shell.app-style-macos9platinum .mister-dialog-titlebar > .mister-dialog-title::before,
+.app-window-frame.window-unfocused #root .app-shell.app-style-macos9platinum .mister-dialog-titlebar > .mister-dialog-title::after {
+  display: none !important;
+  content: none !important;
+}
+
+
+/* Explicit Platinum titlebar construction.
+   This replaces the legacy pseudo-element stripe stack with real three-slice
+   elements so main, dialog, Settings, Install Center, and PDF titlebars share
+   exactly the same 18px geometry. */
+#root .app-shell.app-style-macos9platinum .mister-electron-header.topbar::before,
+#root .app-shell.app-style-macos9platinum .mister-electron-header.topbar::after,
+#root .app-shell.app-style-macos9platinum .mister-dialog-titlebar::before,
+#root .app-shell.app-style-macos9platinum .mister-dialog-titlebar::after,
+#root .app-shell.app-style-macos9platinum .mister-header-left::before,
+#root .app-shell.app-style-macos9platinum .mister-header-left::after,
+#root .app-shell.app-style-macos9platinum .mister-dialog-title::before,
+#root .app-shell.app-style-macos9platinum .mister-dialog-title::after {
+  display: none !important;
+  content: none !important;
+  background: none !important;
+  box-shadow: none !important;
+}
+
+#root .app-shell.app-style-macos9platinum .platinum-titlebar-layout {
+  box-sizing: border-box !important;
+  position: absolute !important;
+  inset: 4px 0 auto 0 !important;
+  z-index: 2 !important;
+  width: 100% !important;
+  height: 18px !important;
+  min-height: 18px !important;
+  max-height: 18px !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) fit-content(calc(100vw - 96px)) minmax(0, 1fr) !important;
+  column-gap: 4px !important;
+  align-items: center !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  pointer-events: none !important;
+  overflow: hidden !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-dialog-titlebar .platinum-titlebar-layout,
+#root .app-shell.app-style-macos9platinum .manual-pdf-titlebar .platinum-titlebar-layout {
+  inset: 2px 0 auto 0 !important;
+}
+
+#root .app-shell.app-style-macos9platinum .platinum-titlebar-stripe-set {
+  box-sizing: border-box !important;
+  width: auto !important;
+  min-width: 0 !important;
+  height: 18px !important;
+  display: flex !important;
+  align-items: stretch !important;
+  overflow: hidden !important;
+  background: transparent !important;
+  image-rendering: pixelated !important;
+}
+
+#root .app-shell.app-style-macos9platinum .platinum-main-titlebar-layout .platinum-titlebar-stripe-set-left {
+  margin-left: 30px !important;
+}
+
+#root .app-shell.app-style-macos9platinum .platinum-main-titlebar-layout .platinum-titlebar-stripe-set-right {
+  margin-right: 48px !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-dialog-titlebar .platinum-titlebar-stripe-set-left {
+  margin-left: 24px !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-dialog-titlebar .platinum-titlebar-stripe-set-right {
+  margin-right: 4px !important;
+}
+
+#root .app-shell.app-style-macos9platinum .platinum-titlebar-stripe-cap {
+  box-sizing: border-box !important;
+  flex: 0 0 4px !important;
+  width: 4px !important;
+  min-width: 4px !important;
+  max-width: 4px !important;
+  height: 18px !important;
+  background-color: transparent !important;
+  background-position: 0 0 !important;
+  background-size: 4px 18px !important;
+  background-repeat: no-repeat !important;
+}
+
+#root .app-shell.app-style-macos9platinum .platinum-titlebar-stripe-cap-left {
+  background-image: var(--mac9-titlebar-stripe-left-image) !important;
+}
+
+#root .app-shell.app-style-macos9platinum .platinum-titlebar-stripe-cap-right {
+  background-image: var(--mac9-titlebar-stripe-right-image) !important;
+}
+
+#root .app-shell.app-style-macos9platinum .platinum-titlebar-stripe-center {
+  box-sizing: border-box !important;
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  height: 18px !important;
+  background-color: transparent !important;
+  background-image: var(--mac9-titlebar-stripe-center-image) !important;
+  background-position: center top !important;
+  background-size: 100% 18px !important;
+  background-repeat: no-repeat !important;
+}
+
+#root .app-shell.app-style-macos9platinum .platinum-titlebar-layout > .mister-header-left,
+#root .app-shell.app-style-macos9platinum .platinum-titlebar-layout > .mister-dialog-title {
+  box-sizing: border-box !important;
+  position: relative !important;
+  inset: auto !important;
+  z-index: 2 !important;
+  width: fit-content !important;
+  min-width: 0 !important;
+  max-width: calc(100vw - 96px) !important;
+  height: 18px !important;
+  min-height: 18px !important;
+  max-height: 18px !important;
+  margin: 0 !important;
+  padding: 0 4px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 0 !important;
+  background: #cccccc !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  color: var(--titlebar-text-color-effective, #202020) !important;
+  line-height: 18px !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  transform: none !important;
+  pointer-events: none !important;
+}
+
+#root .app-shell.app-style-macos9platinum .platinum-titlebar-layout > .mister-header-left {
+  min-width: 156px !important;
+  max-width: 156px !important;
+}
+
+#root .app-shell.app-style-macos9platinum .platinum-main-window-title {
+  display: block !important;
+  font-family: var(--titlebar-font-effective, var(--app-font)) !important;
+  font-size: var(--titlebar-font-size-effective, 12px) !important;
+  font-weight: var(--titlebar-font-weight-effective, 700) !important;
+  line-height: 18px !important;
+}
+
+#root .app-shell.app-style-macos9platinum .platinum-titlebar-layout .mister-header-wordmark {
+  display: none !important;
+}
+
+.app-window-frame.window-unfocused #root .app-shell.app-style-macos9platinum .platinum-titlebar-stripe-set,
+.manual-pdf-window-frame.window-unfocused #root .app-shell.app-style-macos9platinum .platinum-titlebar-stripe-set {
+  visibility: hidden !important;
+}
+
+.app-window-frame.window-unfocused #root .app-shell.app-style-macos9platinum .platinum-titlebar-layout > .mister-header-left,
+.app-window-frame.window-unfocused #root .app-shell.app-style-macos9platinum .platinum-titlebar-layout > .mister-dialog-title,
+.manual-pdf-window-frame.window-unfocused #root .app-shell.app-style-macos9platinum .platinum-titlebar-layout > .mister-dialog-title {
+  color: var(--titlebar-inactive-text-color-effective, #707070) !important;
+}
+
+/* Final titlebar geometry correction: natural title tracks and unified face */
+#root .app-shell.app-style-macos9platinum .platinum-titlebar-layout {
+  grid-template-columns: minmax(0, 1fr) fit-content(calc(100vw - 96px)) minmax(0, 1fr) !important;
+}
+
+#root .app-shell.app-style-macos9platinum .platinum-main-titlebar-layout .platinum-titlebar-stripe-set-right {
+  margin-right: 48px !important;
+}
+
+#root .app-shell.app-style-macos9platinum .platinum-titlebar-layout > :is(.mister-dialog-title, .mister-header-left) {
+  position: relative !important;
+  inset: auto !important;
+  left: auto !important;
+  right: auto !important;
+  top: auto !important;
+  bottom: auto !important;
+  justify-self: center !important;
+  transform: none !important;
+}
+
+#root .app-shell.app-style-macos9platinum .platinum-titlebar-layout > .mister-dialog-title {
+  width: fit-content !important;
+  min-width: 0 !important;
+  max-width: calc(100vw - 96px) !important;
+  height: 18px !important;
+  min-height: 18px !important;
+  max-height: 18px !important;
+  padding: 0 4px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background-color: #cccccc !important;
+  background-image: none !important;
+  line-height: 18px !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+#root .app-shell.app-style-macos9platinum :is(.mister-dialog-titlebar, .manual-pdf-titlebar) {
+  background-color: #cccccc !important;
+}
+
+#root .app-shell.app-style-macos9platinum .manual-pdf-titlebar .platinum-titlebar-layout,
+#root .app-shell.app-style-macos9platinum .mister-dialog-titlebar .platinum-titlebar-layout {
+  top: 2px !important;
+  bottom: auto !important;
+}
+
+/* Compact install titlebar explicit-layout correction */
+#root .app-shell.app-style-macos9platinum :is(
+  .compact-install-modal.mister-install-modal,
+  .mister-github-package-modal
+) > .mister-dialog-titlebar .platinum-titlebar-layout {
+  top: 3px !important;
+}
+
+#root .app-shell.app-style-macos9platinum :is(
+  .compact-install-modal.mister-install-modal,
+  .mister-github-package-modal
+) > .mister-dialog-titlebar .platinum-titlebar-layout > .mister-dialog-title {
+  position: relative !important;
+  inset: auto !important;
+  left: auto !important;
+  right: auto !important;
+  top: auto !important;
+  bottom: auto !important;
+  width: fit-content !important;
+  min-width: 0 !important;
+  max-width: calc(100vw - 96px) !important;
+  height: 18px !important;
+  min-height: 18px !important;
+  max-height: 18px !important;
+  padding: 0 4px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: #cccccc !important;
+  line-height: 18px !important;
+  transform: none !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+
+/* Final Platinum titlebar polish: transparent main title and control-aligned secondary chrome */
+#root .app-shell.app-style-macos9platinum
+  .platinum-main-titlebar-layout > .mister-header-left {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+#root .app-shell.app-style-macos9platinum
+  :is(.mister-dialog-titlebar, .manual-pdf-titlebar)
+  .platinum-titlebar-layout {
+  inset: 0 0 auto 0 !important;
+  top: 0 !important;
+  bottom: auto !important;
+}
+
+#root .app-shell.app-style-macos9platinum :is(
+  .compact-install-modal.mister-install-modal,
+  .mister-github-package-modal
+) > .mister-dialog-titlebar .platinum-titlebar-layout {
+  inset: 0 0 auto 0 !important;
+  top: 0 !important;
+  bottom: auto !important;
+}
+
+/* Final main-window titlebar spacing: equal 8px visual gap from controls */
+#root .app-shell.app-style-macos9platinum
+  .platinum-main-titlebar-layout .platinum-titlebar-stripe-set-left {
+  margin-left: calc(var(--mac9-control-edge) + var(--mac9-control-size) + 8px) !important;
+}
+
+#root .app-shell.app-style-macos9platinum
+  .platinum-main-titlebar-layout .platinum-titlebar-stripe-set-right {
+  margin-right: calc(27px + var(--mac9-control-size) + 8px) !important;
+}
+
+/* Final Platinum inactive-titlebar and PDF font correction */
+#root > .app-window-frame.window-unfocused
+  .app-shell.app-style-macos9platinum .platinum-titlebar-stripe-set,
+.app-window-frame.window-unfocused
+  .app-shell.app-style-macos9platinum .platinum-titlebar-stripe-set {
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+#root > .app-window-frame.window-unfocused
+  .app-shell.app-style-macos9platinum
+  .platinum-titlebar-layout > :is(.mister-header-left, .mister-dialog-title),
+#root > .app-window-frame.window-unfocused
+  .app-shell.app-style-macos9platinum .platinum-main-window-title,
+.app-window-frame.window-unfocused
+  .app-shell.app-style-macos9platinum
+  .platinum-titlebar-layout > :is(.mister-header-left, .mister-dialog-title),
+.app-window-frame.window-unfocused
+  .app-shell.app-style-macos9platinum .platinum-main-window-title {
+  color: var(--titlebar-inactive-text-color-effective, #707070) !important;
+  -webkit-text-fill-color: var(--titlebar-inactive-text-color-effective, #707070) !important;
+}
+
+#root > .manual-pdf-window-frame
+  .app-shell.app-style-macos9platinum
+  .manual-pdf-titlebar .manual-pdf-title,
+.manual-pdf-window-frame
+  .app-shell.app-style-macos9platinum
+  .manual-pdf-titlebar .manual-pdf-title {
+  font-family: var(--titlebar-font-effective, "Geneva Embedded"), "Geneva Embedded", Geneva, sans-serif !important;
+  font-size: var(--titlebar-font-size-effective, 12px) !important;
+  font-weight: var(--titlebar-font-weight-effective, 700) !important;
+  font-style: var(--titlebar-font-style-effective, normal) !important;
+  letter-spacing: normal !important;
+}
+
+/* Platinum customization contract: newer Finder, dialog, and PDF chrome uses
+   semantic tokens rather than fixed classic-gray literals. */
+#root .app-shell.app-style-macos9platinum {
+  --mac9-face: var(--mac9-chrome-color, #cccccc);
+  color: var(--mac9-body-text-color, #202020) !important;
+}
+
+#root .app-shell.app-style-macos9platinum :where(.mister-electron-workspace, .mister-page, .mister-card-body, .settings-content, .settings-scroll-area, .modal-content, .mister-dialog-body, .mister-install-detail-panel) {
+  color: var(--mac9-body-text-color, #202020) !important;
+}
+
+#root .app-shell.app-style-macos9platinum :where(.settings-help-text, .mister-subtitle, .mister-description, .mister-empty-value, .mister-meta, .manual-pdf-status, small) {
+  color: var(--mac9-secondary-text-color, #404040) !important;
+}
+
+#root .app-shell.app-style-macos9platinum :where(a, .mister-link-button) {
+  color: var(--mac9-link-text-color, #000080) !important;
+}
+
+#root .app-shell.app-style-macos9platinum :where(button, input, select, textarea):disabled,
+#root .app-shell.app-style-macos9platinum :where(.disabled, [aria-disabled="true"]) {
+  color: var(--mac9-disabled-text-color, #777777) !important;
+}
+
+#root .app-shell.app-style-macos9platinum ::selection {
+  color: var(--mac9-selection-text-color, #000000) !important;
+  background: var(--mac9-selection-background-color, #989efa) !important;
+}
+
+#root .app-shell.app-style-macos9platinum :where(input, textarea, select) {
+  color: var(--mac9-field-text-color, #000000) !important;
+  background-color: var(--mac9-field-background-color, #ffffff) !important;
+}
+
+#root .app-shell.app-style-macos9platinum :where(input, textarea, select, button, [tabindex]):focus-visible {
+  outline-color: var(--mac9-focus-ring-color, #0000ff) !important;
+}
+
+#root .app-shell.app-style-macos9platinum :where(.manual-pdf-toolbar, .mister-file-browser-location-row, .mister-file-browser-location-panel, .mister-filter-bar) {
+  background-color: var(--mac9-toolbar-background-color, #cccccc) !important;
+  color: var(--mac9-body-text-color, #202020) !important;
+}
+
+#root .app-shell.app-style-macos9platinum :where(.manual-pdf-subheader, .mister-file-browser-summary, .settings-page-header, .mister-card-header) {
+  background-color: var(--mac9-subheader-background-color, #d6d6d6) !important;
+  color: var(--mac9-panel-title-text-color, #000000) !important;
+}
+
+#root .app-shell.app-style-macos9platinum :where(.custom-select-menu, .mister-file-context-menu) {
+  background-color: var(--mac9-menu-background-color, #d6d6d6) !important;
+  color: var(--mac9-menu-text-color, #000000) !important;
+}
+
+#root .app-shell.app-style-macos9platinum :where(.custom-select-option, .mister-file-context-menu > button) {
+  color: var(--mac9-menu-text-color, #000000) !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table tbody tr:not(.selected) td {
+  background-color: var(--mac9-row-background-color, #eeeeee) !important;
+  color: var(--mac9-file-browser-text-color, var(--mac9-body-text-color, #202020)) !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table tbody tr:nth-child(even):not(.selected) td {
+  background-color: var(--mac9-row-alternate-background-color, #dddddd) !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table tbody tr:not(.selected):hover td {
+  background-color: var(--mac9-row-hover-background-color, #50202020) !important;
+  color: var(--mac9-row-hover-text-color, var(--mac9-file-browser-text-color, #202020)) !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table tbody tr.selected td,
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table tbody tr.selected td:first-child {
+  background-color: var(--mac9-row-selected-background-color, #c5c3e5) !important;
+  color: var(--mac9-row-selected-text-color, #000000) !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table.finder-sort-name tbody tr:not(.selected) td:nth-child(1),
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table.finder-sort-size tbody tr:not(.selected) td:nth-child(2),
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table.finder-sort-type tbody tr:not(.selected) td:nth-child(3),
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table.finder-sort-modified tbody tr:not(.selected) td:nth-child(4) {
+  background-color: var(--mac9-selected-column-background-color, #cccccc) !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table.finder-sort-name tbody tr:nth-child(even):not(.selected) td:nth-child(1),
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table.finder-sort-size tbody tr:nth-child(even):not(.selected) td:nth-child(2),
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table.finder-sort-type tbody tr:nth-child(even):not(.selected) td:nth-child(3),
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table.finder-sort-modified tbody tr:nth-child(even):not(.selected) td:nth-child(4) {
+  background-color: var(--mac9-selected-column-alternate-background-color, #bbbbbb) !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table.finder-sort-name tbody tr:not(.selected):hover td:nth-child(1),
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table.finder-sort-size tbody tr:not(.selected):hover td:nth-child(2),
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table.finder-sort-type tbody tr:not(.selected):hover td:nth-child(3),
+#root .app-shell.app-style-macos9platinum .mister-page-files .mister-file-table.finder-sort-modified tbody tr:not(.selected):hover td:nth-child(4) {
+  background-color: var(--mac9-selected-column-hover-background-color, #9f9f9f) !important;
+  color: var(--mac9-selected-column-hover-text-color, var(--mac9-file-browser-text-color, #202020)) !important;
+}
+
+#root .app-shell.app-style-macos9platinum :where(.manual-pdf-viewport, .manual-pdf-document-scroll) {
+  background-color: var(--mac9-document-viewport-color, #222222) !important;
+}
+
+#root .app-shell.app-style-macos9platinum :where(.themed-scrollbar, .manual-pdf-scrollbar, .manual-pdf-scroll-track) {
+  background-color: var(--mac9-scrollbar-track-color, #b9b9b9) !important;
+}
+
+#root .app-shell.app-style-macos9platinum :where(.themed-scrollbar-thumb, .manual-pdf-scroll-thumb) {
+  background-color: var(--mac9-scrollbar-thumb-color, #7770d8) !important;
+  border-color: var(--mac9-scrollbar-thumb-border-color, #232323) !important;
+}
+
+#root .app-shell.app-style-macos9platinum :where(.mister-dialog-titlebar, .manual-pdf-titlebar, .platinum-titlebar-layout > .mister-dialog-title) {
+  background-color: var(--mac9-chrome-color, #cccccc) !important;
+}
+
+/* Optional bitmap-only filter preserves source transparency and shading. */
+#root .app-shell.app-style-macos9platinum :where(img[src*="mister-vaultkit-media://asset/macos9/"][src*=".png"], .mister-file-icon.bitmap img, .platinum-titlebar-stripe-cap, .platinum-titlebar-stripe-center, .window-control, .mister-dialog-close, .mister-header-menu-button, input[type="checkbox"], input[type="radio"], .themed-scrollbar-button, .manual-pdf-scroll-button) {
+  filter: var(--mac9-asset-filter-effective, none) !important;
+}
+
+/* Audited control-state bindings. These late rules guarantee that every color
+   shown in the Platinum Settings UI wins over older literal fallback rules. */
+#root .app-shell.app-style-macos9platinum :where(input, textarea, select, .custom-select-trigger) {
+  border-color: var(--text-box-border-color, #404040) !important;
+}
+
+#root .app-shell.app-style-macos9platinum :where(input, textarea, select, .custom-select-trigger):focus-visible {
+  border-color: var(--text-box-focus-border-color, #000000) !important;
+}
+
+#root .app-shell.app-style-macos9platinum :where(input, textarea)::placeholder {
+  color: var(--text-box-placeholder-color, #808080) !important;
+  opacity: 1 !important;
+}
+
+#root .app-shell.app-style-macos9platinum :where(
+  button:not(.window-control):not(.mister-dialog-close):not(.mister-header-menu-button):not(.themed-scrollbar-button):not(.manual-pdf-scroll-button)
+) {
+  color: var(--button-text-color, #000000) !important;
+}
+
+#root .app-shell.app-style-macos9platinum :where(
+  button:not(.window-control):not(.mister-dialog-close):not(.mister-header-menu-button):not(.themed-scrollbar-button):not(.manual-pdf-scroll-button)
+):not(:disabled):hover {
+  color: var(--button-hover-text-color, #000000) !important;
+}
+
+/* Hover keeps the normal/light-face label treatment. The white label belongs
+   only to the depressed or selected PNG state. Chromium's text fill must be
+   reset as well because older state rules set it independently of `color`. */
+#root .app-shell.app-style-macos9platinum :where(
+  button:not(.window-control):not(.mister-dialog-close):not(.mister-header-menu-button):not(.themed-scrollbar-button):not(.manual-pdf-scroll-button)
+):not(:disabled):hover:not(:active):not(.active):not([aria-pressed="true"]):not([aria-current="page"]) {
+  color: var(--button-hover-text-color, var(--button-text-color, #000000)) !important;
+  -webkit-text-fill-color: var(--button-hover-text-color, var(--button-text-color, #000000)) !important;
+}
+
+#root .app-shell.app-style-macos9platinum :where(
+  button:not(.window-control):not(.mister-dialog-close):not(.mister-header-menu-button):not(.themed-scrollbar-button):not(.manual-pdf-scroll-button)
+):not(:disabled):active {
+  color: var(--button-pressed-text-color, #000000) !important;
+}
+
+#root .app-shell.app-style-macos9platinum :where(button.active, button[aria-pressed="true"], button[aria-current="page"]) {
+  color: var(--button-selected-text-color, #ffffff) !important;
+}
+
+#root .app-shell.app-style-macos9platinum :where(button:disabled, button[aria-disabled="true"]) {
+  color: var(--button-disabled-text-color, var(--mac9-disabled-text-color, #777777)) !important;
+}
+
+#root .app-shell.app-style-macos9platinum :where(.custom-select-option) {
+  color: var(--dropdown-item-text-color, var(--mac9-menu-text-color, #000000)) !important;
+}
+
+#root .app-shell.app-style-macos9platinum :where(.custom-select-option:hover, .custom-select-option.is-highlighted) {
+  color: var(--dropdown-item-hover-text-color, #ffffff) !important;
+  background-color: var(--dropdown-item-hover-background-color, #000080) !important;
+}
+
+#root .app-shell.app-style-macos9platinum :where(.custom-select-option.selected, .custom-select-option[aria-selected="true"]) {
+  color: var(--dropdown-item-selected-text-color, #ffffff) !important;
+  background-color: var(--dropdown-item-selected-background-color, #989efa) !important;
+}
+
+#root .app-shell.app-style-macos9platinum .custom-select-group,
+.custom-select-menu.app-style-macos9platinum .custom-select-group {
+  color: var(--dropdown-group-text-color, #404040) !important;
+}
+
+.custom-select-menu.app-style-macos9platinum {
+  color: var(--mac9-menu-text-color, #000000) !important;
+  background-color: var(--mac9-menu-background-color, #d6d6d6) !important;
+  border-color: var(--dropdown-menu-border-color, #000000) !important;
+}
+
+.custom-select-menu.app-style-macos9platinum .custom-select-option {
+  color: var(--dropdown-item-text-color, var(--mac9-menu-text-color, #000000)) !important;
+}
+
+.custom-select-menu.app-style-macos9platinum :where(.custom-select-option:hover, .custom-select-option.active) {
+  color: var(--dropdown-item-hover-text-color, #ffffff) !important;
+  background-color: var(--dropdown-item-hover-background-color, #000080) !important;
+}
+
+.custom-select-menu.app-style-macos9platinum :where(.custom-select-option.selected, .custom-select-option[aria-selected="true"]) {
+  color: var(--dropdown-item-selected-text-color, #ffffff) !important;
+  background-color: var(--dropdown-item-selected-background-color, #989efa) !important;
+}
+
+.custom-select-menu.app-style-macos9platinum .themed-scrollbar {
+  background-color: var(--mac9-scrollbar-track-color, #b9b9b9) !important;
+}
+
+.custom-select-menu.app-style-macos9platinum .themed-scrollbar-thumb {
+  background-color: var(--mac9-scrollbar-thumb-color, #7770d8) !important;
+  border-color: var(--mac9-scrollbar-thumb-border-color, #232323) !important;
+}
+
+#root .app-shell.app-style-macos9platinum :where(.mister-file-context-menu > button) {
+  color: var(--mac9-menu-text-color, #000000) !important;
+  background-color: transparent !important;
+}
+
+#root .app-shell.app-style-macos9platinum :where(.mister-file-context-menu > button:not(:disabled):hover, .mister-file-context-menu > button:not(:disabled):focus-visible) {
+  color: var(--dropdown-item-hover-text-color, #ffffff) !important;
+  background-color: var(--dropdown-item-hover-background-color, #000080) !important;
+}
+
+#root .app-shell.app-style-macos9platinum :where(.settings-nav-glyph, .media-sidebar-glyph) {
+  color: var(--glyph-color, #000000) !important;
+}
+
+#root .app-shell.app-style-macos9platinum .settings-nav-glyph {
+  background-color: currentColor !important;
+}
+
+#root .app-shell.app-style-macos9platinum .media-sidebar-glyph {
+  background-color: transparent !important;
+}
+
+#root .app-shell.app-style-macos9platinum button:hover :where(.settings-nav-glyph, .media-sidebar-glyph) {
+  color: var(--glyph-hover-color, #000000) !important;
+}
+
+#root .app-shell.app-style-macos9platinum button:active :where(.settings-nav-glyph, .media-sidebar-glyph) {
+  color: var(--glyph-pressed-color, #000000) !important;
+}
+
+#root .app-shell.app-style-macos9platinum :where(button.active, button[aria-current="page"]) :where(.settings-nav-glyph, .media-sidebar-glyph) {
+  color: var(--glyph-selected-color, #ffffff) !important;
+}
+
+#root .app-shell.app-style-macos9platinum button:disabled :where(.settings-nav-glyph, .media-sidebar-glyph) {
+  color: var(--glyph-disabled-color, #808080) !important;
+}
+
+/* Context-menu icons are CSS masks, so their color belongs on the mask fill.
+   Sidebar/settings glyphs above are bitmap-backed and must stay transparent. */
+#root .app-shell.app-style-macos9platinum .mister-file-context-glyph {
+  color: var(--glyph-color, #000000) !important;
+  background-color: var(--glyph-color, #000000) !important;
+}
+
+#root .app-shell.app-style-macos9platinum button:hover .mister-file-context-glyph {
+  color: var(--glyph-hover-color, #000000) !important;
+  background-color: var(--glyph-hover-color, #000000) !important;
+}
+
+#root .app-shell.app-style-macos9platinum button:active .mister-file-context-glyph {
+  color: var(--glyph-pressed-color, #000000) !important;
+  background-color: var(--glyph-pressed-color, #000000) !important;
+}
+
+#root .app-shell.app-style-macos9platinum button:disabled .mister-file-context-glyph {
+  color: var(--glyph-disabled-color, #808080) !important;
+  background-color: var(--glyph-disabled-color, #808080) !important;
+}
+
+#root .app-shell.app-style-macos9platinum .settings-sidebar-header { color: var(--settings-sidebar-header-color, #000000) !important; }
+#root .app-shell.app-style-macos9platinum .settings-page-header { color: var(--settings-page-header-color, #000000) !important; }
+#root .app-shell.app-style-macos9platinum .settings-section > h3 { color: var(--settings-section-header-color, #000000) !important; }
+#root .app-shell.app-style-macos9platinum :where(.settings-group-header p, .settings-section-description) { color: var(--settings-subheader-color, #404040) !important; }
+#root .app-shell.app-style-macos9platinum .mister-page-header { color: var(--header-text-color, #202020) !important; }
+#root .app-shell.app-style-macos9platinum .mister-electron-footer { color: var(--footer-text-color, #000000) !important; }
+
+#root .app-shell.app-style-macos9platinum .media-sidebar-section button {
+  color: var(--media-sidebar-button-text-color, var(--media-sidebar-text-color, #202020)) !important;
+}
+
+#root .app-shell.app-style-macos9platinum .media-sidebar-section h2 {
+  color: var(--media-sidebar-section-text-color, #000000) !important;
+}
+
+#root .app-shell.app-style-macos9platinum .media-sidebar-section button:hover {
+  color: var(--media-sidebar-button-hover-text-color, #000000) !important;
+}
+
+#root .app-shell.app-style-macos9platinum .mister-electron-sidebar :where(
+  .media-sidebar-section button,
+  .mister-sidebar-settings-button
+):not(:disabled):hover:not(:active):not(.active):not([aria-current="page"]) {
+  color: var(--media-sidebar-button-hover-text-color, var(--media-sidebar-button-text-color, #000000)) !important;
+  -webkit-text-fill-color: var(--media-sidebar-button-hover-text-color, var(--media-sidebar-button-text-color, #000000)) !important;
+}
+
+#root .app-shell.app-style-macos9platinum .media-sidebar-section button.active {
+  color: var(--media-sidebar-button-active-text-color, #ffffff) !important;
+}
+
+#root .app-shell.app-style-macos9platinum .settings-nav button {
+  color: var(--settings-sidebar-text-color, #000000) !important;
+}
+
+#root .app-shell.app-style-macos9platinum .settings-nav button:not(:disabled):hover:not(:active):not(.active):not([aria-current="page"]) {
+  color: var(--settings-sidebar-text-color, #000000) !important;
+  -webkit-text-fill-color: var(--settings-sidebar-text-color, #000000) !important;
+}
+
+#root .app-shell.app-style-macos9platinum .settings-nav button:active {
+  color: var(--settings-sidebar-pressed-text-color, #000000) !important;
+}
+
+#root .app-shell.app-style-macos9platinum .settings-nav button.active {
+  color: var(--settings-sidebar-active-text-color, #ffffff) !important;
+}
+
+#root .app-shell.app-style-macos9platinum :where(.platinum-main-window-title, .platinum-titlebar-layout > .mister-dialog-title) {
+  color: var(--mac9-titlebar-active-text-color, #202020) !important;
+  -webkit-text-fill-color: var(--mac9-titlebar-active-text-color, #202020) !important;
+}
+
+#root > .app-window-frame.window-unfocused .app-shell.app-style-macos9platinum :where(.platinum-main-window-title, .platinum-titlebar-layout > .mister-dialog-title),
+.app-window-frame.window-unfocused .app-shell.app-style-macos9platinum :where(.platinum-main-window-title, .platinum-titlebar-layout > .mister-dialog-title) {
+  color: var(--mac9-titlebar-inactive-text-color, #444444) !important;
+  -webkit-text-fill-color: var(--mac9-titlebar-inactive-text-color, #444444) !important;
 }

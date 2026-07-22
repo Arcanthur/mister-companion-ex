@@ -9247,3 +9247,13 @@ body,
   display: none !important;
   content: none !important;
 }
+
+/* Shared titlebar markup remains transparent to non-Platinum themes. */
+.platinum-titlebar-layout {
+  display: contents;
+}
+
+.platinum-titlebar-stripe-set,
+.platinum-main-window-title {
+  display: none;
+}

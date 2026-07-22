@@ -169,6 +169,40 @@ export function applyStyleAppearance(theme, style = theme.appStyle || "classic")
     mac9PanelGrooveShadowColor: theme.mac9PanelGrooveShadowColor || "#808080",
     mac9PanelInnerHighlightColor: theme.mac9PanelInnerHighlightColor || "#ffffff",
     mac9PanelOuterHighlightColor: theme.mac9PanelOuterHighlightColor || "#ffffff",
+    mac9BodyTextColor: theme.mac9BodyTextColor || "#202020",
+    mac9SecondaryTextColor: theme.mac9SecondaryTextColor || "#404040",
+    mac9DisabledTextColor: theme.mac9DisabledTextColor || "#777777",
+    mac9LinkTextColor: theme.mac9LinkTextColor || "#000080",
+    mac9ToolbarBackgroundColor: theme.mac9ToolbarBackgroundColor || "#cccccc",
+    mac9SubheaderBackgroundColor: theme.mac9SubheaderBackgroundColor || "#d6d6d6",
+    mac9FieldBackgroundColor: theme.mac9FieldBackgroundColor || "#ffffff",
+    mac9FieldTextColor: theme.mac9FieldTextColor || "#000000",
+    mac9MenuBackgroundColor: theme.mac9MenuBackgroundColor || "#d6d6d6",
+    mac9MenuTextColor: theme.mac9MenuTextColor || "#000000",
+    mac9FileBrowserTextColor: theme.mac9FileBrowserTextColor || theme.mac9BodyTextColor || "#202020",
+    mac9RowBackgroundColor: theme.mac9RowBackgroundColor || "#eeeeee",
+    mac9RowAlternateBackgroundColor: theme.mac9RowAlternateBackgroundColor || "#dddddd",
+    mac9RowHoverBackgroundColor: theme.mac9RowHoverBackgroundColor || "#50202020",
+    mac9RowHoverTextColor: theme.mac9RowHoverTextColor || theme.mac9FileBrowserTextColor || theme.mac9BodyTextColor || "#202020",
+    mac9RowSelectedBackgroundColor: theme.mac9RowSelectedBackgroundColor || "#c5c3e5",
+    mac9RowSelectedTextColor: theme.mac9RowSelectedTextColor || "#000000",
+    mac9SelectedColumnBackgroundColor: theme.mac9SelectedColumnBackgroundColor || "#cccccc",
+    mac9SelectedColumnAlternateBackgroundColor: theme.mac9SelectedColumnAlternateBackgroundColor || "#bbbbbb",
+    mac9SelectedColumnHoverBackgroundColor: theme.mac9SelectedColumnHoverBackgroundColor || "#9f9f9f",
+    mac9SelectedColumnHoverTextColor: theme.mac9SelectedColumnHoverTextColor || theme.mac9FileBrowserTextColor || theme.mac9BodyTextColor || "#202020",
+    mac9SelectionBackgroundColor: theme.mac9SelectionBackgroundColor || "#989efa",
+    mac9SelectionTextColor: theme.mac9SelectionTextColor || "#000000",
+    mac9FocusRingColor: theme.mac9FocusRingColor || "#0000ff",
+    mac9ScrollbarTrackColor: theme.mac9ScrollbarTrackColor || "#b9b9b9",
+    mac9ScrollbarThumbColor: theme.mac9ScrollbarThumbColor || "#7770d8",
+    mac9ScrollbarThumbBorderColor: theme.mac9ScrollbarThumbBorderColor || "#232323",
+    mac9DocumentViewportColor: theme.mac9DocumentViewportColor || "#222222",
+    mac9AssetColorizeEnabled: theme.mac9AssetColorizeEnabled ?? false,
+    mac9AssetColorizeAmount: theme.mac9AssetColorizeAmount || "100%",
+    mac9AssetHueRotate: theme.mac9AssetHueRotate || "0deg",
+    mac9AssetSaturation: theme.mac9AssetSaturation || "100%",
+    mac9AssetBrightness: theme.mac9AssetBrightness || "100%",
+    mac9AssetContrast: theme.mac9AssetContrast || "100%",
     mac9BevelEnabled: theme.mac9BevelEnabled ?? true,
     mac9BevelLightColor: theme.mac9BevelLightColor || "#ffffff",
     mac9BevelMidColor: theme.mac9BevelMidColor || "#cccccc",
@@ -386,8 +420,8 @@ export function applyStyleSelection(theme, style) {
 }
 
 export const THEME_PRESETS = RAW_THEME_PRESETS.map((preset) => {
-  if (preset.name === "macOS Platinum") {
-    // This preset is a canonical Settings export. Hydrate it exactly as an
+  if (["MiSTer Companion EX", "MiSTer Companion Classic", "macOS Platinum"].includes(preset.name)) {
+    // These presets are canonical Settings exports. Hydrate them exactly as an
     // imported theme instead of re-deriving its authored component values.
     return { ...preset, theme: hydrateTheme(preset.theme) };
   }
@@ -960,6 +994,42 @@ export function themeStyle(theme) {
   style["--mac9-panel-groove-shadow-color"] = String(merged.mac9PanelGrooveShadowColor || "#808080");
   style["--mac9-panel-inner-highlight-color"] = String(merged.mac9PanelInnerHighlightColor || "#ffffff");
   style["--mac9-panel-outer-highlight-color"] = String(merged.mac9PanelOuterHighlightColor || "#ffffff");
+  const platinumColorVariables = {
+    "body-text": ["mac9BodyTextColor", "#202020"],
+    "secondary-text": ["mac9SecondaryTextColor", "#404040"],
+    "disabled-text": ["mac9DisabledTextColor", "#777777"],
+    "link-text": ["mac9LinkTextColor", "#000080"],
+    "toolbar-background": ["mac9ToolbarBackgroundColor", "#cccccc"],
+    "subheader-background": ["mac9SubheaderBackgroundColor", "#d6d6d6"],
+    "field-background": ["mac9FieldBackgroundColor", "#ffffff"],
+    "field-text": ["mac9FieldTextColor", "#000000"],
+    "menu-background": ["mac9MenuBackgroundColor", "#d6d6d6"],
+    "menu-text": ["mac9MenuTextColor", "#000000"],
+    "file-browser-text": ["mac9FileBrowserTextColor", "#202020"],
+    "row-background": ["mac9RowBackgroundColor", "#eeeeee"],
+    "row-alternate-background": ["mac9RowAlternateBackgroundColor", "#dddddd"],
+    "row-hover-background": ["mac9RowHoverBackgroundColor", "#50202020"],
+    "row-hover-text": ["mac9RowHoverTextColor", "#202020"],
+    "row-selected-background": ["mac9RowSelectedBackgroundColor", "#c5c3e5"],
+    "row-selected-text": ["mac9RowSelectedTextColor", "#000000"],
+    "selected-column-background": ["mac9SelectedColumnBackgroundColor", "#cccccc"],
+    "selected-column-alternate-background": ["mac9SelectedColumnAlternateBackgroundColor", "#bbbbbb"],
+    "selected-column-hover-background": ["mac9SelectedColumnHoverBackgroundColor", "#9f9f9f"],
+    "selected-column-hover-text": ["mac9SelectedColumnHoverTextColor", "#202020"],
+    "selection-background": ["mac9SelectionBackgroundColor", "#989efa"],
+    "selection-text": ["mac9SelectionTextColor", "#000000"],
+    "focus-ring": ["mac9FocusRingColor", "#0000ff"],
+    "scrollbar-track": ["mac9ScrollbarTrackColor", "#b9b9b9"],
+    "scrollbar-thumb": ["mac9ScrollbarThumbColor", "#7770d8"],
+    "scrollbar-thumb-border": ["mac9ScrollbarThumbBorderColor", "#232323"],
+    "document-viewport": ["mac9DocumentViewportColor", "#222222"],
+  };
+  Object.entries(platinumColorVariables).forEach(([cssName, [themeKey, fallback]]) => {
+    style[`--mac9-${cssName}-color`] = String(merged[themeKey] || fallback);
+  });
+  style["--mac9-asset-filter-effective"] = themeToggleEnabled(merged.mac9AssetColorizeEnabled)
+    ? `sepia(${merged.mac9AssetColorizeAmount || "100%"}) hue-rotate(${merged.mac9AssetHueRotate || "0deg"}) saturate(${merged.mac9AssetSaturation || "100%"}) brightness(${merged.mac9AssetBrightness || "100%"}) contrast(${merged.mac9AssetContrast || "100%"})`
+    : "none";
   style["--mac9-bevel-light-color"] = String(merged.mac9BevelLightColor || "#ffffff");
   style["--mac9-bevel-mid-color"] = String(merged.mac9BevelMidColor || "#cccccc");
   style["--mac9-bevel-dark-color"] = String(merged.mac9BevelDarkColor || "#777777");

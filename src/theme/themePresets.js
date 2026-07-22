@@ -5,6 +5,8 @@
  */
 
 import { MACOS_PLATINUM_THEME, WIN9X_THEME } from "./specialThemePresets";
+import misterCompanionClassicPreset from "./presets/misterCompanionClassic.json";
+import misterCompanionExPreset from "./presets/misterCompanionEx.json";
 
 export function glowDefaults(prefix, size = "20px", hoverBoost = "8px") {
   return {
@@ -18,7 +20,7 @@ export function glowDefaults(prefix, size = "20px", hoverBoost = "8px") {
   };
 }
 
-export const DEFAULT_THEME = {
+const BASE_THEME = {
   themeSchemaVersion: "2",
   platinumTypographyVersion: "2",
   appStyle: "classic",
@@ -110,6 +112,42 @@ export const DEFAULT_THEME = {
   mac9PanelGrooveShadowColor: "#808080",
   mac9PanelInnerHighlightColor: "#ffffff",
   mac9PanelOuterHighlightColor: "#ffffff",
+  mac9BodyTextColor: "#202020",
+  mac9SecondaryTextColor: "#404040",
+  mac9DisabledTextColor: "#777777",
+  mac9LinkTextColor: "#000080",
+  mac9ToolbarBackgroundColor: "#cccccc",
+  mac9SubheaderBackgroundColor: "#d6d6d6",
+  mac9FieldBackgroundColor: "#ffffff",
+  mac9FieldTextColor: "#000000",
+  mac9MenuBackgroundColor: "#d6d6d6",
+  mac9MenuTextColor: "#000000",
+  mac9FileBrowserTextColor: "#202020",
+  mac9RowBackgroundColor: "#eeeeee",
+  mac9RowAlternateBackgroundColor: "#dddddd",
+  mac9RowHoverBackgroundColor: "#50202020",
+  mac9RowHoverTextColor: "#202020",
+  mac9RowSelectedBackgroundColor: "#c5c3e5",
+  mac9RowSelectedTextColor: "#000000",
+  mac9SelectedColumnBackgroundColor: "#cccccc",
+  mac9SelectedColumnAlternateBackgroundColor: "#bbbbbb",
+  mac9SelectedColumnHoverBackgroundColor: "#9f9f9f",
+  mac9SelectedColumnHoverTextColor: "#202020",
+  mac9SelectionBackgroundColor: "#989efa",
+  mac9SelectionTextColor: "#000000",
+  mac9FocusRingColor: "#0000ff",
+  mac9ScrollbarTrackColor: "#b9b9b9",
+  mac9ScrollbarThumbColor: "#7770d8",
+  mac9ScrollbarThumbBorderColor: "#232323",
+  mac9DocumentViewportColor: "#222222",
+  mac9AssetColorizeEnabled: false,
+  mac9AssetColorizeAmount: "100%",
+  mac9AssetHueRotate: "0deg",
+  mac9AssetSaturation: "100%",
+  mac9AssetBrightness: "100%",
+  mac9AssetContrast: "100%",
+  headerTextColor: "#202020",
+  footerTextColor: "#000000",
   mac9BevelEnabled: true,
   mac9BevelLightColor: "#ffffff",
   mac9BevelMidColor: "#cccccc",
@@ -548,6 +586,11 @@ export const DEFAULT_THEME = {
   badgeUncutBorder: "#401515",
 };
 
+export const DEFAULT_THEME = {
+  ...BASE_THEME,
+  ...misterCompanionExPreset.theme,
+};
+
 export function systemBadgePalette({ surface, text, border, green, cyan, blue, amber, purple, olive, pink, red }) {
   return {
     badgeDefaultBg: surface,
@@ -585,8 +628,12 @@ export function systemBadgePalette({ surface, text, border, green, cyan, blue, a
 
 export const RAW_THEME_PRESETS = [
   {
-    name: "LaserVault Classic",
+    name: "MiSTer Companion EX",
     theme: DEFAULT_THEME,
+  },
+  {
+    name: "MiSTer Companion Classic",
+    theme: misterCompanionClassicPreset.theme,
   },
   {
     name: "macOS Platinum",
@@ -1476,7 +1523,8 @@ export const RAW_THEME_PRESETS = [
 ];
 
 export const PRESET_PRESENTATION = {
-  "LaserVault Classic": ["classic", "1", "0px"],
+  "MiSTer Companion EX": ["gnome", "1", "0px"],
+  "MiSTer Companion Classic": ["classic", "1", "0px"],
   "macOS Platinum": ["macos9platinum", "1", "0px"],
   Win9X: ["windows9x", "1", "0px"],
   Nord: ["classic", "1", "0px"],
@@ -2133,14 +2181,6 @@ const texturedAudit = {
 };
 
 export const PRESET_AUDIT_OVERRIDES = {
-  "LaserVault Classic": {
-    ...classicAudit,
-    workspaceGradientStartColor: "#090915",
-    workspaceGradientMidColor: "#101827",
-    workspaceGradientEndColor: "#090915",
-    panelGradientEndOpacity: "2%",
-    cardHoverBackgroundColor: "#1b1b33",
-  },
   Nord: {
     ...flatAudit,
     workspaceGradientStartColor: "#2b313c",

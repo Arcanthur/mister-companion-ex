@@ -21,6 +21,7 @@
     "dist:signed": "node node_modules/vite/bin/vite.js build --configLoader runner && electron-builder --win portable --x64 --config.forceCodeSigning=true"
   },
   "dependencies": {
+    "pdfjs-dist": "^6.1.200",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },

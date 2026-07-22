@@ -8,14 +8,27 @@ import { CustomSelect } from "./components/common/CustomSelect";
 import { ThemeAwareSelect } from "./components/common/ThemeAwareSelect";
 import { ThemedScrollbar } from "./components/common/ThemedScrollbar";
 import { WindowTitlebar } from "./components/common/WindowTitlebar";
+import { PlatinumTitlebarLayout } from "./components/common/PlatinumTitlebarStripes";
 import { DEFAULT_THEME } from "./theme/themePresets";
 import { THEME_PRESETS, applyStyleSelection, hydrateTheme, saveSavedThemes, themeToggleEnabled, useCustomFont } from "./theme/themeUtils";
 import { MISTER_APP_CONFIG, MISTER_SAVED_THEMES_STORAGE_KEY, MISTER_SIDEBAR_GLYPHS_STORAGE_KEY, MISTER_THEME_STORAGE_KEY, misterThemeAssetUrl } from "./apps/mister/appConfig";
+import { flattenExpandedFileEntries, sortFileBrowserEntries } from "./utils/fileBrowserTree";
+import { getFileKind } from "./utils/fileKind";
 
 const MISTER_INSTALL_ARTWORK_STORAGE_KEY = "mister-companion:install-artwork:v1";
 
 const misterWordmarkUrl = misterThemeAssetUrl("mister-companion-ex-logo.png");
 const macos9SettingsGlyphUrl = misterThemeAssetUrl("macos9/settings.svg");
+const macos9AddressBackUrl = misterThemeAssetUrl("macos9/address-back-left.svg");
+const macos9AddressUpUrl = misterThemeAssetUrl("macos9/address-up.svg");
+const macos9AddressUploadUrl = misterThemeAssetUrl("macos9/address-upload.svg");
+const macos9AddressRefreshUrl = misterThemeAssetUrl("macos9/address-refresh.svg");
+const macos9AddressNewFolderUrl = misterThemeAssetUrl("macos9/address-new-folder.svg");
+const macos9FileBrowserFolderUrl = misterThemeAssetUrl("macos9/file-browser-folder-v2.png");
+const macos9FileBrowserArrowUrl = misterThemeAssetUrl("macos9/file-browser-arrow.svg");
+const macos9ContextCutUrl = misterThemeAssetUrl("macos9/context-cut.svg");
+const macos9ContextCopyUrl = misterThemeAssetUrl("macos9/context-copy.svg");
+const macos9ContextPasteUrl = misterThemeAssetUrl("macos9/context-paste.svg");
 
 
 const SECTION_PROBE_CACHE_MS = {
@@ -259,19 +272,77 @@ function ThemedConfirmModal({ dialog, onResolve }) {
     <div className="modal-backdrop mister-confirm-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) onResolve(false); }}>
       <div className={`modal mister-confirm-modal tone-${tone}`} role="dialog" aria-modal="true" aria-labelledby="mister-confirm-title" aria-describedby="mister-confirm-message">
         <WindowTitlebar title={title} onClose={() => onResolve(false)} closeLabel="Cancel" />
-        <header className="mister-confirm-header">
-          <div>
-            <span className="mister-confirm-eyebrow">Confirmation</span>
-            <h2 id="mister-confirm-title">{title}</h2>
-          </div>
-          <button className="settings-close-button mister-confirm-close" type="button" aria-label="Cancel" onClick={() => onResolve(false)}><span className="window-control-glyph window-close-glyph" /></button>
-        </header>
-        <p id="mister-confirm-message" className="mister-confirm-message">{dialog.message}</p>
-        <footer className="mister-confirm-actions">
-          <button className="secondary-button" type="button" onClick={() => onResolve(false)}>{cancelLabel}</button>
-          <button className={tone === "danger" ? "danger-button" : "primary-button"} type="button" onClick={() => onResolve(true)} autoFocus>{confirmLabel}</button>
-        </footer>
+        <div className="mister-small-dialog-body">
+          <header className="mister-confirm-header">
+            <div>
+              <span className="mister-confirm-eyebrow">Confirmation</span>
+              <h2 id="mister-confirm-title">{title}</h2>
+            </div>
+            <button className="settings-close-button mister-confirm-close" type="button" aria-label="Cancel" onClick={() => onResolve(false)}><span className="window-control-glyph window-close-glyph" /></button>
+          </header>
+          <p id="mister-confirm-message" className="mister-confirm-message">{dialog.message}</p>
+          <footer className="mister-confirm-actions">
+            <button className="secondary-button" type="button" onClick={() => onResolve(false)}>{cancelLabel}</button>
+            <button className={tone === "danger" ? "danger-button" : "primary-button"} type="button" onClick={() => onResolve(true)} autoFocus>{confirmLabel}</button>
+          </footer>
+        </div>
       </div>
+    </div>
+  );
+}
+
+function FileConflictDialog({ dialog, onResolve }) {
+  if (!dialog) return null;
+  const plural = Number(dialog.count || 0) > 1;
+  return (
+    <div className="modal-backdrop mister-confirm-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) onResolve("cancel"); }}>
+      <div className="modal mister-confirm-modal mister-file-conflict-modal" role="dialog" aria-modal="true" aria-labelledby="mister-file-conflict-title" aria-describedby="mister-file-conflict-message">
+        <WindowTitlebar title={dialog.title || "File already exists"} onClose={() => onResolve("cancel")} closeLabel="Cancel" />
+        <div className="mister-small-dialog-body">
+          <header className="mister-confirm-header">
+            <div>
+              <span className="mister-confirm-eyebrow">Destination conflict</span>
+              <h2 id="mister-file-conflict-title">{dialog.title || "File already exists"}</h2>
+            </div>
+          </header>
+          <p id="mister-file-conflict-message" className="mister-confirm-message">{dialog.message}</p>
+          <footer className="mister-confirm-actions mister-file-conflict-actions">
+            <button className="secondary-button" type="button" onClick={() => onResolve("cancel")}>Cancel</button>
+            <button className="secondary-button" type="button" onClick={() => onResolve("skip")}>{plural ? "Skip All" : "Skip"}</button>
+            <button className="secondary-button" type="button" onClick={() => onResolve("keepBoth")}>Keep Both</button>
+            <button className="danger-button" type="button" onClick={() => onResolve("replace")}>{plural ? "Replace All" : "Replace"}</button>
+          </footer>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function FileBrowserNameDialog({ dialog, onCancel, onSubmit }) {
+  const [value, setValue] = useState(dialog?.value || "");
+
+  useEffect(() => {
+    setValue(dialog?.value || "");
+  }, [dialog]);
+
+  if (!dialog) return null;
+  return (
+    <div className="modal-backdrop mister-file-name-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) onCancel(); }}>
+      <form className="modal mister-file-name-modal" role="dialog" aria-modal="true" aria-labelledby="mister-file-name-title" onSubmit={(event) => { event.preventDefault(); onSubmit(value); }}>
+        <WindowTitlebar title={dialog.title} onClose={onCancel} closeLabel="Cancel" />
+        <div className="mister-small-dialog-body">
+          <header className="mister-file-name-header">
+            <h2 id="mister-file-name-title">{dialog.title}</h2>
+          </header>
+          <Field label={dialog.label}>
+            <input autoFocus value={value} onFocus={(event) => event.currentTarget.select()} onChange={(event) => setValue(event.target.value)} />
+          </Field>
+          <footer className="mister-file-name-actions">
+            <button className="secondary-button" type="button" onClick={onCancel}>Cancel</button>
+            <button className="primary-button" type="submit" disabled={!value.trim()}>{dialog.confirmLabel}</button>
+          </footer>
+        </div>
+      </form>
     </div>
   );
 }
@@ -321,7 +392,7 @@ function Field({ label, children }) {
 }
 
 function Card({ title, children, footer, className = "", sectionRef = null, style = undefined }) {
-  return <section ref={sectionRef} style={style} className={`mister-card ${className}`}><h2>{title}</h2><div className="mister-card-body">{children}</div>{footer ? <div className="mister-card-footer">{footer}</div> : null}</section>;
+  return <section ref={sectionRef} style={style} className={`mister-card ${className}`}>{title ? <h2>{title}</h2> : null}<div className="mister-card-body">{children}</div>{footer ? <div className="mister-card-footer">{footer}</div> : null}</section>;
 }
 
 function LogBox({ value }) {
@@ -1326,20 +1397,8 @@ function backupName(backup) {
   return typeof backup === "string" ? backup : String(backup?.name || "");
 }
 
-
-function splitRemotePath(path) {
-  const normalized = String(path || "/media/fat").replace(/\\/g, "/").replace(/\/+$/, "") || "/media/fat";
-  const parts = normalized.split("/").filter(Boolean);
-  const segments = [];
-  let current = "";
-  for (const part of parts) {
-    current += `/${part}`;
-    segments.push({ label: part, path: current });
-  }
-  return segments;
-}
-
 const FILE_BROWSER_PREFS_STORAGE_KEY = "mister-companion:file-browser:prefs:v2";
+const FILE_BROWSER_DRAG_MIME = "application/x-mister-companion-files";
 const FILE_BROWSER_DEFAULT_COLUMN_WIDTHS = { name: 58, type: 13, size: 11, modified: 18 };
 
 function loadFileBrowserPrefs() {
@@ -1356,7 +1415,10 @@ function clampNumber(value, min, max) {
   return Math.max(min, Math.min(max, number));
 }
 
-function FileBrowserEntryIcon({ isFolder }) {
+function FileBrowserEntryIcon({ isFolder, platinumStyle = false }) {
+  if (isFolder && platinumStyle) {
+    return <span className="mister-file-icon folder bitmap" aria-hidden="true"><img src={macos9FileBrowserFolderUrl} alt="" /></span>;
+  }
   return (
     <span className={`mister-file-icon ${isFolder ? "folder" : "file"}`} aria-hidden="true">
       {isFolder ? (
@@ -1375,64 +1437,148 @@ function FileBrowserEntryIcon({ isFolder }) {
   );
 }
 
-function FileBrowserPage({ browser, connected, refresh, backendCall, host, jobs, refreshJobs, confirmAction, setBrowser, setError, checking }) {
+function FileBrowserPage({ browser, connected, refresh, backendCall, host, jobs, refreshJobs, confirmAction, setBrowser, setError, error, platinumStyle = false }) {
   const savedPrefs = useMemo(() => loadFileBrowserPrefs(), []);
   const currentPath = browser?.path || savedPrefs.lastPath || "/media/fat";
   const entries = useMemo(() => browser?.entries || [], [browser?.entries]);
-  const roots = browser?.roots || [{ name: "SD Card", path: "/media/fat", available: true }];
+  const roots = useMemo(() => browser?.roots || [{ name: "SD Card", path: "/media/fat", available: true }], [browser?.roots]);
+  const storageRoots = useMemo(() => ([
+    roots.find((root) => root.path === "/media/fat") || { name: "SD Card", path: "/media/fat", available: true },
+    roots.find((root) => root.path === "/media/usb0") || { name: "USB Drive", path: "/media/usb0", available: false },
+  ]), [roots]);
   const [selectedPaths, setSelectedPaths] = useState([]);
-  const [nameDraft, setNameDraft] = useState("");
   const [clipboard, setClipboard] = useState(null);
+  const [contextMenu, setContextMenu] = useState(null);
+  const [nameDialog, setNameDialog] = useState(null);
+  const [conflictDialog, setConflictDialog] = useState(null);
+  const [dismissedTrashJobId, setDismissedTrashJobId] = useState("");
+  const [dismissedTransferJobId, setDismissedTransferJobId] = useState("");
+  const [addressDraft, setAddressDraft] = useState(currentPath);
+  const [pathHistory, setPathHistory] = useState(() => [currentPath]);
+  const [pathHistoryIndex, setPathHistoryIndex] = useState(0);
   const [dragActive, setDragActive] = useState(false);
+  const [dropTargetPath, setDropTargetPath] = useState("");
+  const [selectionBox, setSelectionBox] = useState(null);
+  const [foldersFirst, setFoldersFirst] = useState(Boolean(savedPrefs.foldersFirst));
+  const [comfyRows, setComfyRows] = useState(Boolean(savedPrefs.comfyRows));
   const [sortSpec, setSortSpec] = useState(savedPrefs.sort || { key: "name", direction: "asc" });
   const [columnWidths, setColumnWidths] = useState({ ...FILE_BROWSER_DEFAULT_COLUMN_WIDTHS, ...(savedPrefs.columnWidths || {}) });
+  const [expandedPaths, setExpandedPaths] = useState([]);
+  const [childrenByPath, setChildrenByPath] = useState({});
+  const [loadingPaths, setLoadingPaths] = useState([]);
   const lastSelectedPathRef = useRef("");
+  const selectionDragRef = useRef(null);
+  const draggedPathsRef = useRef([]);
+  const historyMouseCommandRef = useRef({ direction: 0, at: 0 });
+  const conflictResolveRef = useRef(null);
+  const keyboardFocusPathRef = useRef("");
+  const typeaheadRef = useRef({ text: "", at: 0 });
+  const currentPathRef = useRef(currentPath);
+  const expandedRefreshRef = useRef(0);
+  const fileBrowserMountedRef = useRef(true);
+  const expandedPathsRef = useRef([]);
+  const navigationRequestRef = useRef(0);
+  const suppressEntryClickRef = useRef(false);
   const tableRef = useRef(null);
-  const selectedEntries = useMemo(() => entries.filter((entry) => selectedPaths.includes(entry.path)), [entries, selectedPaths]);
+  const fileTableScrollRef = useRef(null);
+  const sortedEntries = useMemo(() => sortFileBrowserEntries(entries, sortSpec, foldersFirst), [entries, foldersFirst, sortSpec]);
+  const visibleEntries = useMemo(() => (
+    platinumStyle
+      ? flattenExpandedFileEntries(entries, expandedPaths, childrenByPath, sortSpec, foldersFirst)
+      : sortedEntries.map((entry) => ({ ...entry, treeDepth: 0 }))
+  ), [childrenByPath, entries, expandedPaths, foldersFirst, platinumStyle, sortSpec, sortedEntries]);
+  const selectedEntries = useMemo(() => visibleEntries.filter((entry) => selectedPaths.includes(entry.path)), [selectedPaths, visibleEntries]);
   const selectedEntry = selectedEntries.length === 1 ? selectedEntries[0] : null;
   const selectedCount = selectedEntries.length;
   const fileJobs = useMemo(() => (jobs?.jobs || []).filter((job) => String(job.kind || "").startsWith("fileBrowser.")).slice(0, 8), [jobs]);
-  const activeJob = fileJobs.find((job) => job.status === "running" || job.status === "queued") || fileJobs[0] || null;
-  const downloadJob = fileJobs.find((job) => job.kind === "fileBrowser.download" && job.status === "completed" && (job.result?.localPath || job.result?.localPaths?.length));
+  const activeJob = fileJobs.find((job) => job.status === "running" || job.status === "queued") || null;
+  const retryJob = fileJobs.find((job) => (
+    (job.status === "failed" || job.status === "cancelled")
+    && job.retry?.method
+    && job.id !== dismissedTransferJobId
+  )) || null;
+  const displayedFileJob = activeJob || retryJob;
+  const undoDeleteJob = fileJobs.find((job) => (
+    job.status === "completed"
+    && job.kind === "fileBrowser.delete"
+    && job.result?.trashItems?.length
+    && job.id !== dismissedTrashJobId
+  )) || null;
+  const activeFileJobId = activeJob?.id || "";
 
   useEffect(() => {
     setSelectedPaths([]);
-    setNameDraft("");
-    saveFileBrowserPrefs({ ...loadFileBrowserPrefs(), lastPath: currentPath, sort: sortSpec, columnWidths });
-  }, [columnWidths, currentPath, sortSpec]);
+    setAddressDraft(currentPath);
+    currentPathRef.current = currentPath;
+    keyboardFocusPathRef.current = "";
+    lastSelectedPathRef.current = "";
+  }, [currentPath]);
 
   useEffect(() => {
-    setSelectedPaths((previous) => previous.filter((path) => entries.some((entry) => entry.path === path)));
-  }, [entries]);
+    setSelectedPaths((previous) => previous.filter((path) => visibleEntries.some((entry) => entry.path === path)));
+  }, [visibleEntries]);
 
   useEffect(() => {
-    if (selectedEntry) setNameDraft(selectedEntry.name || "");
-    if (selectedCount !== 1) setNameDraft("");
-  }, [selectedEntry, selectedCount]);
+    setExpandedPaths([]);
+    setChildrenByPath({});
+    setLoadingPaths([]);
+    expandedRefreshRef.current += 1;
+  }, [currentPath]);
 
   useEffect(() => {
-    saveFileBrowserPrefs({ ...loadFileBrowserPrefs(), lastPath: currentPath, sort: sortSpec, columnWidths });
-  }, [sortSpec, columnWidths, currentPath]);
+    saveFileBrowserPrefs({ ...loadFileBrowserPrefs(), lastPath: currentPath, sort: sortSpec, columnWidths, foldersFirst, comfyRows });
+  }, [sortSpec, columnWidths, comfyRows, currentPath, foldersFirst]);
 
-  const sortedEntries = useMemo(() => {
-    const direction = sortSpec.direction === "desc" ? -1 : 1;
-    const key = sortSpec.key || "name";
-    return [...entries].sort((a, b) => {
-      if (a.is_dir !== b.is_dir) return a.is_dir ? -1 : 1;
-      let left;
-      let right;
-      if (key === "size") { left = Number(a.size || 0); right = Number(b.size || 0); }
-      else if (key === "modified") { left = Number(a.mtime || 0); right = Number(b.mtime || 0); }
-      else if (key === "type") { left = String(a.type || (a.is_dir ? "Folder" : "File")); right = String(b.type || (b.is_dir ? "Folder" : "File")); }
-      else { left = String(a.name || "").toLocaleLowerCase(); right = String(b.name || "").toLocaleLowerCase(); }
-      if (typeof left === "number" && typeof right === "number") return (left - right) * direction;
-      return String(left).localeCompare(String(right), undefined, { numeric: true, sensitivity: "base" }) * direction;
-    });
-  }, [entries, sortSpec]);
+  useEffect(() => {
+    expandedPathsRef.current = expandedPaths;
+  }, [expandedPaths]);
+
+  useEffect(() => {
+    if (!contextMenu) return undefined;
+    const closeMenu = () => setContextMenu(null);
+    const closeOnKey = (event) => { if (event.key === "Escape") closeMenu(); };
+    window.addEventListener("mousedown", closeMenu);
+    window.addEventListener("blur", closeMenu);
+    window.addEventListener("resize", closeMenu);
+    window.addEventListener("scroll", closeMenu, true);
+    window.addEventListener("keydown", closeOnKey);
+    return () => {
+      window.removeEventListener("mousedown", closeMenu);
+      window.removeEventListener("blur", closeMenu);
+      window.removeEventListener("resize", closeMenu);
+      window.removeEventListener("scroll", closeMenu, true);
+      window.removeEventListener("keydown", closeOnKey);
+    };
+  }, [contextMenu]);
+
+  useEffect(() => {
+    if (!activeFileJobId) return undefined;
+    const timer = window.setInterval(() => refreshJobs?.().catch(() => {}), 800);
+    return () => window.clearInterval(timer);
+  }, [activeFileJobId, refreshJobs]);
+
+  useEffect(() => {
+    if (!error) return undefined;
+    const timer = window.setTimeout(() => setError?.(""), 5000);
+    return () => window.clearTimeout(timer);
+  }, [error, setError]);
+
+  useEffect(() => {
+    fileBrowserMountedRef.current = true;
+    return () => {
+      fileBrowserMountedRef.current = false;
+      expandedRefreshRef.current += 1;
+    };
+  }, []);
 
   const setPayload = (payload) => {
-    if (payload?.summary) setBrowser(payload.summary);
-    else if (payload?.entries) setBrowser(payload);
+    const directory = payload?.summary || (payload?.entries ? payload : null);
+    if (!directory) return;
+    if (!directory.path || directory.path === currentPathRef.current) {
+      setBrowser(directory);
+    } else {
+      setChildrenByPath((previous) => ({ ...previous, [directory.path]: directory.entries || [] }));
+    }
   };
 
   const run = async (task, fallback = "File Browser action failed.") => {
@@ -1445,74 +1591,251 @@ function FileBrowserPage({ browser, connected, refresh, backendCall, host, jobs,
     }
   };
 
-  const openDirectory = async (path) => {
-    await run(async () => refresh(path, { force: true }));
+  const openDirectory = async (path, options = {}) => {
+    const targetPath = String(path || "").trim();
+    if (!targetPath) return null;
+    const requestId = ++navigationRequestRef.current;
+    const payload = await run(() => refresh(targetPath, { force: true }));
+    if (!payload || requestId !== navigationRequestRef.current) return null;
+    const resolvedPath = payload.path || targetPath;
+    setAddressDraft(resolvedPath);
+    if (options.recordHistory !== false && resolvedPath !== pathHistory[pathHistoryIndex]) {
+      const nextHistory = [...pathHistory.slice(0, pathHistoryIndex + 1), resolvedPath];
+      setPathHistory(nextHistory);
+      setPathHistoryIndex(nextHistory.length - 1);
+    }
+    return payload;
   };
 
-  const refreshHere = async () => run(async () => refresh(currentPath, { force: true }));
+  const navigateHistory = async (direction) => {
+    const nextIndex = pathHistoryIndex + direction;
+    const targetPath = pathHistory[nextIndex];
+    if (!targetPath) return;
+    const payload = await openDirectory(targetPath, { recordHistory: false });
+    if (payload) setPathHistoryIndex(nextIndex);
+  };
+
+  useEffect(() => {
+    const runMouseHistory = (direction) => {
+      const now = performance.now();
+      const previous = historyMouseCommandRef.current;
+      if (previous.direction === direction && now - previous.at < 80) return;
+      historyMouseCommandRef.current = { direction, at: now };
+      navigateHistory(direction);
+    };
+    const unsubscribe = host?.onFileBrowserHistoryCommand?.(runMouseHistory);
+    const handleMouseButton = (event) => {
+      if (event.button !== 3 && event.button !== 4) return;
+      if (!(event.target instanceof Element) || !event.target.closest(".mister-file-list-card")) return;
+      event.preventDefault();
+      event.stopPropagation();
+      if (event.type === "mousedown") runMouseHistory(event.button === 3 ? -1 : 1);
+    };
+    window.addEventListener("mousedown", handleMouseButton, true);
+    window.addEventListener("mouseup", handleMouseButton, true);
+    window.addEventListener("auxclick", handleMouseButton, true);
+    return () => {
+      unsubscribe?.();
+      window.removeEventListener("mousedown", handleMouseButton, true);
+      window.removeEventListener("mouseup", handleMouseButton, true);
+      window.removeEventListener("auxclick", handleMouseButton, true);
+    };
+  });
+
+  const submitAddress = async (event) => {
+    event.preventDefault();
+    await openDirectory(addressDraft);
+  };
+
+  const toggleFolderExpansion = async (entry, event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    const path = entry?.path;
+    if (!entry?.is_dir || !path) return;
+
+    if (expandedPaths.includes(path)) {
+      setExpandedPaths((previous) => previous.filter((item) => item !== path));
+      return;
+    }
+
+    setExpandedPaths((previous) => previous.includes(path) ? previous : [...previous, path]);
+    if (Object.prototype.hasOwnProperty.call(childrenByPath, path) || loadingPaths.includes(path)) return;
+
+    setLoadingPaths((previous) => [...previous, path]);
+    const payload = await run(
+      () => backendCall("fileBrowser.list", { path }, { timeoutMs: 45000 }),
+      `Could not open ${entry.name || "folder"}.`,
+    );
+    setLoadingPaths((previous) => previous.filter((item) => item !== path));
+    if (payload?.entries) {
+      setChildrenByPath((previous) => ({ ...previous, [path]: payload.entries }));
+    } else {
+      setExpandedPaths((previous) => previous.filter((item) => item !== path));
+    }
+  };
+
+  const refreshHere = async () => {
+    setClipboard(null);
+    setSelectedPaths([]);
+    const payload = await run(async () => refresh(currentPathRef.current, { force: true }));
+    if (payload) await refreshExpandedFolders();
+    return payload;
+  };
+
+  const requestConflictChoice = (dialog) => new Promise((resolve) => {
+    conflictResolveRef.current = resolve;
+    setConflictDialog(dialog);
+  });
+
+  const resolveConflictChoice = (choice) => {
+    const resolve = conflictResolveRef.current;
+    conflictResolveRef.current = null;
+    setConflictDialog(null);
+    resolve?.(choice);
+  };
 
   const maybeConfirmOverwrite = async (mode, params, options = {}) => {
     const result = await backendCall("fileBrowser.conflicts", { mode, ...params }, { timeoutMs: 15000 });
     const conflicts = result?.conflicts || [];
-    if (!conflicts.length) return false;
+    if (!conflicts.length) return "error";
     const hardConflict = conflicts.find((conflict) => conflict.kind === "same-path");
     if (hardConflict) throw new Error(hardConflict.message || "Source and destination are the same.");
     const names = conflicts.slice(0, 8).map((conflict) => `• ${conflict.name || conflict.path}`).join("\n");
     const more = conflicts.length > 8 ? `\n…and ${conflicts.length - 8} more` : "";
-    const ok = await confirmAction?.(`${options.message || "One or more items already exist at the destination."}\n\n${names}${more}\n\nReplace existing item${conflicts.length === 1 ? "" : "s"}?`, {
-      title: options.title || "Replace existing item?",
-      confirmLabel: options.confirmLabel || "Replace",
-      tone: "danger",
+    const message = `${options.message || "One or more items already exist at the destination."}\n\n${names}${more}`;
+    if (mode === "rename") {
+      const ok = await confirmAction?.(`${message}\n\nReplace the existing item?`, {
+        title: options.title || "Replace existing item?",
+        confirmLabel: "Replace",
+        tone: "danger",
+      });
+      return ok ? "replace" : "cancel";
+    }
+    const choice = await requestConflictChoice({
+      title: options.title || "Items already exist",
+      message: `${message}\n\nKeep Both creates a numbered copy. Skip preserves the existing destination. Replace safely swaps in the new item only after its transfer completes.`,
+      count: conflicts.length,
     });
-    if (!ok) throw new Error("Action cancelled.");
-    return true;
+    return choice;
   };
 
-  const makeFolder = async () => run(async () => {
-    const name = nameDraft.trim();
+  const makeFolder = async (folderName) => run(async () => {
+    const name = String(folderName || "").trim();
     if (!name) throw new Error("Enter a folder name first.");
     const conflicts = await backendCall("fileBrowser.conflicts", { mode: "mkdir", path: currentPath, name }, { timeoutMs: 15000 });
     if (conflicts?.conflicts?.length) throw new Error("A folder or file with that name already exists.");
     const payload = await backendCall("fileBrowser.mkdir", { path: currentPath, name }, { timeoutMs: 30000 });
     setPayload(payload);
-    setNameDraft("");
     return payload;
   });
 
-  const renameSelected = async () => run(async () => {
+  const renameSelected = async (nextName) => run(async () => {
     if (!selectedEntry) throw new Error("Select one item to rename.");
-    const name = nameDraft.trim();
-    if (!name || name === selectedEntry.name) return null;
-    const overwrite = await maybeConfirmOverwrite("rename", { source: selectedEntry.path, name }, { title: "Replace existing item?" });
-    const payload = await backendCall("fileBrowser.rename", { source: selectedEntry.path, name, overwrite }, { timeoutMs: 30000 });
+    const name = String(nextName || "").trim();
+    if (!name) throw new Error("Enter a new name first.");
+    if (name === selectedEntry.name) return { unchanged: true };
+    const conflictPolicy = await maybeConfirmOverwrite("rename", { source: selectedEntry.path, name }, { title: "Replace existing item?" });
+    if (conflictPolicy === "cancel") return null;
+    const payload = await backendCall("fileBrowser.rename", { source: selectedEntry.path, name, overwrite: conflictPolicy === "replace" }, { timeoutMs: 30000 });
     setPayload(payload);
     setSelectedPaths([]);
     return payload;
   });
 
+  const refreshExpandedFolders = async () => {
+    const currentExpandedPaths = expandedPathsRef.current;
+    if (!platinumStyle || !currentExpandedPaths.length) return;
+    const generation = ++expandedRefreshRef.current;
+    const paths = [...currentExpandedPaths];
+    const results = await Promise.all(paths.map(async (path) => {
+      try {
+        const payload = await backendCall("fileBrowser.list", { path }, { timeoutMs: 45000 });
+        return { path, entries: payload?.entries || [] };
+      } catch {
+        return null;
+      }
+    }));
+    if (!fileBrowserMountedRef.current || generation !== expandedRefreshRef.current) return;
+    setChildrenByPath((previous) => {
+      const next = { ...previous };
+      for (const result of results) {
+        if (result) next[result.path] = result.entries;
+      }
+      return next;
+    });
+  };
+
+  const waitForFileJob = async (jobId, options = {}) => {
+    if (!jobId) return null;
+    while (fileBrowserMountedRef.current) {
+      await new Promise((resolve) => window.setTimeout(resolve, 400));
+      if (!fileBrowserMountedRef.current) return null;
+      try {
+        const job = await backendCall("jobs.status", { id: jobId }, { timeoutMs: 10000 });
+        await refreshJobs?.().catch(() => {});
+        if (!["completed", "failed", "cancelled"].includes(job?.status)) continue;
+        if (options.refresh !== false) {
+          await refresh(currentPathRef.current, { force: true }).catch(() => {});
+          await refreshExpandedFolders();
+        }
+        return job;
+      } catch {
+        return null;
+      }
+    }
+    return null;
+  };
+
   const startAndRefresh = async (method, params, options = {}) => run(async () => {
     const result = await backendCall(method, params, { timeoutMs: 10000 });
     await refreshJobs?.().catch(() => {});
-    window.setTimeout(() => refreshJobs?.().catch(() => {}), 600);
-    window.setTimeout(() => refreshJobs?.().catch(() => {}), 1600);
-    if (options.refresh !== false) window.setTimeout(() => refresh(currentPath, { force: true }).catch(() => {}), options.refreshDelayMs || 1600);
+    if (result?.id) void waitForFileJob(result.id, options);
+    else if (options.refresh !== false) {
+      await refresh(currentPathRef.current, { force: true });
+      await refreshExpandedFolders();
+    }
     return result;
   });
 
+  const cancelFileJob = async () => {
+    if (!activeJob?.id) return;
+    await run(async () => {
+      await backendCall("jobs.cancel", { id: activeJob.id }, { timeoutMs: 10000 });
+      await refreshJobs?.();
+    }, "Could not cancel the file operation.");
+  };
+
+  const retryFileJob = async () => {
+    if (!retryJob?.retry?.method) return;
+    const retry = retryJob.retry;
+    const result = await startAndRefresh(retry.method, retry.params || {});
+    if (result) setDismissedTransferJobId(retryJob.id);
+  };
+
   const deleteSelected = async () => {
     if (!selectedEntries.length) return setError?.("Select one or more items to delete.");
-    const ok = await confirmAction?.(`Delete ${selectedEntries.length === 1 ? selectedEntries[0].name : `${selectedEntries.length} items`}? This cannot be undone.`, { title: "Delete remote item", confirmLabel: "Delete", tone: "danger" });
+    const ok = await confirmAction?.(`Move ${selectedEntries.length === 1 ? selectedEntries[0].name : `${selectedEntries.length} items`} to MiSTer Companion Trash? You can undo this action while the app remains open.`, { title: "Move to Trash", confirmLabel: "Move to Trash", tone: "danger" });
     if (!ok) return;
     await startAndRefresh("fileBrowser.delete.start", { sources: selectedEntries.map((entry) => entry.path) });
     setSelectedPaths([]);
+  };
+
+  const undoDelete = async () => {
+    if (!undoDeleteJob?.result?.trashItems?.length) return;
+    const result = await startAndRefresh("fileBrowser.restore.start", {
+      items: undoDeleteJob.result.trashItems,
+      conflictPolicy: "keepBoth",
+    });
+    if (result) setDismissedTrashJobId(undoDeleteJob.id);
   };
 
   const uploadPaths = async (paths) => {
     const localPaths = (Array.isArray(paths) ? paths : [paths]).filter(Boolean);
     if (!localPaths.length) return;
     await run(async () => {
-      const overwrite = await maybeConfirmOverwrite("upload", { localPaths, path: currentPath }, { title: "Replace remote item?", message: "One or more uploads already exist in this MiSTer folder." });
-      return await startAndRefresh("fileBrowser.upload.start", { localPaths, path: currentPath, overwrite });
+      const conflictPolicy = await maybeConfirmOverwrite("upload", { localPaths, path: currentPath }, { title: "Upload conflicts", message: "One or more uploads already exist in this MiSTer folder." });
+      if (conflictPolicy === "cancel") return null;
+      return await startAndRefresh("fileBrowser.upload.start", { localPaths, path: currentPath, conflictPolicy });
     });
   };
 
@@ -1522,21 +1845,20 @@ function FileBrowserPage({ browser, connected, refresh, backendCall, host, jobs,
     await uploadPaths([localPath]);
   };
 
-  const uploadFolder = async () => {
-    const localPath = await host?.chooseDirectory?.({ title: "Choose folder to upload" });
-    if (!localPath) return;
-    await uploadPaths([localPath]);
-  };
-
   const downloadSelected = async () => {
     if (!selectedEntries.length) return setError?.("Select one or more items to download.");
-    const localDir = await host?.chooseDirectory?.({ title: "Choose download destination" });
-    if (!localDir) return;
-    await run(async () => {
-      const sources = selectedEntries.map((entry) => entry.path);
-      const overwrite = await maybeConfirmOverwrite("download", { sources, localDir }, { title: "Replace local item?", message: "One or more downloads already exist in the destination folder." });
-      return await startAndRefresh("fileBrowser.download.start", { sources, localDir, overwrite }, { refresh: false });
-    });
+    for (const entry of selectedEntries) {
+      const localTarget = await host?.chooseSaveFile?.({
+        title: `Save ${entry.name || "item"} as`,
+        defaultPath: entry.name || "download",
+      });
+      if (!localTarget) return;
+      await startAndRefresh("fileBrowser.download.start", {
+        sources: [entry.path],
+        localTarget,
+        overwrite: true,
+      }, { refresh: false });
+    }
   };
 
   const copySelected = (mode = "copy") => {
@@ -1549,20 +1871,27 @@ function FileBrowserPage({ browser, connected, refresh, backendCall, host, jobs,
     await run(async () => {
       const mode = clipboard.mode === "cut" ? "move" : "copy";
       const method = clipboard.mode === "cut" ? "fileBrowser.move.start" : "fileBrowser.copy.start";
-      const overwrite = await maybeConfirmOverwrite(mode, { sources: clipboard.paths, targetDir: currentPath }, { title: "Replace remote item?", message: "One or more clipboard items already exist in this folder." });
-      await startAndRefresh(method, { sources: clipboard.paths, targetDir: currentPath, overwrite });
+      const conflictPolicy = await maybeConfirmOverwrite(mode, { sources: clipboard.paths, targetDir: currentPath }, { title: "Paste conflicts", message: "One or more clipboard items already exist in this folder." });
+      if (conflictPolicy === "cancel") return;
+      await startAndRefresh(method, { sources: clipboard.paths, targetDir: currentPath, conflictPolicy });
       if (clipboard.mode === "cut") setClipboard(null);
     });
   };
 
   const selectEntry = (entry, event) => {
+    if (suppressEntryClickRef.current) {
+      suppressEntryClickRef.current = false;
+      return;
+    }
     const path = entry.path;
+    keyboardFocusPathRef.current = path;
+    tableRef.current?.focus({ preventScroll: true });
     if (event.shiftKey && lastSelectedPathRef.current) {
-      const startIndex = sortedEntries.findIndex((item) => item.path === lastSelectedPathRef.current);
-      const endIndex = sortedEntries.findIndex((item) => item.path === path);
+      const startIndex = visibleEntries.findIndex((item) => item.path === lastSelectedPathRef.current);
+      const endIndex = visibleEntries.findIndex((item) => item.path === path);
       if (startIndex >= 0 && endIndex >= 0) {
         const [from, to] = startIndex < endIndex ? [startIndex, endIndex] : [endIndex, startIndex];
-        setSelectedPaths(sortedEntries.slice(from, to + 1).map((item) => item.path));
+        setSelectedPaths(visibleEntries.slice(from, to + 1).map((item) => item.path));
         return;
       }
     }
@@ -1573,6 +1902,170 @@ function FileBrowserPage({ browser, connected, refresh, backendCall, host, jobs,
     }
     setSelectedPaths([path]);
     lastSelectedPathRef.current = path;
+  };
+
+  const startSelectionBox = (event) => {
+    if (event.button !== 0 || !connected) return;
+    if (event.target.closest("thead, button, input, a, [role='menuitem'], .mister-file-drag-handle")) return;
+    tableRef.current?.focus({ preventScroll: true });
+    const scrollElement = fileTableScrollRef.current;
+    const tableElement = tableRef.current;
+    if (!scrollElement || !tableElement) return;
+
+    const scrollBounds = scrollElement.getBoundingClientRect();
+    const headerBounds = tableElement.querySelector("thead")?.getBoundingClientRect();
+    const contentTop = Math.max(scrollBounds.top, headerBounds?.bottom || scrollBounds.top);
+    const clampPoint = (clientX, clientY) => ({
+      x: Math.max(scrollBounds.left, Math.min(clientX, scrollBounds.right)),
+      y: Math.max(contentTop, Math.min(clientY, scrollBounds.bottom)),
+    });
+    const start = clampPoint(event.clientX, event.clientY);
+    const baselinePaths = event.ctrlKey || event.metaKey ? [...selectedPaths] : [];
+    const startedOnEntry = Boolean(event.target.closest("tbody tr[data-entry-path]"));
+    selectionDragRef.current = { pointerId: event.pointerId, start, active: false, baselinePaths };
+
+    const onPointerMove = (moveEvent) => {
+      const drag = selectionDragRef.current;
+      if (!drag || moveEvent.pointerId !== drag.pointerId) return;
+      const current = clampPoint(moveEvent.clientX, moveEvent.clientY);
+      if (!drag.active && Math.hypot(current.x - drag.start.x, current.y - drag.start.y) < 4) return;
+      drag.active = true;
+      moveEvent.preventDefault();
+      document.body.classList.add("mister-file-selection-dragging");
+
+      const box = {
+        left: Math.min(drag.start.x, current.x),
+        top: Math.min(drag.start.y, current.y),
+        width: Math.abs(current.x - drag.start.x),
+        height: Math.abs(current.y - drag.start.y),
+      };
+      const boxRight = box.left + box.width;
+      const boxBottom = box.top + box.height;
+      const intersectingPaths = Array.from(tableElement.querySelectorAll("tbody tr[data-entry-path]"))
+        .filter((row) => {
+          const bounds = row.getBoundingClientRect();
+          return bounds.right >= box.left && bounds.left <= boxRight && bounds.bottom >= box.top && bounds.top <= boxBottom;
+        })
+        .map((row) => row.dataset.entryPath)
+        .filter(Boolean);
+      const nextPaths = [...new Set([...drag.baselinePaths, ...intersectingPaths])];
+      setSelectionBox(box);
+      setSelectedPaths(nextPaths);
+      if (intersectingPaths.length) lastSelectedPathRef.current = intersectingPaths[intersectingPaths.length - 1];
+    };
+
+    const stopSelectionBox = (upEvent) => {
+      const drag = selectionDragRef.current;
+      if (!drag || upEvent.pointerId !== drag.pointerId) return;
+      document.removeEventListener("pointermove", onPointerMove);
+      document.removeEventListener("pointerup", stopSelectionBox);
+      document.removeEventListener("pointercancel", stopSelectionBox);
+      document.body.classList.remove("mister-file-selection-dragging");
+      selectionDragRef.current = null;
+      setSelectionBox(null);
+      if (drag.active) {
+        suppressEntryClickRef.current = true;
+        window.setTimeout(() => { suppressEntryClickRef.current = false; }, 0);
+      } else if (!startedOnEntry) {
+        setSelectedPaths([]);
+        lastSelectedPathRef.current = "";
+      }
+    };
+
+    document.addEventListener("pointermove", onPointerMove, { passive: false });
+    document.addEventListener("pointerup", stopSelectionBox);
+    document.addEventListener("pointercancel", stopSelectionBox);
+  };
+
+  const openContextMenu = (event, entry = null) => {
+    event.preventDefault();
+    event.stopPropagation();
+    if (entry && !selectedPaths.includes(entry.path)) {
+      setSelectedPaths([entry.path]);
+      lastSelectedPathRef.current = entry.path;
+    } else if (!entry) {
+      setSelectedPaths([]);
+      lastSelectedPathRef.current = "";
+    }
+    const menuWidth = 190;
+    const menuHeight = 258;
+    setContextMenu({
+      x: Math.max(4, Math.min(event.clientX, window.innerWidth - menuWidth - 4)),
+      y: Math.max(4, Math.min(event.clientY, window.innerHeight - menuHeight - 4)),
+    });
+  };
+
+  const startEntryDrag = (event, entry) => {
+    const paths = selectedPaths.includes(entry.path) ? [...selectedPaths] : [entry.path];
+    if (!selectedPaths.includes(entry.path)) {
+      setSelectedPaths(paths);
+      lastSelectedPathRef.current = entry.path;
+    }
+    draggedPathsRef.current = paths;
+    event.dataTransfer.effectAllowed = "move";
+    event.dataTransfer.setData(FILE_BROWSER_DRAG_MIME, JSON.stringify(paths));
+    event.dataTransfer.setData("text/plain", paths.join("\n"));
+  };
+
+  const finishEntryDrag = () => {
+    draggedPathsRef.current = [];
+    setDropTargetPath("");
+  };
+
+  const dragEntryOverFolder = (event, entry) => {
+    if (!entry.is_dir || !draggedPathsRef.current.length) return;
+    event.preventDefault();
+    event.stopPropagation();
+    event.dataTransfer.dropEffect = "move";
+    setDropTargetPath(entry.path);
+  };
+
+  const dropEntriesIntoFolder = async (event, entry) => {
+    if (!entry.is_dir || !draggedPathsRef.current.length) return;
+    event.preventDefault();
+    event.stopPropagation();
+    const sources = [...draggedPathsRef.current];
+    finishEntryDrag();
+    if (sources.some((source) => entry.path === source || entry.path.startsWith(`${source}/`))) {
+      setError?.("A folder cannot be moved into itself or one of its subfolders.");
+      return;
+    }
+    await run(async () => {
+      const conflictPolicy = await maybeConfirmOverwrite("move", { sources, targetDir: entry.path }, {
+        title: "Replace item in folder?",
+        message: "One or more dragged items already exist in that folder.",
+      });
+      if (conflictPolicy === "cancel") return;
+      await startAndRefresh("fileBrowser.move.start", { sources, targetDir: entry.path, conflictPolicy });
+      setSelectedPaths([]);
+    });
+  };
+
+  const runContextAction = (action) => {
+    setContextMenu(null);
+    window.setTimeout(() => action(), 0);
+  };
+
+  const openNameDialog = (kind) => {
+    if (kind === "rename" && !selectedEntry) return;
+    setNameDialog(kind === "rename" ? {
+      kind,
+      title: "Rename Item",
+      label: "New name",
+      value: selectedEntry?.name || "",
+      confirmLabel: "Rename",
+    } : {
+      kind,
+      title: "New Folder",
+      label: "Folder name",
+      value: "",
+      confirmLabel: "Create",
+    });
+  };
+
+  const submitNameDialog = async (value) => {
+    const result = nameDialog?.kind === "rename" ? await renameSelected(value) : await makeFolder(value);
+    if (result) setNameDialog(null);
   };
 
   const toggleSort = (key) => {
@@ -1606,12 +2099,18 @@ function FileBrowserPage({ browser, connected, refresh, backendCall, host, jobs,
 
   const handleDragOver = (event) => {
     if (!connected) return;
+    if (draggedPathsRef.current.length || Array.from(event.dataTransfer?.types || []).includes(FILE_BROWSER_DRAG_MIME)) return;
     event.preventDefault();
     setDragActive(true);
   };
 
   const handleDrop = async (event) => {
     if (!connected) return;
+    if (draggedPathsRef.current.length || Array.from(event.dataTransfer?.types || []).includes(FILE_BROWSER_DRAG_MIME)) {
+      event.preventDefault();
+      finishEntryDrag();
+      return;
+    }
     event.preventDefault();
     setDragActive(false);
     const files = Array.from(event.dataTransfer?.files || []);
@@ -1626,103 +2125,306 @@ function FileBrowserPage({ browser, connected, refresh, backendCall, host, jobs,
       }
     } catch {}
     if (!paths.length) paths = files.map((file) => file.path).filter(Boolean);
-    if (!paths.length) return setError?.("Dropped items did not expose local file paths. Use Upload File or Upload Folder instead.");
+    if (!paths.length) return setError?.("Dropped items did not expose local file paths. Use Upload instead.");
     await uploadPaths(paths);
+  };
+
+  const scrollEntryIntoView = (path) => {
+    window.requestAnimationFrame(() => {
+      const row = Array.from(tableRef.current?.querySelectorAll("tbody tr[data-entry-path]") || [])
+        .find((candidate) => candidate.dataset.entryPath === path);
+      row?.scrollIntoView({ block: "nearest", inline: "nearest" });
+    });
+  };
+
+  const selectEntryByIndex = (requestedIndex, extend = false) => {
+    if (!visibleEntries.length) return null;
+    const index = Math.max(0, Math.min(requestedIndex, visibleEntries.length - 1));
+    const entry = visibleEntries[index];
+    if (extend) {
+      const anchorPath = lastSelectedPathRef.current || keyboardFocusPathRef.current || entry.path;
+      const anchorIndex = Math.max(0, visibleEntries.findIndex((item) => item.path === anchorPath));
+      const [from, to] = anchorIndex <= index ? [anchorIndex, index] : [index, anchorIndex];
+      setSelectedPaths(visibleEntries.slice(from, to + 1).map((item) => item.path));
+    } else {
+      setSelectedPaths([entry.path]);
+      lastSelectedPathRef.current = entry.path;
+    }
+    keyboardFocusPathRef.current = entry.path;
+    scrollEntryIntoView(entry.path);
+    return entry;
+  };
+
+  const handleFileKeyDown = (event) => {
+    if (!connected || nameDialog || conflictDialog || contextMenu) return;
+    const target = event.target;
+    if (target instanceof HTMLElement && (target.matches("input, textarea, select, button") || target.isContentEditable)) return;
+    const shortcut = (event.ctrlKey || event.metaKey) && !event.altKey;
+    const key = event.key;
+    const lowerKey = key.toLowerCase();
+
+    if (shortcut) {
+      if (lowerKey === "a") {
+        event.preventDefault();
+        setSelectedPaths(visibleEntries.map((entry) => entry.path));
+        if (visibleEntries.length) {
+          lastSelectedPathRef.current = visibleEntries[0].path;
+          keyboardFocusPathRef.current = visibleEntries[visibleEntries.length - 1].path;
+        }
+      } else if (lowerKey === "x" && selectedEntries.length) {
+        event.preventDefault();
+        copySelected("cut");
+      } else if (lowerKey === "c" && selectedEntries.length) {
+        event.preventDefault();
+        copySelected("copy");
+      } else if (lowerKey === "v" && clipboard?.paths?.length) {
+        event.preventDefault();
+        pasteClipboard();
+      }
+      return;
+    }
+
+    const focusedPath = keyboardFocusPathRef.current || selectedPaths[selectedPaths.length - 1] || "";
+    let currentIndex = visibleEntries.findIndex((entry) => entry.path === focusedPath);
+    const currentEntry = visibleEntries[currentIndex];
+    const rowHeight = tableRef.current?.querySelector("tbody tr")?.getBoundingClientRect().height || 22;
+    const pageSize = Math.max(1, Math.floor((fileTableScrollRef.current?.clientHeight || rowHeight) / rowHeight) - 1);
+
+    if (key === "ArrowDown" || key === "ArrowUp" || key === "Home" || key === "End" || key === "PageDown" || key === "PageUp") {
+      event.preventDefault();
+      const nextIndex = currentIndex < 0 ? ((key === "ArrowUp" || key === "End" || key === "PageUp") ? visibleEntries.length - 1 : 0)
+        : key === "ArrowDown" ? currentIndex + 1
+        : key === "ArrowUp" ? currentIndex - 1
+          : key === "Home" ? 0
+            : key === "End" ? visibleEntries.length - 1
+              : key === "PageDown" ? currentIndex + pageSize
+                : currentIndex - pageSize;
+      selectEntryByIndex(nextIndex, event.shiftKey);
+    } else if (key === "ArrowRight" && currentEntry?.is_dir) {
+      event.preventDefault();
+      if (!expandedPaths.includes(currentEntry.path)) toggleFolderExpansion(currentEntry, event);
+      else if (visibleEntries[currentIndex + 1]?.treeDepth > currentEntry.treeDepth) selectEntryByIndex(currentIndex + 1);
+    } else if (key === "ArrowLeft" && currentEntry) {
+      event.preventDefault();
+      if (currentEntry.is_dir && expandedPaths.includes(currentEntry.path)) {
+        toggleFolderExpansion(currentEntry, event);
+      } else if (Number(currentEntry.treeDepth || 0) > 0) {
+        const parentIndex = visibleEntries.slice(0, currentIndex).findLastIndex((entry) => entry.treeDepth < currentEntry.treeDepth);
+        if (parentIndex >= 0) selectEntryByIndex(parentIndex);
+      }
+    } else if (key === "Enter" && currentEntry?.is_dir) {
+      event.preventDefault();
+      openDirectory(currentEntry.path);
+    } else if (key === "Backspace" && !event.metaKey && canGoUp) {
+      event.preventDefault();
+      openDirectory(parentPath);
+    } else if ((key === "Delete" || (key === "Backspace" && event.metaKey)) && selectedEntries.length) {
+      event.preventDefault();
+      deleteSelected();
+    } else if (key === "F2" && selectedEntries.length === 1) {
+      event.preventDefault();
+      openNameDialog("rename");
+    } else if (key === "Escape") {
+      event.preventDefault();
+      setSelectedPaths([]);
+      lastSelectedPathRef.current = "";
+      keyboardFocusPathRef.current = "";
+    } else if (key.length === 1 && !event.altKey && !event.ctrlKey && !event.metaKey) {
+      const now = performance.now();
+      const previous = typeaheadRef.current;
+      const text = `${now - previous.at < 750 ? previous.text : ""}${key}`.toLocaleLowerCase();
+      typeaheadRef.current = { text, at: now };
+      const startIndex = Math.max(0, currentIndex + 1);
+      const ordered = [...visibleEntries.slice(startIndex), ...visibleEntries.slice(0, startIndex)];
+      const match = ordered.find((entry) => String(entry.name || "").toLocaleLowerCase().startsWith(text));
+      if (match) {
+        event.preventDefault();
+        selectEntryByIndex(visibleEntries.findIndex((entry) => entry.path === match.path));
+      }
+    }
   };
 
   const parentPath = browser?.parent || currentPath;
   const canGoUp = parentPath && parentPath !== currentPath;
-  const selectedLabel = selectedCount ? `${selectedCount} selected` : "No selection";
+  const selectedLabel = selectedCount ? `${selectedCount} selected` : (platinumStyle ? "" : "No selection");
+  const finderStorageSummary = `${entries.length} items${browser?.availableLabel ? `, ${browser.availableLabel} available` : ""}`;
   const sortArrow = (key) => sortSpec.key === key ? (sortSpec.direction === "desc" ? " ↓" : " ↑") : "";
-  const anyFileJobRunning = fileJobs.some((job) => job.status === "running" || job.status === "queued");
-  const activeDownloadPath = activeJob?.kind === "fileBrowser.download" && activeJob.status === "completed" ? (activeJob.result?.localPath || activeJob.result?.localPaths?.[0] || "") : "";
-  const firstDownloadPath = activeDownloadPath || (!anyFileJobRunning ? (downloadJob?.result?.localPath || downloadJob?.result?.localPaths?.[0] || "") : "");
+  const finderHeaderContent = (label, key) => (
+    <>
+      <span className="mister-finder-header-label">{label}</span>
+      {sortSpec.key === key ? <span className={`mister-finder-sort-glyph ${sortSpec.direction === "desc" ? "descending" : "ascending"}`} aria-hidden="true" /> : null}
+    </>
+  );
+  const activeProgress = Math.max(0, Math.min(100, Number(displayedFileJob?.progress?.percent ?? (displayedFileJob?.status === "running" ? 5 : 0))));
 
   return (
     <>
-      <PageHeader title="File Browser" subtitle="Browse, upload, download, and manage files on your connected MiSTer." badge={connected ? `${entries.length} items` : "Offline"} checking={checking} checkLabel="Reading directory…" />
-      <Card title="Location" className="mister-file-browser-card">
-        <div className="mister-file-location-row">
-          <div className="mister-root-tabs">
-            {roots.map((root) => (
-              <button key={root.path} className={currentPath === root.path || currentPath.startsWith(`${root.path}/`) ? "active" : ""} disabled={!connected || root.available === false} onClick={() => openDirectory(root.path)}>{root.name || root.path}</button>
-            ))}
+      <Card title={platinumStyle ? null : "Files"} className="mister-file-list-card" footer={platinumStyle ? null : <div className="mister-file-footer"><span>{selectedLabel}</span><span>{currentPath}</span></div>}>
+        <form className="mister-file-address-toolbar" onSubmit={submitAddress}>
+          <div className="mister-file-address-navigation" aria-label="Folder navigation">
+            <div className="mister-file-history-buttons" role="group" aria-label="Folder history">
+              <button type="button" className="mister-file-browser-tool-button" aria-label="Back" title="Back" disabled={!connected || pathHistoryIndex <= 0} onClick={() => navigateHistory(-1)}><img className="mister-file-address-glyph" src={macos9AddressBackUrl} alt="" /></button>
+              <button type="button" className="mister-file-browser-tool-button" aria-label="Forward" title="Forward" disabled={!connected || pathHistoryIndex >= pathHistory.length - 1} onClick={() => navigateHistory(1)}><img className="mister-file-address-glyph forward" src={macos9AddressBackUrl} alt="" /></button>
+            </div>
+            <button type="button" className="secondary-button mister-file-browser-tool-button" aria-label="Up one folder" title="Up one folder" disabled={!connected || !canGoUp} onClick={() => openDirectory(parentPath)}><img className="mister-file-address-glyph" src={macos9AddressUpUrl} alt="" /></button>
+            <button type="button" className="secondary-button mister-file-browser-tool-button" aria-label="Refresh" title="Refresh" disabled={!connected} onClick={refreshHere}><img className="mister-file-address-glyph" src={macos9AddressRefreshUrl} alt="" /></button>
           </div>
-          <div className="mister-action-row compact">
-            <button className="secondary-button" disabled={!connected || !canGoUp} onClick={() => openDirectory(parentPath)}>Up</button>
-            <button className="secondary-button" disabled={!connected} onClick={refreshHere}>Refresh</button>
+          <label className="mister-file-address-field">
+            <span className="sr-only">Address</span>
+            <input value={addressDraft} disabled={!connected} spellCheck="false" onChange={(event) => setAddressDraft(event.target.value)} onFocus={(event) => event.currentTarget.select()} />
+          </label>
+          <div className="mister-file-address-actions">
+            <button type="button" className="secondary-button mister-file-browser-action-button" aria-label="New Folder" title="New Folder" disabled={!connected} onClick={() => openNameDialog("mkdir")}><img className="mister-file-address-glyph" src={macos9AddressNewFolderUrl} alt="" /></button>
+            <button type="button" className="secondary-button mister-file-browser-action-button" aria-label="Upload" title="Upload" disabled={!connected} onClick={uploadFile}><img className="mister-file-address-glyph" src={macos9AddressUploadUrl} alt="" /></button>
           </div>
-        </div>
-        <div className="mister-breadcrumbs" aria-label="Current path">
-          {splitRemotePath(currentPath).map((segment, index, all) => (
-            <React.Fragment key={segment.path}>
-              <button disabled={!connected || index === all.length - 1} onClick={() => openDirectory(segment.path)}>{segment.label}</button>
-              {index < all.length - 1 ? <span>/</span> : null}
-            </React.Fragment>
-          ))}
-        </div>
-        <div className="mister-file-command-strip">
-          <Field label={selectedEntry ? "Rename selected" : "New folder name"}>
-            <input value={nameDraft} disabled={!connected} onChange={(event) => setNameDraft(event.target.value)} placeholder="Folder or item name" />
-          </Field>
-          <div className="mister-action-row wrap file-browser-actions">
-            <button className="primary-button" disabled={!connected || !nameDraft.trim()} onClick={makeFolder}>New Folder</button>
-            <button className="secondary-button" disabled={!connected || !selectedEntry || !nameDraft.trim()} onClick={renameSelected}>Rename</button>
-            <button className="secondary-button" disabled={!connected} onClick={uploadFile}>Upload File</button>
-            <button className="secondary-button" disabled={!connected} onClick={uploadFolder}>Upload Folder</button>
-            <button className="secondary-button" disabled={!connected || !selectedCount} onClick={downloadSelected}>Download</button>
-            <button className="secondary-button" disabled={!connected || !selectedCount} onClick={() => copySelected("copy")}>Copy</button>
-            <button className="secondary-button" disabled={!connected || !selectedCount} onClick={() => copySelected("cut")}>Move</button>
-            <button className="secondary-button" disabled={!connected || !clipboard?.paths?.length} onClick={pasteClipboard}>Paste</button>
-            <button className="danger-button" disabled={!connected || !selectedCount} onClick={deleteSelected}>Delete</button>
-          </div>
-        </div>
-        {clipboard?.paths?.length ? <p className="mister-settings-note mister-file-clipboard-note">Clipboard: {clipboard.mode === "cut" ? "Move" : "Copy"} {clipboard.count === 1 ? clipboard.names?.[0] : `${clipboard.count} items`} to the current folder.</p> : null}
-      </Card>
-
-      <Card title="Files" className="mister-file-list-card" footer={<div className="mister-file-footer"><span>{selectedLabel}</span><span>{currentPath}</span></div>}>
+        </form>
         {connected ? (
-          <div className={`mister-file-table-wrap${dragActive ? " drag-active" : ""}`} onDragOver={handleDragOver} onDragEnter={handleDragOver} onDragLeave={() => setDragActive(false)} onDrop={handleDrop}>
+          <>
+          {platinumStyle ? (
+            <div className="mister-finder-status-bar">
+              <span className="mister-finder-status-summary">{finderStorageSummary}</span>
+              <span className="mister-finder-status-selection">{selectedLabel}</span>
+            </div>
+          ) : null}
+          <div className="mister-file-table-shell" onContextMenu={(event) => openContextMenu(event)}>
+          <div ref={fileTableScrollRef} className={`mister-file-table-wrap${dragActive ? " drag-active" : ""}`} onPointerDown={startSelectionBox} onDragOver={handleDragOver} onDragEnter={handleDragOver} onDragLeave={() => setDragActive(false)} onDrop={handleDrop}>
             {dragActive ? <div className="mister-file-drop-hint">Drop files or folders to upload to this MiSTer folder</div> : null}
-            <table className="mister-file-table" ref={tableRef}>
+            {selectionBox ? <div className="mister-file-selection-box" style={selectionBox} aria-hidden="true" /> : null}
+            <table className={`mister-file-table${platinumStyle ? ` finder-sort-${sortSpec.key}` : ""}${comfyRows ? " comfy-rows" : ""}`} ref={tableRef} tabIndex={0} aria-label="Files and folders" aria-multiselectable="true" onKeyDown={handleFileKeyDown}>
               <colgroup>
                 <col style={{ width: `${columnWidths.name}%` }} />
-                <col style={{ width: `${columnWidths.type}%` }} />
-                <col style={{ width: `${columnWidths.size}%` }} />
+                <col style={{ width: `${platinumStyle ? columnWidths.size : columnWidths.type}%` }} />
+                <col style={{ width: `${platinumStyle ? columnWidths.type : columnWidths.size}%` }} />
                 <col style={{ width: `${columnWidths.modified}%` }} />
               </colgroup>
               <thead><tr>
-                <th><button type="button" onClick={() => toggleSort("name")}>Name{sortArrow("name")}</button><span className="mister-column-resizer" onMouseDown={(event) => startColumnResize(event, "name", "type")} /></th>
-                <th><button type="button" onClick={() => toggleSort("type")}>Type{sortArrow("type")}</button><span className="mister-column-resizer" onMouseDown={(event) => startColumnResize(event, "type", "size")} /></th>
-                <th><button type="button" onClick={() => toggleSort("size")}>Size{sortArrow("size")}</button><span className="mister-column-resizer" onMouseDown={(event) => startColumnResize(event, "size", "modified")} /></th>
-                <th><button type="button" onClick={() => toggleSort("modified")}>Modified{sortArrow("modified")}</button></th>
+                {platinumStyle ? (
+                  <>
+                    <th className={sortSpec.key === "name" ? "active-sort" : ""}><button type="button" onClick={() => toggleSort("name")}>{finderHeaderContent("Name", "name")}</button><span className="mister-column-resizer" onMouseDown={(event) => startColumnResize(event, "name", "size")} /></th>
+                    <th className={sortSpec.key === "size" ? "active-sort" : ""}><button type="button" onClick={() => toggleSort("size")}>{finderHeaderContent("Size", "size")}</button><span className="mister-column-resizer" onMouseDown={(event) => startColumnResize(event, "size", "type")} /></th>
+                    <th className={sortSpec.key === "type" ? "active-sort" : ""}><button type="button" onClick={() => toggleSort("type")}>{finderHeaderContent("Kind", "type")}</button><span className="mister-column-resizer" onMouseDown={(event) => startColumnResize(event, "type", "modified")} /></th>
+                    <th className={sortSpec.key === "modified" ? "active-sort" : ""}><button type="button" onClick={() => toggleSort("modified")}>{finderHeaderContent("Date Modified", "modified")}</button></th>
+                  </>
+                ) : (
+                  <>
+                    <th><button type="button" onClick={() => toggleSort("name")}>Name{sortArrow("name")}</button><span className="mister-column-resizer" onMouseDown={(event) => startColumnResize(event, "name", "type")} /></th>
+                    <th><button type="button" onClick={() => toggleSort("type")}>Type{sortArrow("type")}</button><span className="mister-column-resizer" onMouseDown={(event) => startColumnResize(event, "type", "size")} /></th>
+                    <th><button type="button" onClick={() => toggleSort("size")}>Size{sortArrow("size")}</button><span className="mister-column-resizer" onMouseDown={(event) => startColumnResize(event, "size", "modified")} /></th>
+                    <th><button type="button" onClick={() => toggleSort("modified")}>Modified{sortArrow("modified")}</button></th>
+                  </>
+                )}
               </tr></thead>
               <tbody>
-                {sortedEntries.length ? sortedEntries.map((entry) => (
-                  <tr key={entry.path} className={selectedPaths.includes(entry.path) ? "selected" : ""} onClick={(event) => selectEntry(entry, event)} onDoubleClick={() => entry.is_dir && openDirectory(entry.path)}>
-                    <td><span className="mister-file-name-cell"><FileBrowserEntryIcon isFolder={entry.is_dir} /><strong title={entry.name}>{entry.name}</strong></span></td>
-                    <td>{entry.type || (entry.is_dir ? "Folder" : "File")}</td>
-                    <td>{entry.is_dir ? "—" : (entry.sizeLabel || formatBytes(entry.size))}</td>
+                {visibleEntries.length ? visibleEntries.map((entry) => (
+                  <tr key={entry.path} data-entry-path={entry.path} aria-selected={selectedPaths.includes(entry.path)} className={`${selectedPaths.includes(entry.path) ? "selected" : ""}${dropTargetPath === entry.path ? " drop-target" : ""}`} onClick={(event) => selectEntry(entry, event)} onContextMenu={(event) => openContextMenu(event, entry)} onDoubleClick={() => entry.is_dir && openDirectory(entry.path)} onDragOver={(event) => dragEntryOverFolder(event, entry)} onDragLeave={(event) => { if (!(event.relatedTarget instanceof Node) || !event.currentTarget.contains(event.relatedTarget)) setDropTargetPath((path) => path === entry.path ? "" : path); }} onDrop={(event) => dropEntriesIntoFolder(event, entry)}>
+                    <td><span className="mister-file-name-cell" style={{ "--finder-tree-depth": entry.treeDepth || 0 }}>
+                      {platinumStyle ? (entry.is_dir ? (
+                        <button
+                          type="button"
+                          className={`mister-finder-disclosure${expandedPaths.includes(entry.path) ? " expanded" : ""}${loadingPaths.includes(entry.path) ? " loading" : ""}`}
+                          aria-label={`${expandedPaths.includes(entry.path) ? "Collapse" : "Expand"} ${entry.name}`}
+                          aria-expanded={expandedPaths.includes(entry.path)}
+                          onClick={(event) => toggleFolderExpansion(entry, event)}
+                          onDoubleClick={(event) => event.stopPropagation()}
+                        ><img src={macos9FileBrowserArrowUrl} alt="" /></button>
+                      ) : <span className="mister-finder-disclosure-spacer" aria-hidden="true" />) : null}
+                      <span className="mister-file-drag-handle" draggable={connected} onDragStart={(event) => startEntryDrag(event, entry)} onDragEnd={finishEntryDrag}><FileBrowserEntryIcon isFolder={entry.is_dir} platinumStyle={platinumStyle} /><strong title={entry.name}>{entry.name}</strong></span>
+                    </span></td>
+                    {platinumStyle ? (
+                      <>
+                        <td>{entry.is_dir ? "—" : (entry.sizeLabel || formatBytes(entry.size))}</td>
+                        <td>{getFileKind(entry)}</td>
+                      </>
+                    ) : (
+                      <>
+                        <td>{entry.type || (entry.is_dir ? "Folder" : "File")}</td>
+                        <td>{entry.is_dir ? "—" : (entry.sizeLabel || formatBytes(entry.size))}</td>
+                      </>
+                    )}
                     <td>{entry.modifiedAtLabel || formatTimestamp(entry.mtime)}</td>
                   </tr>
                 )) : <tr><td colSpan="4"><EmptyValue>This folder is empty. Drag files here to upload.</EmptyValue></td></tr>}
               </tbody>
             </table>
           </div>
+          {platinumStyle ? <ThemedScrollbar scrollRef={fileTableScrollRef} className="mister-file-browser-themed-scrollbar" /> : null}
+          </div>
+          </>
         ) : <EmptyValue>Connect to a MiSTer before browsing files.</EmptyValue>}
       </Card>
 
-      <Card title="Activity" className="mister-file-activity-card">
-        {activeJob ? (
-          <div className="mister-file-job">
-            <header><strong>{activeJob.label || activeJob.kind}</strong><span>{activeJob.status}</span></header>
-            <div className="mister-file-progress"><span style={{ width: `${Number(activeJob.progress?.percent || (activeJob.status === "completed" ? 100 : 12))}%` }} /></div>
-            <p>{activeJob.progress?.label || activeJob.error || "Waiting for file operation…"}</p>
-            {firstDownloadPath ? <div className="mister-action-row compact"><button className="secondary-button" onClick={() => host?.openPath?.(firstDownloadPath)}>Open Download</button></div> : null}
-            <LogBox value={(activeJob.logs || []).slice(-8).join("\n") || activeJob.error || "No file activity yet."} />
+      <div className="mister-file-storage-row">
+        <fieldset className="mister-root-radio-group" aria-label="Storage device">
+          {storageRoots.map((root) => (
+            <label key={root.path} className={root.available === false ? "disabled" : ""}>
+              <input
+                type="radio"
+                name="mister-file-storage-root"
+                value={root.path}
+                checked={currentPath === root.path || currentPath.startsWith(`${root.path}/`)}
+                disabled={!connected || root.available === false}
+                onChange={() => openDirectory(root.path)}
+              />
+              <span>{root.name || root.path}</span>
+            </label>
+          ))}
+        </fieldset>
+        <div className="mister-file-view-options">
+          <label className="mister-file-folders-first-option">
+            <input type="checkbox" checked={foldersFirst} onChange={(event) => setFoldersFirst(event.target.checked)} />
+            <span>Sort By Folders first</span>
+          </label>
+          <label className="mister-file-folders-first-option">
+            <input type="checkbox" checked={comfyRows} onChange={(event) => setComfyRows(event.target.checked)} />
+            <span>Comfy Rows</span>
+          </label>
+        </div>
+        {clipboard?.paths?.length ? <p className="mister-settings-note mister-file-clipboard-note">Clipboard: {clipboard.mode === "cut" ? "Move" : "Copy"} {clipboard.count === 1 ? clipboard.names?.[0] : `${clipboard.count} items`} to the current folder.</p> : null}
+        {undoDeleteJob ? (
+          <div className="mister-file-undo-bar" role="status" aria-live="polite">
+          <span>{undoDeleteJob.result.trashItems.length === 1 ? undoDeleteJob.result.trashItems[0].name : `${undoDeleteJob.result.trashItems.length} items`} moved to Trash.</span>
+          <button className="secondary-button" type="button" onClick={undoDelete}>Undo</button>
+          <button className="secondary-button" type="button" onClick={() => setDismissedTrashJobId(undoDeleteJob.id)}>Dismiss</button>
           </div>
-        ) : <EmptyValue>No file operations have run yet.</EmptyValue>}
-      </Card>
+        ) : null}
+      </div>
+
+      {error ? <div className="error-box mister-error mister-file-browser-error">{error}</div> : null}
+
+      {contextMenu ? (
+        <div className="mister-file-context-menu" role="menu" style={{ left: contextMenu.x, top: contextMenu.y }} onMouseDown={(event) => event.stopPropagation()}>
+          <button type="button" role="menuitem" onClick={() => runContextAction(() => openNameDialog("mkdir"))}>New Folder</button>
+          <span className="mister-file-context-separator" role="separator" />
+          <button type="button" role="menuitem" disabled={!selectedCount} onClick={() => runContextAction(() => copySelected("cut"))}><span className="mister-file-context-glyph" style={{ "--context-menu-glyph": `url("${macos9ContextCutUrl}")` }} aria-hidden="true" />Cut</button>
+          <button type="button" role="menuitem" disabled={!selectedCount} onClick={() => runContextAction(() => copySelected("copy"))}><span className="mister-file-context-glyph" style={{ "--context-menu-glyph": `url("${macos9ContextCopyUrl}")` }} aria-hidden="true" />Copy</button>
+          <button type="button" role="menuitem" disabled={!clipboard?.paths?.length} onClick={() => runContextAction(pasteClipboard)}><span className="mister-file-context-glyph" style={{ "--context-menu-glyph": `url("${macos9ContextPasteUrl}")` }} aria-hidden="true" />Paste</button>
+          <span className="mister-file-context-separator" role="separator" />
+          <button type="button" role="menuitem" disabled={!selectedCount} onClick={() => runContextAction(deleteSelected)}>Delete</button>
+          <button type="button" role="menuitem" disabled={selectedCount !== 1} onClick={() => runContextAction(() => openNameDialog("rename"))}>Rename</button>
+          <button type="button" role="menuitem" disabled={!selectedCount} onClick={() => runContextAction(downloadSelected)}>Download</button>
+        </div>
+      ) : null}
+      {displayedFileJob ? (
+        <aside className="mister-file-activity-popup" role="status" aria-live="polite" aria-label="File activity">
+          <WindowTitlebar title="File Activity" />
+          <div className="mister-file-activity-popup-body mister-small-dialog-body">
+            <div className="mister-file-job">
+              <header><strong>{displayedFileJob.label || displayedFileJob.kind}</strong><span>{displayedFileJob.status}</span></header>
+              <div className="mister-file-progress"><span style={{ width: `${activeProgress}%` }} /></div>
+              <p>{displayedFileJob.error || displayedFileJob.progress?.label || "Preparing file operation…"}</p>
+              {displayedFileJob.progress?.bytesTotal > 0 ? <p>{formatBytes(displayedFileJob.progress.bytesCurrent)} of {formatBytes(displayedFileJob.progress.bytesTotal)} · item {displayedFileJob.progress.itemCurrent} of {displayedFileJob.progress.itemTotal}</p> : null}
+              {displayedFileJob.logs?.length ? <LogBox value={displayedFileJob.logs.slice(-6).join("\n")} /> : null}
+              <footer className="mister-file-activity-actions">
+                {activeJob ? <button className="secondary-button danger" type="button" onClick={cancelFileJob} disabled={activeJob.cancelRequested}>{activeJob.cancelRequested ? "Cancelling…" : "Cancel"}</button> : null}
+                {retryJob && !activeJob ? <button className="primary-button" type="button" onClick={retryFileJob}>Retry</button> : null}
+                {retryJob && !activeJob ? <button className="secondary-button" type="button" onClick={() => setDismissedTransferJobId(retryJob.id)}>Dismiss</button> : null}
+              </footer>
+            </div>
+          </div>
+        </aside>
+      ) : null}
+      <FileBrowserNameDialog dialog={nameDialog} onCancel={() => setNameDialog(null)} onSubmit={submitNameDialog} />
+      <FileConflictDialog dialog={conflictDialog} onResolve={resolveConflictChoice} />
     </>
   );
 }
@@ -3170,10 +3872,12 @@ function RetroAchievementsPage({ data, settings, refresh, loadGame, openApiSetti
         <div className="modal-backdrop mister-ra-detail-modal" onClick={() => setSelectedAchievement(null)}>
           <div className="modal" onClick={(event) => event.stopPropagation()}>
             <WindowTitlebar title={selectedAchievement.title} onClose={() => setSelectedAchievement(null)} />
-            <header className="settings-page-header"><h2>{selectedAchievement.title}</h2><button className="settings-close-button" onClick={() => setSelectedAchievement(null)}><span className="window-control-glyph window-close-glyph" /></button></header>
-            <div className="mister-ra-achievement-detail">
+            <div className="mister-small-dialog-body">
+              <header className="settings-page-header"><h2>{selectedAchievement.title}</h2><button className="settings-close-button" onClick={() => setSelectedAchievement(null)}><span className="window-control-glyph window-close-glyph" /></button></header>
+              <div className="mister-ra-achievement-detail">
               <span className="mister-ra-achievement-badge large">{selectedAchievement.badgeUrl ? <img src={selectedAchievement.badgeUrl} alt="" /> : "?"}</span>
               <div><strong>{selectedAchievement.gameTitle}</strong><p>{selectedAchievement.description || "No description."}</p><p>{selectedAchievement.points || 0} point(s) · {selectedAchievement.hardcoreUnlocked ? "Hardcore" : selectedAchievement.softcoreUnlocked ? "Softcore" : "Locked"}</p>{selectedAchievement.dateAwarded ? <p>Unlocked: {raDate(selectedAchievement.dateAwarded)}</p> : null}</div>
+              </div>
             </div>
           </div>
         </div>
@@ -3427,11 +4131,17 @@ export function MisterCompanionApp({ appConfig = MISTER_APP_CONFIG } = {}) {
   const [confirmDialog, setConfirmDialog] = useState(null);
   const confirmResolverRef = useRef(null);
   const sectionCheckTimesRef = useRef({});
+  const fileBrowserRequestRef = useRef(0);
+  const fileBrowserPathRef = useRef("/media/fat");
   const shellRef = useRef(null);
   const mainContentScrollRef = useRef(null);
   const { windowMaximized, windowFocused } = useWindowState(host);
   const dragHandlers = useWindowDrag(host);
   useCustomFont(theme);
+
+  useEffect(() => {
+    fileBrowserPathRef.current = fileBrowser?.path || "/media/fat";
+  }, [fileBrowser?.path]);
 
   useEffect(() => {
     if (mainContentScrollRef.current) mainContentScrollRef.current.scrollTop = 0;
@@ -3610,9 +4320,13 @@ export function MisterCompanionApp({ appConfig = MISTER_APP_CONFIG } = {}) {
     const targetPath = isDomEvent(path) ? (fileBrowser?.path || "/media/fat") : (path || fileBrowser?.path || "/media/fat");
     const pathChanged = targetPath !== (fileBrowser?.path || "");
     if (!opts.force && !pathChanged && fileBrowser?.ready && isSectionFresh("files", opts.cacheMs)) return fileBrowser;
+    const requestId = ++fileBrowserRequestRef.current;
     return withSectionCheck("files", async () => {
       const result = await backendCall("fileBrowser.summary", { path: targetPath }, { timeoutMs: 45000 });
-      setFileBrowser(result || { ready: false, path: targetPath, roots: [], entries: [] });
+      if (requestId === fileBrowserRequestRef.current) {
+        fileBrowserPathRef.current = result?.path || targetPath;
+        setFileBrowser(result || { ready: false, path: targetPath, roots: [], entries: [] });
+      }
       return result;
     });
   }, [backendCall, fileBrowser, isSectionFresh, withSectionCheck]);
@@ -3768,7 +4482,11 @@ export function MisterCompanionApp({ appConfig = MISTER_APP_CONFIG } = {}) {
         setManuals((current) => ({ ...(current || {}), ...result.summary }));
       }
       if (String(job.kind || "").startsWith("fileBrowser.") && result.summary) {
-        setFileBrowser((current) => ({ ...(current || {}), ...(result.summary || {}) }));
+        setFileBrowser((current) => {
+          const summaryPath = result.summary?.path || "";
+          if (summaryPath && summaryPath !== fileBrowserPathRef.current) return current;
+          return { ...(current || {}), ...(result.summary || {}) };
+        });
       }
       if (String(job.kind || "").startsWith("remote.") && result.remoteStatus) {
         setRemoteStatus(result.remoteStatus);
@@ -4528,7 +5246,7 @@ export function MisterCompanionApp({ appConfig = MISTER_APP_CONFIG } = {}) {
     connection: <ConnectionPage profiles={profiles} connection={connection} sdMode={sdMode} chooseSdRoot={chooseSdRoot} enableSdMode={enableSdMode} disableSdMode={disableSdMode} draft={draft} setDraft={setDraft} selectedIndex={selectedIndex} setSelectedIndex={setSelectedIndex} scanResults={networkScan} onScan={scanNetwork} onUseScanResult={useScanResult} onSave={saveProfile} onDelete={deleteProfile} onConnect={connect} onDisconnect={disconnect} onTest={testConnection} busy={busy} scanning={networkScanning} checking={isSectionBusy("connection")} platinumStyle={String(theme?.appStyle || "").toLowerCase() === "macos9platinum"} />,
     device: <DevicePage summary={deviceSummary} refreshDevice={refreshDevice} setSmbEnabled={setSmbEnabled} returnToMenu={returnToMenu} rebootMiSTer={rebootMiSTer} connected={connection?.connected} busy={busy} checking={isSectionBusy("device")} />,
     remote: <RemotePage confirmAction={confirmAction} status={remoteStatus} refresh={refreshRemoteStatus} startCommand={startRemoteCommand} sendInput={sendRemoteInput} disconnectRemote={disconnectRemote} connected={connection?.connected} refreshJobs={refreshJobs} checking={isSectionBusy("remote")} />,
-    files: <FileBrowserPage browser={fileBrowser} connected={connection?.connected} refresh={refreshFileBrowser} backendCall={backendCall} host={host} jobs={jobs} refreshJobs={refreshJobs} confirmAction={confirmAction} setBrowser={setFileBrowser} setError={setError} checking={isSectionBusy("files")} />,
+    files: <FileBrowserPage browser={fileBrowser} connected={connection?.connected} refresh={refreshFileBrowser} backendCall={backendCall} host={host} jobs={jobs} refreshJobs={refreshJobs} confirmAction={confirmAction} setBrowser={setFileBrowser} setError={setError} error={error} checking={isSectionBusy("files")} platinumStyle={String(theme?.appStyle || "").toLowerCase() === "macos9platinum"} />,
     retroachievements: <RetroAchievementsPage data={retroAchievements} settings={retroAchievements?.settings || {}} refresh={refreshRetroAchievementsDashboard} loadGame={loadRetroAchievementsGame} openApiSettings={() => openSettings("api")} busy={busy} checking={isSectionBusy("retroachievements")} />,
     flash: <FlashSdPage confirmAction={confirmAction} summary={flashSd} refresh={refreshFlashSd} refreshDrives={startFlashDriveRefresh} startFlash={startFlashWrite} startBackup={startFlashBackup} jobs={jobs} refreshJobs={refreshJobs} host={host} profileName={profiles[selectedIndex]?.name || connection?.profile?.name || draft?.name || "MiSTer"} busy={busy} checking={isSectionBusy("flash")} openToolsSettings={() => openSettings("flash-tools")} />,
     scripts: <ScriptsPage confirmAction={confirmAction} summary={scriptsSummary} refresh={refreshScripts} runAction={runScriptAction} loadConfig={loadScriptConfig} saveConfig={saveScriptConfig} removeConfig={removeScriptConfig} openFolder={openScriptsFolder} connected={connection?.connected} checking={isSectionBusy("scripts")} />,
@@ -4628,9 +5346,12 @@ export function MisterCompanionApp({ appConfig = MISTER_APP_CONFIG } = {}) {
 
       <main className="mister-electron-main">
         <header className="mister-electron-header topbar" {...dragHandlers}>
-          <div className="mister-header-left">
-            <img className="mister-header-wordmark" src={appConfig.assets?.wordmark || misterWordmarkUrl} alt={appConfig.name} />
-          </div>
+          <PlatinumTitlebarLayout className="platinum-main-titlebar-layout">
+            <div className="mister-header-left">
+              <span className="platinum-main-window-title">{appConfig.name}</span>
+              <img className="mister-header-wordmark" src={appConfig.assets?.wordmark || misterWordmarkUrl} alt={appConfig.name} />
+            </div>
+          </PlatinumTitlebarLayout>
           <div className="mister-header-actions topbar-actions">
             {String(theme?.appStyle || "").toLowerCase() !== "macos9platinum" ? <button className="mister-header-menu-button" onClick={() => openSettings("appearance")} aria-label="Open settings" title="Settings"><HamburgerIcon /></button> : null}
             {!leftWindowControlsEnabled && windowControls}
@@ -4638,7 +5359,7 @@ export function MisterCompanionApp({ appConfig = MISTER_APP_CONFIG } = {}) {
         </header>
 
         <div ref={mainContentScrollRef} className={`mister-electron-content mister-section-${page}`}>
-          {error ? <div className="error-box mister-error">{error}</div> : null}
+          {error && page !== "files" ? <div className="error-box mister-error">{error}</div> : null}
           <div key={page} className={`mister-page mister-page-${page}`} data-page={page}>
             {pageMap[page] || pageMap.dashboard}
           </div>

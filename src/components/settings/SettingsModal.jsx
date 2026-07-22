@@ -8,7 +8,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { DEFAULT_SIDEBAR_GLYPHS, FALLBACK_ABOUT_INFO } from "../../constants/libraryDefaults";
 import { THEME_PRESETS, applyStyleSelection, hydrateTheme, parseThemeColor, themeIdentitySignature, themeToggleEnabled } from "../../theme/themeUtils";
 import { DEFAULT_THEME } from "../../theme/themePresets";
-import { APP_STYLE_OPTIONS, FONT_OPTIONS, FONT_ROLE_FIELDS, FONT_SIZE_ROLE_FIELDS, WINDOW_CONTROL_STYLE_OPTIONS } from "../../theme/themeOptions";
+import { APP_STYLE_OPTIONS, FONT_OPTIONS, FONT_ROLE_FIELDS, FONT_SIZE_ROLE_FIELDS, PLATINUM_COLOR_GROUPS, WINDOW_CONTROL_STYLE_OPTIONS } from "../../theme/themeOptions";
 import { ColorField, RangeField, SettingsSectionHeading, ToggleField } from "../common/FormFields";
 import { CustomSelect } from "../common/CustomSelect";
 import { GlowSettingsGroup, ShadowSettingsGroup } from "./ShadowGlowGroups";
@@ -42,12 +42,10 @@ export function SettingsModal({ theme, savedThemes, sidebarGlyphs, defaultSideba
   const [transparencyExpanded, setTransparencyExpanded] = useState(false);
   const [gradientsExpanded, setGradientsExpanded] = useState(false);
   const [materialsExpanded, setMaterialsExpanded] = useState(false);
-  const [bordersExpanded, setBordersExpanded] = useState(false);
   const [shadowsExpanded, setShadowsExpanded] = useState(false);
   const [shapeExpanded, setShapeExpanded] = useState(false);
   const [motionExpanded, setMotionExpanded] = useState(false);
   const [glowExpanded, setGlowExpanded] = useState(false);
-  const [bevelsExpanded, setBevelsExpanded] = useState(false);
   const [themeNameOpen, setThemeNameOpen] = useState(false);
   const [themePreviewOpen, setThemePreviewOpen] = useState(false);
   const [settingsBackdropBlurDisabled, setSettingsBackdropBlurDisabled] = useState(() => {
@@ -258,14 +256,7 @@ export function SettingsModal({ theme, savedThemes, sidebarGlyphs, defaultSideba
       .map(([title, fields]) => [title, fields.filter(([key]) => !misterOnlyColorFieldRemovals.has(key))])
       .filter(([, fields]) => fields.length > 0)
     : groups;
-  const visibleGroups = theme.appStyle === "macos9platinum"
-    ? [
-      ["Platinum Chrome", [["mac9ChromeColor", "Window chrome"], ["mac9ContentColor", "Window content"], ["mac9WindowActiveOutlineColor", "Active window outline"], ["mac9WindowInactiveOutlineColor", "Inactive window outline"], ["mac9FooterStatusTextColor", "Footer connection status text"]]],
-      ["Platinum Panels", [["mac9PanelBackgroundColor", "Panel surface"], ["mac9PanelTitleBackgroundColor", "Title backing"], ["mac9PanelTextColor", "Panel text"], ["mac9PanelTitleTextColor", "Panel title text"], ["mac9PanelGrooveShadowColor", "Groove dark line"], ["mac9PanelInnerHighlightColor", "Inner top/left highlight"], ["mac9PanelOuterHighlightColor", "Outer right/bottom highlight"]]],
-      ["Platinum Title Bar", [["mac9TitlebarActiveTextColor", "Active title text"], ["mac9TitlebarInactiveTextColor", "Inactive title text"]]],
-      ["Platinum Bevels", [["mac9BevelLightColor", "General highlight"], ["mac9BevelMidColor", "General middle"], ["mac9BevelDarkColor", "General shadow"], ["mac9BevelOutlineColor", "General outline"]]],
-    ]
-    : baseVisibleGroups;
+  const visibleGroups = theme.appStyle === "macos9platinum" ? PLATINUM_COLOR_GROUPS : baseVisibleGroups;
   const settingsCategories = appContext === "mister"
     ? [
       ["appearance", "Appearance", "settings-appearance-glyph"],
@@ -386,7 +377,6 @@ export function SettingsModal({ theme, savedThemes, sidebarGlyphs, defaultSideba
             </label>}
           </div>
           {!isMacOS9PlatinumStyle && <ToggleField label="Place window controls on the left" checked={themeToggleEnabled(theme.windowControlsLeft)} onChange={(value) => setColor("windowControlsLeft", value)} className="left-window-controls-toggle" />}
-          {isMacOS9PlatinumStyle && <ToggleField label="Smaller window (1300 × 900)" checked={themeToggleEnabled(theme.mac9SmallerWindow ?? DEFAULT_THEME.mac9SmallerWindow)} onChange={(value) => setColor("mac9SmallerWindow", value)} className="platinum-smaller-window-toggle" />}
           <div className="theme-action-row">
             {themePreviewEnabled && <button className="secondary-button" onClick={showThemePreview}>Preview theme</button>}
             <button className="secondary-button" onClick={() => setThemeNameOpen(true)}>Save current theme</button>
@@ -397,111 +387,6 @@ export function SettingsModal({ theme, savedThemes, sidebarGlyphs, defaultSideba
             <button className="secondary-button" onClick={onReset}>Reset appearance</button>
           </div>
           <p className="settings-help-text">Theme images are read from the root Assets folder. Keep the existing names and folder structure when replacing artwork.</p>
-          {isMacOS9PlatinumStyle && (<>
-          <button type="button" className="color-section-toggle borders-section-toggle" aria-expanded={bordersExpanded} onClick={() => setBordersExpanded((value) => !value)}>
-            <span className="appearance-section-title"><span className="appearance-section-glyph appearance-shape-glyph" aria-hidden="true" /><span>Borders</span></span>
-            <span className={bordersExpanded ? "color-section-chevron expanded" : "color-section-chevron"} aria-hidden="true" />
-          </button>
-          <SettingsAccordionPanel expanded={bordersExpanded}>
-            <div className="shape-depth-content platinum-border-settings">
-              <h5>Window outline</h5>
-              <div className="effects-grid shape-depth-grid">
-                <ColorField label="Active outline" value={theme.mac9WindowActiveOutlineColor || DEFAULT_THEME.mac9WindowActiveOutlineColor} onChange={(value) => setColor("mac9WindowActiveOutlineColor", value)} />
-                <ColorField label="Inactive outline" value={theme.mac9WindowInactiveOutlineColor || DEFAULT_THEME.mac9WindowInactiveOutlineColor} onChange={(value) => setColor("mac9WindowInactiveOutlineColor", value)} />
-              </div>
-              <h5>Panel frame lines</h5>
-              <div className="effects-grid shape-depth-grid">
-                <ColorField label="Groove dark line" value={theme.mac9PanelGrooveShadowColor || DEFAULT_THEME.mac9PanelGrooveShadowColor} onChange={(value) => setColor("mac9PanelGrooveShadowColor", value)} />
-                <ColorField label="Inner top/left highlight" value={theme.mac9PanelInnerHighlightColor || DEFAULT_THEME.mac9PanelInnerHighlightColor} onChange={(value) => setColor("mac9PanelInnerHighlightColor", value)} />
-                <ColorField label="Outer right/bottom highlight" value={theme.mac9PanelOuterHighlightColor || DEFAULT_THEME.mac9PanelOuterHighlightColor} onChange={(value) => setColor("mac9PanelOuterHighlightColor", value)} />
-              </div>
-              <h5>Sidebar lines</h5>
-              <div className="effects-grid shape-depth-grid">
-                <ColorField label="Content separator" value={theme.mediaSidebarBorderColor || DEFAULT_THEME.mediaSidebarBorderColor} onChange={(value) => setColor("mediaSidebarBorderColor", value)} />
-                <ColorField label="Section dividers" value={theme.mediaSidebarDividerColor || DEFAULT_THEME.mediaSidebarDividerColor} onChange={(value) => setColor("mediaSidebarDividerColor", value)} />
-              </div>
-            </div>
-          </SettingsAccordionPanel>
-          <button type="button" className="color-section-toggle shadow-section-toggle" aria-expanded={shadowsExpanded} onClick={() => setShadowsExpanded((value) => !value)}>
-            <span className="appearance-section-title"><span className="appearance-section-glyph appearance-shadows-glyph" aria-hidden="true" /><span>Shadows</span></span>
-            <span className={shadowsExpanded ? "color-section-chevron expanded" : "color-section-chevron"} aria-hidden="true" />
-          </button>
-          <SettingsAccordionPanel expanded={shadowsExpanded}>
-            <div className="shape-depth-content platinum-shadow-settings">
-              <h5>Main window</h5>
-              <div className="effects-grid shape-depth-grid">
-                <ToggleField label="Enable window shadow" checked={themeToggleEnabled(theme.mac9WindowShadowEnabled ?? DEFAULT_THEME.mac9WindowShadowEnabled)} onChange={(value) => setColor("mac9WindowShadowEnabled", value)} className="shadow-toggle-row" />
-                {[
-                  ["Horizontal offset", "mac9WindowShadowOffsetX"],
-                  ["Vertical offset", "mac9WindowShadowOffsetY"],
-                  ["Blur", "mac9WindowShadowBlur"],
-                ].map(([label, key]) => (
-                  <label className="appearance-control" key={key}>
-                    <span>{label}</span>
-                    <CustomSelect
-                      value={theme[key] || DEFAULT_THEME[key]}
-                      onChange={(value) => setColor(key, value)}
-                      ariaLabel={`Platinum ${label.toLowerCase()}`}
-                      options={[1, 2, 3, 4].map((size) => ({ value: `${size}px`, label: `${size} px` }))}
-                    />
-                  </label>
-                ))}
-                <RangeField label="Shadow transparency" value={(100 - parseFloat(theme.mac9WindowShadowOpacity || DEFAULT_THEME.mac9WindowShadowOpacity)) + "%"} min="0" max="100" step="1" suffix="%" onChange={(value) => setColor("mac9WindowShadowOpacity", (100 - parseFloat(value)) + "%")} />
-              </div>
-              <h5>Window chrome</h5>
-              <div className="effects-grid shape-depth-grid">
-                <ToggleField label="Enable chrome shadow" checked={themeToggleEnabled(theme.mac9ChromeShadowEnabled ?? DEFAULT_THEME.mac9ChromeShadowEnabled)} onChange={(value) => setColor("mac9ChromeShadowEnabled", value)} className="shadow-toggle-row" />
-                {[
-                  ["Horizontal offset", "mac9ChromeShadowOffsetX"],
-                  ["Vertical offset", "mac9ChromeShadowOffsetY"],
-                  ["Blur", "mac9ChromeShadowBlur"],
-                ].map(([label, key]) => (
-                  <label className="appearance-control" key={key}>
-                    <span>{label}</span>
-                    <CustomSelect
-                      value={theme[key] || DEFAULT_THEME[key]}
-                      onChange={(value) => setColor(key, value)}
-                      ariaLabel={`Platinum chrome ${label.toLowerCase()}`}
-                      options={[1, 2, 3, 4].map((size) => ({ value: `${size}px`, label: `${size} px` }))}
-                    />
-                  </label>
-                ))}
-                <RangeField label="Chrome shadow transparency" value={(100 - parseFloat(theme.mac9ChromeShadowOpacity || DEFAULT_THEME.mac9ChromeShadowOpacity)) + "%"} min="0" max="100" step="1" suffix="%" onChange={(value) => setColor("mac9ChromeShadowOpacity", (100 - parseFloat(value)) + "%")} />
-              </div>
-              <p className="settings-help-text">Platinum window shadows are visible only while the app is focused and not maximized, matching the classic desktop treatment.</p>
-            </div>
-          </SettingsAccordionPanel>
-          <button type="button" className="color-section-toggle bevels-section-toggle" aria-expanded={bevelsExpanded} onClick={() => setBevelsExpanded((value) => !value)}>
-            <span className="appearance-section-title"><span className="appearance-section-glyph appearance-shape-glyph" aria-hidden="true" /><span>Bevels</span></span>
-            <span className={bevelsExpanded ? "color-section-chevron expanded" : "color-section-chevron"} aria-hidden="true" />
-          </button>
-          <SettingsAccordionPanel expanded={bevelsExpanded}>
-            <div className="shape-depth-content platinum-bevel-settings">
-              <ToggleField label="Enable Platinum bevels" checked={themeToggleEnabled(theme.mac9BevelEnabled ?? DEFAULT_THEME.mac9BevelEnabled)} onChange={(value) => setColor("mac9BevelEnabled", value)} className="shadow-toggle-row" />
-              <h5>Bevel colors</h5>
-              <div className="effects-grid shape-depth-grid">
-                <ColorField label="Highlight" value={theme.mac9BevelLightColor || DEFAULT_THEME.mac9BevelLightColor} onChange={(value) => setColor("mac9BevelLightColor", value)} />
-                <ColorField label="Middle" value={theme.mac9BevelMidColor || DEFAULT_THEME.mac9BevelMidColor} onChange={(value) => setColor("mac9BevelMidColor", value)} />
-                <ColorField label="Shadow" value={theme.mac9BevelDarkColor || DEFAULT_THEME.mac9BevelDarkColor} onChange={(value) => setColor("mac9BevelDarkColor", value)} />
-                <ColorField label="Outline" value={theme.mac9BevelOutlineColor || DEFAULT_THEME.mac9BevelOutlineColor} onChange={(value) => setColor("mac9BevelOutlineColor", value)} />
-              </div>
-              <h5>Surface colors</h5>
-              <div className="effects-grid shape-depth-grid">
-                <ColorField label="Window chrome" value={theme.mac9ChromeColor || DEFAULT_THEME.mac9ChromeColor} onChange={(value) => setColor("mac9ChromeColor", value)} />
-                <ColorField label="Inner content" value={theme.mac9ContentColor || DEFAULT_THEME.mac9ContentColor} onChange={(value) => setColor("mac9ContentColor", value)} />
-              </div>
-              <h5>Element depth</h5>
-              <div className="effects-grid shape-depth-grid">
-                <RangeField label="Window chrome" value={theme.mac9WindowBevelWidth || DEFAULT_THEME.mac9WindowBevelWidth} min="0" max="3" step="1" suffix="px" onChange={(value) => setColor("mac9WindowBevelWidth", value)} />
-                <RangeField label="Panels and cards" value={theme.mac9PanelBevelWidth || DEFAULT_THEME.mac9PanelBevelWidth} min="0" max="3" step="1" suffix="px" onChange={(value) => setColor("mac9PanelBevelWidth", value)} />
-                <RangeField label="Buttons and controls" value={theme.mac9ControlBevelWidth || DEFAULT_THEME.mac9ControlBevelWidth} min="0" max="3" step="1" suffix="px" onChange={(value) => setColor("mac9ControlBevelWidth", value)} />
-                <RangeField label="Fields and menus" value={theme.mac9FieldBevelWidth || DEFAULT_THEME.mac9FieldBevelWidth} min="0" max="3" step="1" suffix="px" onChange={(value) => setColor("mac9FieldBevelWidth", value)} />
-                <RangeField label="Lists and rows" value={theme.mac9ListBevelWidth || DEFAULT_THEME.mac9ListBevelWidth} min="0" max="3" step="1" suffix="px" onChange={(value) => setColor("mac9ListBevelWidth", value)} />
-                <RangeField label="Scrollbars" value={theme.mac9ScrollbarBevelWidth || DEFAULT_THEME.mac9ScrollbarBevelWidth} min="0" max="3" step="1" suffix="px" onChange={(value) => setColor("mac9ScrollbarBevelWidth", value)} />
-              </div>
-            </div>
-          </SettingsAccordionPanel>
-          </>)}
           {!isMacOS9PlatinumStyle && (<>
           <button type="button" className="color-section-toggle motion-section-toggle" aria-expanded={motionExpanded} onClick={() => setMotionExpanded((value) => !value)}>
             <span className="appearance-section-title"><span className="appearance-section-glyph appearance-motion-glyph" aria-hidden="true" /><span>Motion</span></span>
@@ -708,25 +593,7 @@ export function SettingsModal({ theme, savedThemes, sidebarGlyphs, defaultSideba
             <div className="shape-depth-content">
               <h5>App window</h5>
               <div className="effects-grid shape-depth-grid">
-                {theme.appStyle === "macos9platinum" ? (<>
-                  <ToggleField label="Enable window shadow" checked={themeToggleEnabled(theme.mac9WindowShadowEnabled ?? DEFAULT_THEME.mac9WindowShadowEnabled)} onChange={(value) => setColor("mac9WindowShadowEnabled", value)} className="shadow-toggle-row" />
-                  {[
-                    ["Horizontal offset", "mac9WindowShadowOffsetX"],
-                    ["Vertical offset", "mac9WindowShadowOffsetY"],
-                    ["Blur", "mac9WindowShadowBlur"],
-                  ].map(([label, key]) => (
-                    <label className="appearance-control" key={key}>
-                      <span>{label}</span>
-                      <CustomSelect
-                        value={theme[key] || DEFAULT_THEME[key]}
-                        onChange={(value) => setColor(key, value)}
-                        ariaLabel={`Platinum ${label.toLowerCase()}`}
-                        options={[1, 2, 3, 4].map((size) => ({ value: `${size}px`, label: `${size} px` }))}
-                      />
-                    </label>
-                  ))}
-                  <RangeField label="Shadow transparency" value={(100 - parseFloat(theme.mac9WindowShadowOpacity || DEFAULT_THEME.mac9WindowShadowOpacity)) + "%"} min="0" max="100" step="1" suffix="%" onChange={(value) => setColor("mac9WindowShadowOpacity", (100 - parseFloat(value)) + "%")} />
-                </>) : (<>
+                <>
                 <ToggleField label="Enable shadow" checked={themeToggleEnabled(theme.appWindowShadowEnabled)} onChange={(value) => setColor("appWindowShadowEnabled", value)} className="shadow-toggle-row" />
                 <RangeField label="Shadow margin" value={theme.appWindowShadowMargin || DEFAULT_THEME.appWindowShadowMargin} min="0" max="40" step="1" suffix="px" onChange={(value) => setColor("appWindowShadowMargin", value)} />
                 <RangeField label="Horizontal offset" value={theme.appWindowShadowOffsetX || DEFAULT_THEME.appWindowShadowOffsetX} min="-24" max="24" step="1" suffix="px" onChange={(value) => setColor("appWindowShadowOffsetX", value)} />
@@ -737,30 +604,8 @@ export function SettingsModal({ theme, savedThemes, sidebarGlyphs, defaultSideba
                 <RangeField label="Unfocused shadow transparency" value={(100 - parseFloat(theme.appWindowUnfocusedShadowOpacity || DEFAULT_THEME.appWindowUnfocusedShadowOpacity)) + "%"} min="0" max="100" step="5" suffix="%" onChange={(value) => setColor("appWindowUnfocusedShadowOpacity", (100 - parseFloat(value)) + "%")} />
                 <ColorField label="Focused shadow color" value={theme.appWindowShadowColor || DEFAULT_THEME.appWindowShadowColor} onChange={(value) => setColor("appWindowShadowColor", value)} />
                 <ColorField label="Unfocused shadow color" value={theme.appWindowUnfocusedShadowColor || DEFAULT_THEME.appWindowUnfocusedShadowColor} onChange={(value) => setColor("appWindowUnfocusedShadowColor", value)} />
-                </>)}
+                </>
               </div>
-              {theme.appStyle === "macos9platinum" && (<>
-                <h5>Window chrome</h5>
-                <div className="effects-grid shape-depth-grid">
-                  <ToggleField label="Enable chrome shadow" checked={themeToggleEnabled(theme.mac9ChromeShadowEnabled ?? DEFAULT_THEME.mac9ChromeShadowEnabled)} onChange={(value) => setColor("mac9ChromeShadowEnabled", value)} className="shadow-toggle-row" />
-                  {[
-                    ["Horizontal offset", "mac9ChromeShadowOffsetX"],
-                    ["Vertical offset", "mac9ChromeShadowOffsetY"],
-                    ["Blur", "mac9ChromeShadowBlur"],
-                  ].map(([label, key]) => (
-                    <label className="appearance-control" key={key}>
-                      <span>{label}</span>
-                      <CustomSelect
-                        value={theme[key] || DEFAULT_THEME[key]}
-                        onChange={(value) => setColor(key, value)}
-                        ariaLabel={`Platinum chrome ${label.toLowerCase()}`}
-                        options={[1, 2, 3, 4].map((size) => ({ value: `${size}px`, label: `${size} px` }))}
-                      />
-                    </label>
-                  ))}
-                  <RangeField label="Chrome shadow transparency" value={(100 - parseFloat(theme.mac9ChromeShadowOpacity || DEFAULT_THEME.mac9ChromeShadowOpacity)) + "%"} min="0" max="100" step="1" suffix="%" onChange={(value) => setColor("mac9ChromeShadowOpacity", (100 - parseFloat(value)) + "%")} />
-                </div>
-              </>)}
               <ShadowSettingsGroup title="Popup windows" prefix="popup" theme={theme} onChange={setColor} />
               <ShadowSettingsGroup title="Dropdown menus" prefix="dropdown" theme={theme} onChange={setColor} />
               <h5>Sidebar depth</h5>
@@ -913,15 +758,13 @@ export function SettingsModal({ theme, savedThemes, sidebarGlyphs, defaultSideba
               </div>
               <h5>Scrollbars</h5>
               <div className="effects-grid shape-depth-grid">
-                {theme.appStyle === "macos9platinum" ? (
-                  <ToggleField label="Place both arrow buttons at bottom" checked={themeToggleEnabled(theme.mac9ScrollbarButtonsAtBottom ?? DEFAULT_THEME.mac9ScrollbarButtonsAtBottom)} onChange={(value) => setColor("mac9ScrollbarButtonsAtBottom", value)} />
-                ) : (<>
+                <>
                   <RangeField label="Thickness" value={theme.scrollbarThickness || DEFAULT_THEME.scrollbarThickness} min="3" max="14" step="1" suffix="px" onChange={(value) => setColor("scrollbarThickness", value)} />
                   <RangeField label="Radius" value={theme.scrollbarRadius || DEFAULT_THEME.scrollbarRadius} min="0" max="14" step="1" suffix="px" onChange={(value) => setColor("scrollbarRadius", value)} />
                   <RangeField label="Right edge padding" value={theme.scrollbarEdgePadding || DEFAULT_THEME.scrollbarEdgePadding} min="0" max="28" step="1" suffix="px" onChange={(value) => setColor("scrollbarEdgePadding", value)} />
                   <RangeField label="Top/bottom height padding" value={theme.scrollbarBlockPadding || DEFAULT_THEME.scrollbarBlockPadding || DEFAULT_THEME.scrollbarEdgePadding} min="0" max="40" step="1" suffix="px" onChange={(value) => setColor("scrollbarBlockPadding", value)} />
                   <RangeField label="Dropdown edge padding" value={theme.dropdownScrollbarPadding || DEFAULT_THEME.dropdownScrollbarPadding} min="0" max="20" step="1" suffix="px" onChange={(value) => setColor("dropdownScrollbarPadding", value)} />
-                </>)}
+                </>
               </div>
             </div>
           </SettingsAccordionPanel>
@@ -1008,39 +851,28 @@ export function SettingsModal({ theme, savedThemes, sidebarGlyphs, defaultSideba
               </div>
               <div className="settings-grid special-theme-settings-grid platinum-special-settings-grid">
                 <section className="settings-section">
-                  <h3>Window chrome</h3>
-                  <ColorField label="Chrome surface" value={theme.mac9ChromeColor || DEFAULT_THEME.mac9ChromeColor} onChange={(value) => setColor("mac9ChromeColor", value)} />
-                  <ColorField label="Inner content" value={theme.mac9ContentColor || DEFAULT_THEME.mac9ContentColor} onChange={(value) => setColor("mac9ContentColor", value)} />
-                  <ColorField label="Active outline" value={theme.mac9WindowActiveOutlineColor || DEFAULT_THEME.mac9WindowActiveOutlineColor} onChange={(value) => setColor("mac9WindowActiveOutlineColor", value)} />
-                  <ColorField label="Inactive outline" value={theme.mac9WindowInactiveOutlineColor || DEFAULT_THEME.mac9WindowInactiveOutlineColor} onChange={(value) => setColor("mac9WindowInactiveOutlineColor", value)} />
+                  <h3>Window behavior</h3>
+                  <ToggleField label="Smaller window (1300 × 900)" checked={themeToggleEnabled(theme.mac9SmallerWindow ?? DEFAULT_THEME.mac9SmallerWindow)} onChange={(value) => setColor("mac9SmallerWindow", value)} className="platinum-smaller-window-toggle" />
                 </section>
                 <section className="settings-section">
-                  <h3>Panels</h3>
-                  <ColorField label="Panel surface" value={theme.mac9PanelBackgroundColor || DEFAULT_THEME.mac9PanelBackgroundColor} onChange={(value) => setColor("mac9PanelBackgroundColor", value)} />
-                  <ColorField label="Title backing" value={theme.mac9PanelTitleBackgroundColor || DEFAULT_THEME.mac9PanelTitleBackgroundColor} onChange={(value) => setColor("mac9PanelTitleBackgroundColor", value)} />
-                  <ColorField label="Panel text" value={theme.mac9PanelTextColor || DEFAULT_THEME.mac9PanelTextColor} onChange={(value) => setColor("mac9PanelTextColor", value)} />
-                  <ColorField label="Panel title text" value={theme.mac9PanelTitleTextColor || DEFAULT_THEME.mac9PanelTitleTextColor} onChange={(value) => setColor("mac9PanelTitleTextColor", value)} />
-                  <ColorField label="Groove dark line" value={theme.mac9PanelGrooveShadowColor || DEFAULT_THEME.mac9PanelGrooveShadowColor} onChange={(value) => setColor("mac9PanelGrooveShadowColor", value)} />
-                  <ColorField label="Inner top/left highlight" value={theme.mac9PanelInnerHighlightColor || DEFAULT_THEME.mac9PanelInnerHighlightColor} onChange={(value) => setColor("mac9PanelInnerHighlightColor", value)} />
-                  <ColorField label="Outer right/bottom highlight" value={theme.mac9PanelOuterHighlightColor || DEFAULT_THEME.mac9PanelOuterHighlightColor} onChange={(value) => setColor("mac9PanelOuterHighlightColor", value)} />
+                  <h3>Main window shadow</h3>
+                  <ToggleField label="Enable window shadow" checked={themeToggleEnabled(theme.mac9WindowShadowEnabled ?? DEFAULT_THEME.mac9WindowShadowEnabled)} onChange={(value) => setColor("mac9WindowShadowEnabled", value)} />
+                  <RangeField label="Horizontal offset" value={theme.mac9WindowShadowOffsetX || DEFAULT_THEME.mac9WindowShadowOffsetX} min="0" max="8" step="1" suffix="px" onChange={(value) => setColor("mac9WindowShadowOffsetX", value)} />
+                  <RangeField label="Vertical offset" value={theme.mac9WindowShadowOffsetY || DEFAULT_THEME.mac9WindowShadowOffsetY} min="0" max="8" step="1" suffix="px" onChange={(value) => setColor("mac9WindowShadowOffsetY", value)} />
+                  <RangeField label="Blur" value={theme.mac9WindowShadowBlur || DEFAULT_THEME.mac9WindowShadowBlur} min="0" max="12" step="1" suffix="px" onChange={(value) => setColor("mac9WindowShadowBlur", value)} />
+                  <RangeField label="Opacity" value={theme.mac9WindowShadowOpacity || DEFAULT_THEME.mac9WindowShadowOpacity} min="0" max="100" step="1" suffix="%" onChange={(value) => setColor("mac9WindowShadowOpacity", value)} />
                 </section>
                 <section className="settings-section">
-                  <h3>Title bar</h3>
-                  <RangeField label="Title font size" value={theme.titlebarFontSize || DEFAULT_THEME.titlebarFontSize} min="10" max="18" step="1" suffix="px" onChange={(value) => setColor("titlebarFontSize", value)} />
-                  <ColorField label="Active title text" value={theme.mac9TitlebarActiveTextColor || DEFAULT_THEME.mac9TitlebarActiveTextColor} onChange={(value) => setColor("mac9TitlebarActiveTextColor", value)} />
-                  <ColorField label="Inactive title text" value={theme.mac9TitlebarInactiveTextColor || DEFAULT_THEME.mac9TitlebarInactiveTextColor} onChange={(value) => setColor("mac9TitlebarInactiveTextColor", value)} />
-                  <RangeField label="Footer status size" value={theme.mac9FooterStatusFontSize || DEFAULT_THEME.mac9FooterStatusFontSize} min="9" max="16" step="1" suffix="px" onChange={(value) => setColor("mac9FooterStatusFontSize", value)} />
-                </section>
-                <section className="settings-section">
-                  <h3>Bevels</h3>
-                  <ToggleField label="Enable Platinum bevels" checked={themeToggleEnabled(theme.mac9BevelEnabled ?? DEFAULT_THEME.mac9BevelEnabled)} onChange={(value) => setColor("mac9BevelEnabled", value)} />
-                  <ColorField label="Highlight" value={theme.mac9BevelLightColor || DEFAULT_THEME.mac9BevelLightColor} onChange={(value) => setColor("mac9BevelLightColor", value)} />
-                  <ColorField label="Middle" value={theme.mac9BevelMidColor || DEFAULT_THEME.mac9BevelMidColor} onChange={(value) => setColor("mac9BevelMidColor", value)} />
-                  <ColorField label="Shadow" value={theme.mac9BevelDarkColor || DEFAULT_THEME.mac9BevelDarkColor} onChange={(value) => setColor("mac9BevelDarkColor", value)} />
-                  <ColorField label="Outline" value={theme.mac9BevelOutlineColor || DEFAULT_THEME.mac9BevelOutlineColor} onChange={(value) => setColor("mac9BevelOutlineColor", value)} />
+                  <h3>Chrome shadow</h3>
+                  <ToggleField label="Enable chrome shadow" checked={themeToggleEnabled(theme.mac9ChromeShadowEnabled ?? DEFAULT_THEME.mac9ChromeShadowEnabled)} onChange={(value) => setColor("mac9ChromeShadowEnabled", value)} />
+                  <RangeField label="Horizontal offset" value={theme.mac9ChromeShadowOffsetX || DEFAULT_THEME.mac9ChromeShadowOffsetX} min="0" max="8" step="1" suffix="px" onChange={(value) => setColor("mac9ChromeShadowOffsetX", value)} />
+                  <RangeField label="Vertical offset" value={theme.mac9ChromeShadowOffsetY || DEFAULT_THEME.mac9ChromeShadowOffsetY} min="0" max="8" step="1" suffix="px" onChange={(value) => setColor("mac9ChromeShadowOffsetY", value)} />
+                  <RangeField label="Blur" value={theme.mac9ChromeShadowBlur || DEFAULT_THEME.mac9ChromeShadowBlur} min="0" max="12" step="1" suffix="px" onChange={(value) => setColor("mac9ChromeShadowBlur", value)} />
+                  <RangeField label="Opacity" value={theme.mac9ChromeShadowOpacity || DEFAULT_THEME.mac9ChromeShadowOpacity} min="0" max="100" step="1" suffix="%" onChange={(value) => setColor("mac9ChromeShadowOpacity", value)} />
                 </section>
                 <section className="settings-section">
                   <h3>Bevel widths</h3>
+                  <ToggleField label="Enable Platinum bevels" checked={themeToggleEnabled(theme.mac9BevelEnabled ?? DEFAULT_THEME.mac9BevelEnabled)} onChange={(value) => setColor("mac9BevelEnabled", value)} />
                   {[
                     ["Window", "mac9WindowBevelWidth"],
                     ["Panels", "mac9PanelBevelWidth"],
@@ -1059,7 +891,18 @@ export function SettingsModal({ theme, savedThemes, sidebarGlyphs, defaultSideba
                       />
                     </label>
                   ))}
+                  <RangeField label="Bevel shadow offset" value={theme.mac9BevelShadowOffset || DEFAULT_THEME.mac9BevelShadowOffset} min="0" max="4" step="1" suffix="px" onChange={(value) => setColor("mac9BevelShadowOffset", value)} />
                   <ToggleField label="Scrollbar arrows together at bottom" checked={themeToggleEnabled(theme.mac9ScrollbarButtonsAtBottom ?? DEFAULT_THEME.mac9ScrollbarButtonsAtBottom)} onChange={(value) => setColor("mac9ScrollbarButtonsAtBottom", value)} />
+                </section>
+                <section className="settings-section">
+                  <h3>PNG asset colorization</h3>
+                  <ToggleField label="Colorize Platinum PNG assets" checked={themeToggleEnabled(theme.mac9AssetColorizeEnabled ?? DEFAULT_THEME.mac9AssetColorizeEnabled)} onChange={(value) => setColor("mac9AssetColorizeEnabled", value)} />
+                  <RangeField label="Tint strength" value={theme.mac9AssetColorizeAmount || DEFAULT_THEME.mac9AssetColorizeAmount} min="0" max="100" step="1" suffix="%" onChange={(value) => setColor("mac9AssetColorizeAmount", value)} />
+                  <RangeField label="Hue shift" value={theme.mac9AssetHueRotate || DEFAULT_THEME.mac9AssetHueRotate} min="0" max="360" step="1" suffix="deg" onChange={(value) => setColor("mac9AssetHueRotate", value)} />
+                  <RangeField label="Color saturation" value={theme.mac9AssetSaturation || DEFAULT_THEME.mac9AssetSaturation} min="0" max="300" step="1" suffix="%" onChange={(value) => setColor("mac9AssetSaturation", value)} />
+                  <RangeField label="Brightness" value={theme.mac9AssetBrightness || DEFAULT_THEME.mac9AssetBrightness} min="25" max="200" step="1" suffix="%" onChange={(value) => setColor("mac9AssetBrightness", value)} />
+                  <RangeField label="Contrast" value={theme.mac9AssetContrast || DEFAULT_THEME.mac9AssetContrast} min="25" max="200" step="1" suffix="%" onChange={(value) => setColor("mac9AssetContrast", value)} />
+                  <p className="settings-help-text">The filter applies to bitmap-only folder art, title-bar stripes, caption controls, arrow buttons, and input assets while preserving PNG transparency and shading. Scrollbar surfaces keep their independently configured colors.</p>
                 </section>
               </div>
             </>
