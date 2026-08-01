@@ -75,7 +75,7 @@
     "typescript": "^5.7.2",
     "vite": "^6.0.7",
     "vitest": "^4.1.10",
-    "wait-on": "^8.0.1"
+    "wait-on": "^9.1.0"
   },
   "author": "Arcanthur / MiSTer Companion core by Anime0t4ku"
 }
